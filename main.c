@@ -2,6 +2,6 @@
 
 int main(int argc, char const *argv[])
 {
-  prinf("sumpah disuruh andi ngedit2");
+  prinf("test kedua");
   return 0;
 }
