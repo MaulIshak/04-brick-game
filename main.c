@@ -2,6 +2,6 @@
 
 int main(int argc, char const *argv[])
 {
-  prinf("test kedua");
+  prinf("test ketiga");
   return 0;
 }
