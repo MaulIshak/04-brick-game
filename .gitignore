@@ -1,3 +1,4 @@
 *.zip
 external/zig/*
-out/*
+out/*.exe
+out/*.pdb
