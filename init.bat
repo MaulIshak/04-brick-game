@@ -1,6 +1,7 @@
 @echo off
 :: Set the URL and destination directory
-set zigUrl=https://ziglang.org/builds/zig-windows-x86_64-0.14.0-dev.3091+42e48b83b.zip
+
+set zigUrl=https://ziglang.org/download/0.13.0/zig-windows-x86_64-0.13.0.zip
 set destinationPath=external\zig
 set zipFileName=zig-windows.zip
 
