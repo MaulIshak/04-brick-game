@@ -2,3 +2,6 @@
 external/zig/*
 out/*.exe
 out/*.pdb
+bin/zig/*
+compile_commands.json
+.zig-cache/
