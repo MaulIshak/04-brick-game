@@ -5,26 +5,23 @@
 #include <stdlib.h>
 #include "press_to_play.h"
 
+// #define TEST_CONTEXT
+
 int main()
 {
   const int screenWidth = 600;
   const int screenHeight = 800;
 
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+  InitAudioDevice();
+
+  AppContext ctx = CreateContext(screenWidth, screenHeight);
+
   
-  AppContext ctx = {
-    .screen_height = screenHeight,
-    .screen_width = screenWidth,
-    .selected_track = 0,
-    .app_state = APP_PRESS_TO_PLAY,
+
+  Loading loading = {
+    .ctx = &ctx
   };
-
-  ctx.tracks.cap = 10;
-  ctx.tracks.len = 1;
-  ctx.tracks.track = malloc(sizeof(Track) * 10);
-  
-
-  Loading loading = {NULL};
   Drawable loading_draw = Loading_ToScene(&loading);
   
   PressToPlay press_to_play = {
@@ -36,10 +33,13 @@ int main()
   
   int draws_len = 2;
   SetTargetFPS(60);
-  InitAudioDevice();
-
+  #ifdef TEST_CONTEXT 
+    ctx.selected_track = 1;
+    PlaySelectedTrack(&ctx);
+  #endif
   while (!WindowShouldClose())
   {
+    UpdateContext(&ctx);
     for (int i = 0; i < draws_len; i++)
     {
       if (draws[i].scene->IsShow(draws[i].self))
@@ -62,6 +62,8 @@ int main()
 
     EndDrawing();
   }
+  DestroyContext(&ctx);
+  CloseAudioDevice();
   CloseWindow();
 
   return 0;
