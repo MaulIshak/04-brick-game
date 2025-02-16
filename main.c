@@ -3,6 +3,7 @@
 #include "loading.h"
 #include "context.h"
 #include <stdlib.h>
+#include "press_to_play.h"
 
 int main()
 {
@@ -15,7 +16,7 @@ int main()
     .screen_height = screenHeight,
     .screen_width = screenWidth,
     .selected_track = 0,
-    .app_state = APP_LOADING,
+    .app_state = APP_PRESS_TO_PLAY,
   };
 
   ctx.tracks.cap = 10;
@@ -26,9 +27,14 @@ int main()
   Loading loading = {NULL};
   Drawable loading_draw = Loading_ToScene(&loading);
   
-  Drawable draws[] = {loading_draw};
+  PressToPlay press_to_play = {
+    .ctx = &ctx
+  };
+  Drawable press_to_play_draw = PressToPlay_ToScene(&press_to_play);
+
+  Drawable draws[] = {loading_draw, press_to_play_draw};
   
-  int draws_len = 1;
+  int draws_len = 2;
   SetTargetFPS(60);
   InitAudioDevice();
 

@@ -21,6 +21,7 @@ typedef enum State {
     APP_LOADING,
     APP_SELECT,
     APP_PLAYING,
+    APP_PRESS_TO_PLAY,
 } State;
 
 typedef struct AppContext {

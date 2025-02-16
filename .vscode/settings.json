@@ -3,5 +3,6 @@
         "stdio.h": "c",
         "typeinfo": "cpp",
         "*.inc": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
