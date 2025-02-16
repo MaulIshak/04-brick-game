@@ -1,41 +1,62 @@
 #include <stdio.h>
 #include "raylib.h"
+#include "loading.h"
+#include "context.h"
+#include <stdlib.h>
 
 int main()
 {
-      // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+  const int screenWidth = 600;
+  const int screenHeight = 800;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+  InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+  
+  AppContext ctx = {
+    .screen_height = screenHeight,
+    .screen_width = screenWidth,
+    .selected_track = 0,
+    .app_state = APP_LOADING,
+  };
 
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
+  ctx.tracks.cap = 10;
+  ctx.tracks.len = 1;
+  ctx.tracks.track = malloc(sizeof(Track) * 10);
+  
 
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+  Loading loading = {NULL};
+  Drawable loading_draw = Loading_ToScene(&loading);
+  
+  Drawable draws[] = {loading_draw};
+  
+  int draws_len = 1;
+  SetTargetFPS(60);
+  InitAudioDevice();
+
+  while (!WindowShouldClose())
+  {
+    for (int i = 0; i < draws_len; i++)
     {
-        // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
-        BeginDrawing();
-
-            ClearBackground(RAYWHITE);
-
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
-        EndDrawing();
-        //----------------------------------------------------------------------------------
+      if (draws[i].scene->IsShow(draws[i].self))
+      {
+        draws[i].scene->Update(draws[i].self);
+      }
     }
 
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+    BeginDrawing();
+
+    ClearBackground(RAYWHITE);
+
+    for (int i = 0; i < draws_len; i++)
+    {
+      if (draws[i].scene->IsShow(draws[i].self))
+      {
+        draws[i].scene->Draw(draws[i].self);
+      }
+    }
+
+    EndDrawing();
+  }
+  CloseWindow();
+
   return 0;
 }
