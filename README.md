@@ -23,3 +23,7 @@ Untuk menjalankan program, buka command line lalu eksekusi perintah ini.
 script `init.bat` akan mendowload zig compiler versi 0.13.0 dan menaruhnya di folder `bin/zig`. Ini dilakukan agar semua anggota memiliki compiler dengan jenis yang sama untuk menghindari masalah masalah mengenai compiler yang tidak kompatible.
 
 script `build.bat` akan mengcompile project
+
+# Arsitektur
+
+TODO:

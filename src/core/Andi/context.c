@@ -24,7 +24,7 @@ Tracks InitTracks() {
 
         Music m = LoadMusicStream(buff);
         tr.track[i].music = m;
-        strcpy(&tr.track[i].music_name, &buff[10]);
+        strcpy((char *)&tr.track[i].music_name, (char *)&buff[10]);
         buff[0] = '\0';
     }
 
@@ -45,7 +45,7 @@ void DestroyContext(AppContext *ctx) {
 AppContext CreateContext(int screen_width , int screen_height ){
     Tracks tracks = InitTracks();
     AppContext ctx = {
-        .app_state = APP_LOADING,
+        .app_state = APP_PRESS_TO_PLAY,
         .screen_width = screen_width,
         .screen_height = screen_height,
         .tracks = tracks,
@@ -85,7 +85,7 @@ Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
 
 void SeekSelectedTrack(AppContext* ctx, float second) {
     size_t selected = ctx->selected_track;
-    assert(SelectMusic != -1);
+    assert(ctx->selected_track != -1);
 
     SeekMusicStream(ctx->tracks.track[selected].music, second);
 }

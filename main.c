@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include "raylib.h"
+
+#include "background.h"
 #include "loading.h"
+#include "press_to_play.h"
+
+#include "macro.h"
+
 #include "context.h"
 #include <stdlib.h>
-#include "press_to_play.h"
-#include "macro.h"
 
 // #define TEST_CONTEXT
 
@@ -30,7 +34,12 @@ int main()
   };
   Drawable press_to_play_draw = PressToPlay_ToScene(&press_to_play);
 
-  Drawable draws[] = {loading_draw, press_to_play_draw};
+  Background bg = {
+    .ctx = &ctx
+  };
+  Drawable bg_draw = Background_ToScene(&bg);
+
+  Drawable draws[] = {loading_draw, press_to_play_draw, bg_draw};
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
