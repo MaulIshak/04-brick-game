@@ -1,9 +1,9 @@
 # Project Setup
 
-Buka command line lalu eksekusi perintah dibawah ini
+Buka command line lalu eksekusi perintah dibawah ini. Pastikan eksekusi didalam git bash.
 
 ```sh
-./init.bat
+./init.sh
 ```
 
 # Extensi
@@ -15,7 +15,7 @@ Untuk penglaman development yang lebih baik, gunakan vscode dan install extensi 
 Untuk menjalankan program, buka command line lalu eksekusi perintah ini.
 
 ```sh
-./build.bat
+./build.sh
 ```
 
 ## Penjelasan

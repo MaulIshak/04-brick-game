@@ -4,6 +4,7 @@
 #include "context.h"
 #include <stdlib.h>
 #include "press_to_play.h"
+#include "macro.h"
 
 // #define TEST_CONTEXT
 
@@ -31,7 +32,7 @@ int main()
 
   Drawable draws[] = {loading_draw, press_to_play_draw};
   
-  int draws_len = 2;
+  int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   #ifdef TEST_CONTEXT 
     ctx.selected_track = 1;

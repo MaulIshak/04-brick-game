@@ -82,3 +82,10 @@ Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
     Beatmap map = {0};
     return map;
 }
+
+void SeekSelectedTrack(AppContext* ctx, float second) {
+    size_t selected = ctx->selected_track;
+    assert(SelectMusic != -1);
+
+    SeekMusicStream(ctx->tracks.track[selected].music, second);
+}

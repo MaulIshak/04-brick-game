@@ -48,6 +48,8 @@ typedef struct Score {
     long int point;
     // persentase dari akurasi
     double accuracy;
+    // Streak
+    int streak;
 } Score;
 
 Tracks InitTracks();
@@ -98,5 +100,7 @@ void UpdateContext(AppContext* ctx);
 void PlaySelectedTrack(AppContext* ctx);
 // Stop Track track yang dipilih
 void StopSelectedTrack(AppContext* ctx);
+// Ubah posisi waktu musik dijalankan
+void SeekSelectedTrack(AppContext* ctx, float second);
 
 #endif // CONTEXT_H
