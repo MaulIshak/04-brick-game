@@ -39,7 +39,9 @@ int main()
   };
   Drawable bg_draw = Background_ToScene(&bg);
 
-  Drawable draws[] = {loading_draw, press_to_play_draw, bg_draw};
+  
+  // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
+  Drawable draws[] = {bg_draw, loading_draw, press_to_play_draw};
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);

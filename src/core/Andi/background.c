@@ -1,7 +1,9 @@
 #include "background.h"
 
 void Background_Draw(Background* self){
-    // DrawRectangle(20,20, 400, 400, SKYBLUE);
+    // Rectangle rec = {40,40,40,40};
+    // Vector2 origin = {0,0};
+    // DrawRectanglePro(rec, origin, 50, RED);
 }
 void Background_Update(Background* self){
 
