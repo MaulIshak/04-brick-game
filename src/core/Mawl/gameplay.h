@@ -6,13 +6,16 @@
 #ifndef GAMEPLAY_H
 #define GAMEPLAY_H
 #define TEXTURE_COUNT 1
+#define LINE_COUNT 4
 
 typedef struct Gameplay{
   AppContext *ctx;
   int width;
   Texture2D textureToLoad[TEXTURE_COUNT];
   char *texturePath [TEXTURE_COUNT];
+  int lineNotesOpacity[LINE_COUNT];
 }Gameplay;
+
 
 void gp_draw(Gameplay* self);
 void gp_update(Gameplay* self);

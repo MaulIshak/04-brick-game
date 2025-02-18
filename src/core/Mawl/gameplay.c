@@ -7,12 +7,48 @@
 void gp_draw(Gameplay* self){
   // for (int i = 0; i < TEXTURE_COUNT; i++)
   // {
-  //   DrawTextureEx(self->textureToLoad[0], (Vector2){10, 10},.0f, .5f, WHITE);
-  // }
-}
-void gp_update(Gameplay* self){
+    // }
+    Color primary = (Color){ 240, 240, 240, 255 };
+    
+    // Color secondary = (Color){ 190, 190, 190, 255 };
+    Rectangle rec = {
+      0,0,self->width, self->ctx->screen_height
+    };
+    // DrawRectangleGradientEx(rec,primary,secondary, secondary, primary);
+    DrawRectangleRec(rec,primary);
+    DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
+    DrawTextureEx(self->textureToLoad[0], (Vector2){120, 110},180.0f, .2f, (Color){ 240, 240, 240, self->lineNotesOpacity[0] });
+    DrawTextureEx(self->textureToLoad[0], (Vector2){220, 0},90.0f, .2f, (Color){ 240, 240, 240, self->lineNotesOpacity[1] });
+    DrawTextureEx(self->textureToLoad[0], (Vector2){200, 110},270.0f, .2f, (Color){ 240, 240, 240, self->lineNotesOpacity[2] });
+    DrawTextureEx(self->textureToLoad[0], (Vector2){300, 0},.0f, .2f, (Color){ 240, 240, 240, self->lineNotesOpacity[3] });
+    
+  }
+  void gp_update(Gameplay* self){
+    if(IsKeyDown(KEY_UP)){
+      self->lineNotesOpacity[2] = 255;
+    }else{
+      self->lineNotesOpacity[2] = 100;
+    }
 
-}
+    if(IsKeyDown(KEY_LEFT)){
+      self->lineNotesOpacity[0] = 255;
+    }else{
+      self->lineNotesOpacity[0] = 100;
+      
+    }
+    if(IsKeyDown(KEY_DOWN)){
+      self->lineNotesOpacity[1] = 255;
+    }else{
+      self->lineNotesOpacity[1] = 100;
+      
+    }
+    if(IsKeyDown(KEY_RIGHT)){
+      self->lineNotesOpacity[3] = 255;
+    }else{
+      self->lineNotesOpacity[3] = 100;
+      
+    }
+  }
 
 bool gp_isShow(Gameplay* self){
   if(self->ctx->app_state == APP_PLAYING){
@@ -23,8 +59,13 @@ bool gp_isShow(Gameplay* self){
 
 void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   gameplay->ctx = ctx;
-  gameplay->width = 400;
+  gameplay->width = 430;
   gameplay->texturePath[0] = "src/core/Mawl/arrow.png";
+  for (int i = 0; i < LINE_COUNT; i++)
+  {
+    gameplay->lineNotesOpacity[i] = 100;
+  }
+  
   _LoadNoteTexture(gameplay);
 }
 
