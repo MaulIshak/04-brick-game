@@ -1,10 +1,15 @@
 #include <stdio.h>
 #include "raylib.h"
+
+#include "background.h"
 #include "loading.h"
+#include "press_to_play.h"
+
+#include "macro.h"
+
 #include "context.h"
 #include "gameplay.h"
 #include <stdlib.h>
-#include "press_to_play.h"
 
 // #define TEST_CONTEXT
 
@@ -29,13 +34,20 @@ int main()
 
   Drawable press_to_play_draw = PressToPlay_ToScene(&press_to_play);
 
+  Background bg = {
+    .ctx = &ctx
+  };
+  Drawable bg_draw = Background_ToScene(&bg);
+
+  
+  // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
   Gameplay gameplay;
   init_gameplay(&gameplay,&ctx, 400);
   Drawable gameplay_draw = Gameplay_ToScene(&gameplay);
 
-  Drawable draws[] = {loading_draw, press_to_play_draw, gameplay_draw};
+  Drawable draws[] = {bg_draw, loading_draw, press_to_play_draw, gameplay_draw};
   
-  int draws_len = 2;
+  int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   #ifdef TEST_CONTEXT 
     ctx.selected_track = 1;

@@ -24,7 +24,7 @@ Tracks InitTracks() {
 
         Music m = LoadMusicStream(buff);
         tr.track[i].music = m;
-        strcpy(&tr.track[i].music_name, &buff[10]);
+        strcpy((char *)&tr.track[i].music_name, (char *)&buff[10]);
         buff[0] = '\0';
     }
 
@@ -81,4 +81,11 @@ void StopSelectedTrack(AppContext *ctx) {
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
     Beatmap map = {0};
     return map;
+}
+
+void SeekSelectedTrack(AppContext* ctx, float second) {
+    size_t selected = ctx->selected_track;
+    assert(ctx->selected_track != -1);
+
+    SeekMusicStream(ctx->tracks.track[selected].music, second);
 }
