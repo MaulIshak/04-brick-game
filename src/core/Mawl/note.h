@@ -6,9 +6,12 @@
 #define NOTE_H
 
 typedef struct {
+  Gameplay *gp;
+  AppContext *ctx;
   Note *note;
   Vector2 position;
-  int size;
+  float scale;
+  float speed;
 }DrawableNote;
 
 void note_draw(DrawableNote *Note);

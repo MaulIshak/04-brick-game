@@ -42,7 +42,7 @@ int main()
   
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
   Gameplay gameplay;
-  init_gameplay(&gameplay,&ctx, 400);
+  InitGameplay(&gameplay,&ctx);
   Drawable gameplay_draw = Gameplay_ToScene(&gameplay);
 
   Drawable draws[] = {bg_draw, loading_draw, press_to_play_draw, gameplay_draw};
