@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "loading.h"
 #include "context.h"
+#include "gameplay.h"
 #include <stdlib.h>
 #include "press_to_play.h"
 
@@ -17,8 +18,6 @@ int main()
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
 
-  
-
   Loading loading = {
     .ctx = &ctx
   };
@@ -27,9 +26,14 @@ int main()
   PressToPlay press_to_play = {
     .ctx = &ctx
   };
+
   Drawable press_to_play_draw = PressToPlay_ToScene(&press_to_play);
 
-  Drawable draws[] = {loading_draw, press_to_play_draw};
+  Gameplay gameplay;
+  init_gameplay(&gameplay,&ctx, 400);
+  Drawable gameplay_draw = Gameplay_ToScene(&gameplay);
+
+  Drawable draws[] = {loading_draw, press_to_play_draw, gameplay_draw};
   
   int draws_len = 2;
   SetTargetFPS(60);

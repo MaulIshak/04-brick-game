@@ -45,7 +45,7 @@ void DestroyContext(AppContext *ctx) {
 AppContext CreateContext(int screen_width , int screen_height ){
     Tracks tracks = InitTracks();
     AppContext ctx = {
-        .app_state = APP_LOADING,
+        .app_state = APP_PLAYING,
         .screen_width = screen_width,
         .screen_height = screen_height,
         .tracks = tracks,
