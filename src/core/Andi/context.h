@@ -17,6 +17,8 @@ typedef struct Note {
     NoteDirection direction;
     // kapan note itu harus di hit
     double hit_at_ms;
+    // posisi dari note
+    Vector2 position;
 } Note;
 
 // Beatmap adalah map yang akan digunakan pada saat gameplay. isinya terdiri dari array of notes

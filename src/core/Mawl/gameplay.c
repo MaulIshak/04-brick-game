@@ -24,25 +24,32 @@ void gp_draw(Gameplay* self){
     
   }
   void gp_update(Gameplay* self){
-    if(IsKeyDown(KEY_UP)){
+
+    // UP ARROW (MIDDLE RIGHT)
+    if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->lineNotesOpacity[2] = 255;
     }else{
       self->lineNotesOpacity[2] = 100;
     }
 
-    if(IsKeyDown(KEY_LEFT)){
+    // LEFT ARROW (LEFT)
+    if(IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
       self->lineNotesOpacity[0] = 255;
     }else{
       self->lineNotesOpacity[0] = 100;
       
     }
-    if(IsKeyDown(KEY_DOWN)){
+
+    // DOWN ARROW (MIDDLE LEFT)
+    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->lineNotesOpacity[1] = 255;
     }else{
       self->lineNotesOpacity[1] = 100;
       
     }
-    if(IsKeyDown(KEY_RIGHT)){
+
+    // RIGHT ARROW (RIGHT)
+    if(IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
       self->lineNotesOpacity[3] = 255;
     }else{
       self->lineNotesOpacity[3] = 100;

@@ -1,12 +1,11 @@
-#include "scene.h"
-#include "raylib.h"
-#include "context.h"
-#include "note.h"
-
 #ifndef GAMEPLAY_H
 #define GAMEPLAY_H
 #define TEXTURE_COUNT 1
 #define LINE_COUNT 4
+
+#include "scene.h"
+#include "raylib.h"
+#include "context.h"
 
 typedef struct Gameplay{
   AppContext *ctx;

@@ -1,18 +1,16 @@
 #include "context.h"
 #include "scene.h"
 #include "raylib.h"
-// #include "gameplay.h"
 
 #ifndef NOTE_H
 #define NOTE_H
+#define NOTE_TEXTURE_COUNT 4
 
 typedef struct {
   // Gameplay *gp;
   AppContext *ctx;
   Note *note;
-  Vector2 position;
-  float scale;
-  float speed;
+  Texture2D noteTexture[4];
 }DrawableNote;
 
 void note_draw(DrawableNote *);
