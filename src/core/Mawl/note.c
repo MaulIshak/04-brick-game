@@ -10,7 +10,7 @@ void note_draw(DrawableNote *self){
 }
 void note_update(DrawableNote *self){
   if(!self->isBeatmapLoaded){
-    self->beatmap = GetSelectedMusicBeatmap();
+    self->beatmap = GetSelectedMusicBeatmap(self->ctx);
     self->isBeatmapLoaded = true;
   }
 }

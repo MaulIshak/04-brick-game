@@ -10,7 +10,7 @@ typedef struct {
   // Gameplay *gp;
   AppContext *ctx;
   Beatmap beatmap;
-  Texture2D noteTexture[NODE_TEXTURE_COUNT];
+  Texture2D noteTexture[NOTE_TEXTURE_COUNT];
   bool isBeatmapLoaded;
 }DrawableNote;
 
