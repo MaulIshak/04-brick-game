@@ -1,7 +1,7 @@
 CC="bin/zig/zig-windows-x86_64-0.13.0/zig.exe cc"
-INPUT="main.c external/raylib/lib/libraylib.a"
+INPUT="main.c external/raylib/lib/libraylib.a  external/kiss_fft/kiss_fft.c"
 FLAGS="-Wall -Wextra -g -ggdb -Wno-unused-function -Wno-unused-parameter"
-I_PATH="-I ./src -I ./external/raylib/include -I ./src/interfaces/ -I ./src/ds/ -I ./src/core/ -I ./src/macros -I ./src/core/Andi/ -I ./src/core/Farras/ -I ./src/core/Mawl/ -I ./src/core/Nabil/ -I ./src/core/Paneji/ -I ./src/core/Zainandhi/"
+I_PATH="-I ./src -I./external/kiss_fft -I ./external/raylib/include -I ./src/interfaces/ -I ./src/ds/ -I ./src/core/ -I ./src/macros -I ./src/core/Andi/ -I ./src/core/Farras/ -I ./src/core/Mawl/ -I ./src/core/Nabil/ -I ./src/core/Paneji/ -I ./src/core/Zainandhi/"
 LIBS="-lopengl32 -lgdi32 -lwinmm"
 OUT="-o out/main.exe"
 

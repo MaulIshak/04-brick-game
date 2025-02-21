@@ -3,6 +3,7 @@
 #include "macro.h"
 #include <string.h>
 #include <assert.h>
+#include <stdio.h>
 
 const char *resources[] = {
     "resources/Guardian of The Former Seas",
@@ -63,6 +64,7 @@ void UpdateContext(AppContext* ctx) {
     int selected = ctx->selected_track;
     if(ctx->is_music_playing) {
         assert(selected != -1);
+        
         UpdateMusicStream(ctx->tracks.track[selected].music);
     }
 }
@@ -72,6 +74,9 @@ void PlaySelectedTrack(AppContext *ctx) {
     assert(selected != -1);
     PlayMusicStream(ctx->tracks.track[selected].music);
     ctx->is_music_playing = true;
+    #ifdef DEBUG
+    printf("Playing %s\n",  ctx->tracks.track[selected].music_name);
+    #endif
 }
 
 void StopSelectedTrack(AppContext *ctx) {
@@ -79,6 +84,9 @@ void StopSelectedTrack(AppContext *ctx) {
     assert(selected != -1);
     StopMusicStream(ctx->tracks.track[selected].music);
     ctx->is_music_playing = false;
+    #ifdef DEBUG
+    printf("Stopping %s\n",  ctx->tracks.track[selected].music_name);
+    #endif
 }
 
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
@@ -102,4 +110,7 @@ void SeekSelectedTrack(AppContext* ctx, float second) {
     assert(ctx->selected_track != -1);
 
     SeekMusicStream(ctx->tracks.track[selected].music, second);
+    #ifdef DEBUG
+    printf("Seeking %s To %f seconds\n",  ctx->tracks.track[selected].music_name, second);
+    #endif
 }

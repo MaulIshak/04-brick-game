@@ -1,3 +1,4 @@
+#define TEST_CONTEXT
 
 #include <stdio.h>
 #include "raylib.h"
@@ -12,7 +13,6 @@
 #include "gameplay.h"
 #include <stdlib.h>
 
-#define TEST_CONTEXT
 
 int main()
 {
@@ -50,7 +50,7 @@ int main()
   SetTargetFPS(60);
   
   #ifdef TEST_CONTEXT 
-    ctx.selected_track = 0;
+    ctx.selected_track = 1;
     PlaySelectedTrack(&ctx);
   #endif
   while (!WindowShouldClose())
