@@ -33,7 +33,7 @@ typedef struct Track {
     // referensi ke music yang dibutuhkan raylib
     Music music;
     // nama dari musik
-    char music_name[50];
+    char music_name[255];
     // skor tertinggi dari musik ini
     int high_score;
 } Track;

@@ -12,19 +12,20 @@ const char *resources[] = {
 Tracks InitTracks() {
     Tracks tr = {
         .cap = 10,
-        .track = malloc(sizeof(Tracks) * 10),
+        .track = malloc(sizeof(Track) * 10),
     };
 
     int len = ARRAY_LEN(resources);
     tr.len = len;
     char buff[255] = {0};
     for(int i = 0; i < len; i++) {
+        Track *track = &tr.track[i];
         strcat(buff, resources[i]);
         strcat(buff, ".mp3");
 
         Music m = LoadMusicStream(buff);
-        tr.track[i].music = m;
-        strcpy((char *)&tr.track[i].music_name, (char *)&buff[10]);
+        track->music = m;
+        strcpy((char *)&track->music_name, (char *)&buff[10]);
         buff[0] = '\0';
     }
 
@@ -35,7 +36,7 @@ void DestroyTracks(Tracks *tracks) {
     for(int i = 0; i < tracks->len; i++) {
         UnloadMusicStream(tracks->track[i].music);
     }
-    free(tracks);
+    free(tracks->track);
 }
 
 void DestroyContext(AppContext *ctx) {
@@ -79,6 +80,7 @@ void StopSelectedTrack(AppContext *ctx) {
 }
 
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
+    // TODO: arraylist should be stored on context and resized when needed. free it on destroy context
     Beatmap map;
     map.notes = malloc(sizeof(Note) * 10);
     map.len = 10;
@@ -87,7 +89,7 @@ Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
     for(int i = 0; i < 10; i++) {
         map.notes[i].direction = GetRandomValue(0,3);
         map.notes[i].hit_at_ms = (i + 2) + (500 * i);
-        map.notes[i].position = {0};
+        map.notes[i].position = (Vector2){0, 0};
     }
 
     return map;
