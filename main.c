@@ -1,4 +1,4 @@
-#pragma once
+
 #include <stdio.h>
 #include "raylib.h"
 
@@ -35,9 +35,7 @@ int main()
 
   Drawable press_to_play_draw = PressToPlay_ToScene(&press_to_play);
 
-  Background bg = {
-    .ctx = &ctx
-  };
+  Background bg = CreateBackground(&ctx);
   Drawable bg_draw = Background_ToScene(&bg);
 
   

@@ -1,3 +1,4 @@
+#pragma once
 #include "context.h"
 #include "scene.h"
 
@@ -8,6 +9,8 @@ typedef struct Background {
     AppContext* ctx;
 } Background;
 
+void Background_MusicCallback(void *bufferData, unsigned int frames);
+Background CreateBackground(AppContext* ctx);
 void Background_Draw(Background* self);
 void Background_Update(Background* self);
 bool Background_IsShow(Background* self);

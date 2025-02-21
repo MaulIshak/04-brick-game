@@ -1,3 +1,4 @@
+#pragma once
 #ifndef GAMEPLAY_H
 #define GAMEPLAY_H
 #define TEXTURE_COUNT 1

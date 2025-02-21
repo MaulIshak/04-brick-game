@@ -1,3 +1,4 @@
+#pragma once
 #include "context.h"
 #include "scene.h"
 #include "raylib.h"
