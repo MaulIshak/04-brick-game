@@ -1,4 +1,4 @@
-#define TEST_CONTEXT
+// #define TEST_CONTEXT
 
 #include <stdio.h>
 #include "raylib.h"
@@ -44,7 +44,7 @@ int main()
   InitGameplay(&gameplay,&ctx);
   Drawable gameplay_draw = Gameplay_ToScene(&gameplay);
 
-  Drawable draws[] = {bg_draw, loading_draw, press_to_play_draw, gameplay_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, gameplay_draw, bg_draw};
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
