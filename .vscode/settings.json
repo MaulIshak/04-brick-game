@@ -12,7 +12,8 @@
     "xtree": "c",
     "xutility": "c",
     "map": "c",
-    "unordered_map": "c"
+    "unordered_map": "c",
+    "kiss_fft.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

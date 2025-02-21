@@ -12,7 +12,7 @@
 #include "gameplay.h"
 #include <stdlib.h>
 
-// #define TEST_CONTEXT
+#define TEST_CONTEXT
 
 int main()
 {
@@ -48,8 +48,9 @@ int main()
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
+  
   #ifdef TEST_CONTEXT 
-    ctx.selected_track = 1;
+    ctx.selected_track = 0;
     PlaySelectedTrack(&ctx);
   #endif
   while (!WindowShouldClose())

@@ -1,8 +1,8 @@
 #!/bin/sh
 CC="gcc"
-INPUT="main.c external/raylib-linux/lib/libraylib.a"
+INPUT="main.c external/raylib-linux/lib/libraylib.a external/kiss_fft/kiss_fft.c"
 FLAGS="-Wall -Wextra -g -ggdb -Wno-unused-function -Wno-unused-parameter"
-I_PATH="-I ./src -I ./external/raylib-linux/include -I ./src/interfaces/ -I ./src/ds/ -I ./src/core/ -I ./src/macros -I ./src/core/Andi/ -I ./src/core/Farras/ -I ./src/core/Mawl/ -I ./src/core/Nabil/ -I ./src/core/Paneji/ -I ./src/core/Zainandhi/"
+I_PATH="-I ./src -I./external/kiss_fft  -I ./external/raylib-linux/include -I ./src/interfaces/ -I ./src/ds/ -I ./src/core/ -I ./src/macros -I ./src/core/Andi/ -I ./src/core/Farras/ -I ./src/core/Mawl/ -I ./src/core/Nabil/ -I ./src/core/Paneji/ -I ./src/core/Zainandhi/"
 LIBS="-lGL -lm -lpthread -ldl -lrt -lX11"
 OUT="-o out/main.exe"
 
