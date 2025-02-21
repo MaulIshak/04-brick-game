@@ -87,7 +87,7 @@ Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
     for(int i = 0; i < 10; i++) {
         map.notes[i].direction = GetRandomValue(0,3);
         map.notes[i].hit_at_ms = (i + 2) + (500 * i);
-        map.notes[i].position = {0};
+        map.notes[i].position = (Vector2){0,0};
     }
 
     return map;
