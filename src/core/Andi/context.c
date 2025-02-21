@@ -79,7 +79,17 @@ void StopSelectedTrack(AppContext *ctx) {
 }
 
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
-    Beatmap map = {0};
+    Beatmap map;
+    map.notes = malloc(sizeof(Note) * 10);
+    map.len = 10;
+    map.cap = 10;
+
+    for(int i = 0; i < 10; i++) {
+        map.notes[i].direction = GetRandomValue(0,3);
+        map.notes[i].hit_at_ms = (i + 2) + (500 * i);
+        map.notes[i].position = {0};
+    }
+
     return map;
 }
 
