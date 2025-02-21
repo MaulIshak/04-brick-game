@@ -18,6 +18,7 @@ Tracks InitTracks() {
     int len = ARRAY_LEN(resources);
     tr.len = len;
     char buff[255] = {0};
+    // TODO: parse dari file .map untuk ambil skor nya
     for(int i = 0; i < len; i++) {
         Track *track = &tr.track[i];
         strcat(buff, resources[i]);
@@ -25,6 +26,7 @@ Tracks InitTracks() {
 
         Music m = LoadMusicStream(buff);
         track->music = m;
+        track->high_score = 0;
         strcpy((char *)&track->music_name, (char *)&buff[10]);
         buff[0] = '\0';
     }
