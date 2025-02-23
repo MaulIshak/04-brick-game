@@ -2,7 +2,7 @@
 #include "scene.h"
 
 void Loading_Draw(Loading *self){
-  DrawRectangle(0,0, 10,10, RED);
+  DrawRectangle(0,0, 10,10, GREEN);
   DrawRectangle(40,0, 10,10, BLUE);
 }
 
