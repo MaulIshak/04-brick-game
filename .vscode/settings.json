@@ -1,7 +1,21 @@
 {
-    "files.associations": {
-        "stdio.h": "c",
-        "typeinfo": "cpp",
-        "*.inc": "cpp"
-    }
+  "files.associations": {
+    "stdio.h": "c",
+    "typeinfo": "cpp",
+    "*.inc": "cpp",
+    "algorithm": "c",
+    "bitset": "c",
+    "execution": "c",
+    "iterator": "c",
+    "xhash": "c",
+    "xmemory": "c",
+    "xtree": "c",
+    "xutility": "c",
+    "map": "c",
+    "unordered_map": "c",
+    "kiss_fft.h": "c",
+    "string.h": "c",
+    "macro.h": "c"
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }

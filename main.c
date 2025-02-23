@@ -1,8 +1,18 @@
+// #define TEST_CONTEXT
+
 #include <stdio.h>
 #include "raylib.h"
+
+#include "background.h"
 #include "loading.h"
+#include "press_to_play.h"
+
+#include "macro.h"
+
 #include "context.h"
+#include "gameplay.h"
 #include <stdlib.h>
+
 
 int main()
 {
@@ -10,30 +20,42 @@ int main()
   const int screenHeight = 800;
 
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
-  
-  AppContext ctx = {
-    .screen_height = screenHeight,
-    .screen_width = screenWidth,
-    .selected_track = 0,
-    .app_state = APP_LOADING,
-  };
-
-  ctx.tracks.cap = 10;
-  ctx.tracks.len = 1;
-  ctx.tracks.track = malloc(sizeof(Track) * 10);
-  
-
-  Loading loading = {NULL};
-  Drawable loading_draw = Loading_ToScene(&loading);
-  
-  Drawable draws[] = {loading_draw};
-  
-  int draws_len = 1;
-  SetTargetFPS(60);
   InitAudioDevice();
 
+  AppContext ctx = CreateContext(screenWidth, screenHeight);
+
+  Loading loading = {
+    .ctx = &ctx
+  };
+  Drawable loading_draw = Loading_ToScene(&loading);
+  
+  PressToPlay press_to_play = {
+    .ctx = &ctx
+  };
+
+  Drawable press_to_play_draw = PressToPlay_ToScene(&press_to_play);
+
+  Background bg = CreateBackground(&ctx);
+  Drawable bg_draw = Background_ToScene(&bg);
+
+  
+  // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
+  Gameplay gameplay;
+  InitGameplay(&gameplay,&ctx);
+  Drawable gameplay_draw = Gameplay_ToScene(&gameplay);
+
+  Drawable draws[] = {loading_draw, press_to_play_draw, gameplay_draw, bg_draw};
+  
+  int draws_len = ARRAY_LEN(draws);
+  SetTargetFPS(60);
+  
+  #ifdef TEST_CONTEXT 
+    ctx.selected_track = 1;
+    PlaySelectedTrack(&ctx);
+  #endif
   while (!WindowShouldClose())
   {
+    UpdateContext(&ctx);
     for (int i = 0; i < draws_len; i++)
     {
       if (draws[i].scene->IsShow(draws[i].self))
@@ -57,6 +79,8 @@ int main()
     DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
     EndDrawing();
   }
+  DestroyContext(&ctx);
+  CloseAudioDevice();
   CloseWindow();
 
   return 0;
