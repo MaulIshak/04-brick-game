@@ -7,7 +7,7 @@
 
 typedef enum NoteDirection {
     NOTE_LEFT,
-    NOT_RIGHT,
+    NOTE_RIGHT,
     NOTE_UP,
     NOTE_DOWN,
 } NoteDirection;
@@ -23,8 +23,9 @@ typedef struct Note {
 } Note;
 
 // Beatmap adalah map yang akan digunakan pada saat gameplay. isinya terdiri dari array of notes
+// Implement array_list protocol.
 typedef struct Beatmap {
-    Note *notes;
+    Note *items;
     int len,cap;
 } Beatmap;
 
@@ -58,6 +59,7 @@ typedef struct Score {
 Tracks InitTracks();
 
 // State dari aplikasi, biasanya, ini digunakan untuk menentukan scene mana yang akan di gambar di layar.
+// PENTING!!!!!!! Mohon untuk menambahkan nama pembuat jika membuat state baru.
 typedef enum State {
     // aplikasi sedang loading
     APP_LOADING,
@@ -67,6 +69,8 @@ typedef enum State {
     APP_PLAYING,
     // aplikasi dalam mode title screen
     APP_PRESS_TO_PLAY,
+    // aplikasi dalam mode pembuatan beatmap
+    APP_BEATMAP_CREATOR,
 } State;
 
 // App Context adalah seluruh data yang diperlukan dalam jalannya aplikasi
@@ -86,6 +90,9 @@ typedef struct AppContext {
     int selected_track;
     // Menentukan apakah music sedang berjalan.
     bool is_music_playing;
+
+    // Private Field: buffer untuk `GetSelectedMusicBeatmap()`
+    Beatmap _beatmap;
 } AppContext;
 
 AppContext CreateContext(int, int);
@@ -96,7 +103,7 @@ void DestroyTracks(Tracks *tracks);
 // prosedur cleanup. tidak digunakan dalam scene, tapi di akhir aplikasi
 void DestroyContext(AppContext *ctx);
 
-void SelectMusic(AppContext* ctx);
+void SelectMusic(AppContext* ctx, int music_index);
 // Update context. digunakan pada saat gameloop
 void UpdateContext(AppContext* ctx);
 // Menjalankan music untuk track yang dipilih
@@ -105,5 +112,9 @@ void PlaySelectedTrack(AppContext* ctx);
 void StopSelectedTrack(AppContext* ctx);
 // Ubah posisi waktu musik dijalankan
 void SeekSelectedTrack(AppContext* ctx, float second);
+// Cek apakah musik selesai
+bool IsSelectedMusicEnd(AppContext* ctx);
+// ambil nama musik.
+char *GetSelectedMusicName(AppContext* ctx);
 
 #endif // CONTEXT_H

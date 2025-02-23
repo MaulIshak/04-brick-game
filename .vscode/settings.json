@@ -15,7 +15,15 @@
     "unordered_map": "c",
     "kiss_fft.h": "c",
     "string.h": "c",
-    "macro.h": "c"
+    "macro.h": "c",
+    "timer.h": "c",
+    "stdbool.h": "c",
+    "math.h": "c",
+    "context.h": "c",
+    "note.h": "c",
+    "gameplay.h": "c",
+    "raylib.h": "c",
+    "stdlib.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

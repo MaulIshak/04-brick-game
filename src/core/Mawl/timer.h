@@ -12,7 +12,15 @@ typedef struct Timer {
 } Timer;
 
 void timer_update(Timer*);
-void timer_start(Timer*);
+void timer_start(Timer*, double second);
+bool is_timer_end(Timer*);
+// Mengembalikan dalam bentuk detik. Minus berarti timer belum selesai
+double time_elapsed(Timer*);
 
+// milidetik ke detik
+double ms_to_s(double ms);
+
+// detik ke milidetik
+double s_to_ms(double s);
 
 #endif // !TIMER_H

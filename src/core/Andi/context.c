@@ -4,15 +4,18 @@
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
+#include "array_list.h"
 
 const char *resources[] = {
     "resources/Guardian of The Former Seas",
     "resources/Pest of The Cosmos",
+    "resources/LGR",
 };
 
 Tracks InitTracks() {
     Tracks tr = {
         .cap = 10,
+        .len = 2,
         .track = malloc(sizeof(Track) * 10),
     };
 
@@ -26,8 +29,12 @@ Tracks InitTracks() {
         strcat(buff, ".mp3");
 
         Music m = LoadMusicStream(buff);
+        int len = strlen(buff);
+        buff[len - 4] = '\0';
+        m.looping = false;
         track->music = m;
         track->high_score = 0;
+        
         strcpy((char *)&track->music_name, (char *)&buff[10]);
         buff[0] = '\0';
     }
@@ -44,6 +51,7 @@ void DestroyTracks(Tracks *tracks) {
 
 void DestroyContext(AppContext *ctx) {
     DestroyTracks(&ctx->tracks);
+    free(ctx->_beatmap.items);
 }
 
 AppContext CreateContext(int screen_width , int screen_height ){
@@ -57,6 +65,9 @@ AppContext CreateContext(int screen_width , int screen_height ){
         .is_music_playing = false,
         .score = {0},
     };
+    ctx._beatmap.items = malloc(sizeof(Note) * 10);
+    ctx._beatmap.cap = 10;
+    ctx._beatmap.len = 0;
     return ctx;
 }
 
@@ -73,9 +84,10 @@ void PlaySelectedTrack(AppContext *ctx) {
     int selected = ctx->selected_track ;
     assert(selected != -1);
     PlayMusicStream(ctx->tracks.track[selected].music);
+    SeekSelectedTrack(ctx, 0.01);
     ctx->is_music_playing = true;
     #ifdef DEBUG
-    printf("Playing %s\n",  ctx->tracks.track[selected].music_name);
+    printf("PlaySelectedTrack: Playing %s\n",  ctx->tracks.track[selected].music_name);
     #endif
 }
 
@@ -85,24 +97,55 @@ void StopSelectedTrack(AppContext *ctx) {
     StopMusicStream(ctx->tracks.track[selected].music);
     ctx->is_music_playing = false;
     #ifdef DEBUG
-    printf("Stopping %s\n",  ctx->tracks.track[selected].music_name);
+    printf("StopSelectedTrack: Stopping %s\n",  ctx->tracks.track[selected].music_name);
     #endif
 }
 
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
-    // TODO: arraylist should be stored on context and resized when needed. free it on destroy context
-    Beatmap map;
-    map.notes = malloc(sizeof(Note) * 10);
-    map.len = 10;
-    map.cap = 10;
+    ctx->_beatmap.len = 0;
+    int selected = ctx->selected_track;
+    assert(selected != -1);
+    char buff[2048] = {0};
+    char *music_name = GetSelectedMusicName(ctx);
+    strcat(buff, "resources/");
+    strcat(buff, music_name);
+    strcat(buff, ".map");
+    
+    FILE *f = fopen(buff, "r");
+    // buang metadata
+    for(int i = 0; i < 3; i++) fgets(buff, 2048, f);
+    
+    for(int i = 0; ; i++) {
+        fgets(buff, 2048, f);
+      
+        int i = 0;
+        char *c = &buff[i];
+        char *num_text = strtok(c, " ");
+        char *ms_text = strtok(NULL, "\r\n");
+        if(ms_text == NULL) {
+            break;
+        }
+        int dir = atoi(num_text);
+        int ms = atoi(ms_text);
+        Note not = {
+            .direction = dir,
+            .hit_at_ms = ms,
+            .position = (Vector2){0,0},
+        };
 
-    for(int i = 0; i < 10; i++) {
-        map.notes[i].direction = GetRandomValue(0,3);
-        map.notes[i].hit_at_ms = (i + 2) + (500 * i);
-        map.notes[i].position = (Vector2){0,0};
+        da_append(&ctx->_beatmap, not);
     }
+    #ifdef DEBUG
+    printf("GetSelectedMusicBeatmap: Readed %d notes\n", ctx->_beatmap.len);
+    printf("----------------------------------\n");
+    for(int i = 0; i < ctx->_beatmap.len; i++) {
+        printf("\tDIRECTION %d MS %f\n", ctx->_beatmap.items[i].direction, ctx->_beatmap.items[i].hit_at_ms);
+    }
+    printf("----------------------------------\n");
+    #endif
+    fclose(f);
 
-    return map;
+    return ctx->_beatmap;
 }
 
 void SeekSelectedTrack(AppContext* ctx, float second) {
@@ -113,4 +156,17 @@ void SeekSelectedTrack(AppContext* ctx, float second) {
     #ifdef DEBUG
     printf("Seeking %s To %f seconds\n",  ctx->tracks.track[selected].music_name, second);
     #endif
+}
+
+bool IsSelectedMusicEnd(AppContext* ctx) {
+    size_t selected = ctx->selected_track;
+    assert(ctx->selected_track != -1);
+    float time_played = GetMusicTimePlayed(ctx->tracks.track[selected].music);
+    return time_played == 0 ;
+}
+
+char *GetSelectedMusicName(AppContext* ctx) {
+    size_t selected = ctx->selected_track;
+    assert(ctx->selected_track != -1);
+    return ctx->tracks.track[selected].music_name;
 }

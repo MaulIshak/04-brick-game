@@ -6,6 +6,7 @@
 #include "background.h"
 #include "loading.h"
 #include "press_to_play.h"
+#include "beatmap_creator.h"
 
 #include "macro.h"
 
@@ -23,7 +24,7 @@ int main()
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-
+  // ctx.app_state = APP_BEATMAP_CREATOR;
   Loading loading = {
     .ctx = &ctx
   };
@@ -39,18 +40,22 @@ int main()
   Drawable bg_draw = Background_ToScene(&bg);
 
   
-  // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
   Gameplay gameplay;
   InitGameplay(&gameplay,&ctx);
   Drawable gameplay_draw = Gameplay_ToScene(&gameplay);
+  
+  BeatmapCreator creator = CreateBeatmap(&ctx);
+  Drawable creator_draw = BeatmapCreator_ToScene(&creator);
+  
+  // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
+  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, bg_draw};
 
-  Drawable draws[] = {loading_draw, press_to_play_draw, gameplay_draw, bg_draw};
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   
+  ctx.selected_track = 2;
   #ifdef TEST_CONTEXT 
-    ctx.selected_track = 1;
     PlaySelectedTrack(&ctx);
   #endif
   while (!WindowShouldClose())
