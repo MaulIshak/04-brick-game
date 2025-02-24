@@ -18,7 +18,7 @@ typedef struct BeatmapCreator {
 } BeatmapCreator;
 
 void AppendNote(Beatmap* btm, Timer* timer, NoteDirection dir);
-void WriteBeatmapToFile(Beatmap* btm, const char* music_name);
+
 BeatmapCreator CreateBeatmap(AppContext* ctx);
 void BeatmapCreator_Draw(BeatmapCreator* self);
 void BeatmapCreator_Update(BeatmapCreator* self);
