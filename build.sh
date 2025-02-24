@@ -27,7 +27,7 @@ echo "Compiling..."
 
 echo $CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
 
-$CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
+time $CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
 # $CC -E $FLAGS $I_PATH $INPUT $L_PATH $LIBS >> expand.c
 if [ $? -ne 0 ]; then
     echo "Compilation failed. Exiting."
