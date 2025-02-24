@@ -3,6 +3,7 @@
 #include "note.h"
 #include "macro.h"
 #include "gameplay.h"
+#include <string.h>
 
 void gp_draw(Gameplay* self){
   // for (int i = 0; i < TEXTURE_COUNT; i++)
@@ -17,7 +18,13 @@ void gp_draw(Gameplay* self){
     DrawRectangleGradientEx(rec,secondary, primary, primary, secondary);
     // DrawRectangleRec(rec,primary);
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
-    // DrawTextureEx(self->textureToLoad[0], (Vector2){120, 110},180.0f, .2f, (Color){ 240, 240, 240, self->padOpacity[0] });
+    // DrawLine(0,100,self->width, 100, BLACK);
+    for (int i = 0; i < LINE_COUNT; i++)
+    {
+      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, 1.5f, (Color){ 240, 240, 240, self->padOpacity[i] });
+    }
+    
+    // DrawTextureEx(self->textureToLoad[0], self->padPositions[0],0f, .2f, (Color){ 240, 240, 240, self->padOpacity[0] });
     // DrawTextureEx(self->textureToLoad[0], (Vector2){220, 0},90.0f, .2f, (Color){ 240, 240, 240, self->padOpacity[1] });
     // DrawTextureEx(self->textureToLoad[0], (Vector2){200, 110},270.0f, .2f, (Color){ 240, 240, 240, self->padOpacity[2] });
     // DrawTextureEx(self->textureToLoad[0], (Vector2){300, 0},.0f, .2f, (Color){ 240, 240, 240, self->padOpacity[3] });
@@ -25,8 +32,8 @@ void gp_draw(Gameplay* self){
   }
   void gp_update(Gameplay* self){
 
-    // UP ARROW (MIDDLE RIGHT)
-    if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
+    // DOWN ARROW (MIDDLE LEFT)
+    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->padOpacity[2] = 255;
     }else{
       self->padOpacity[2] = 100;
@@ -40,8 +47,8 @@ void gp_draw(Gameplay* self){
       
     }
 
-    // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    // UP ARROW (MIDDLE RIGHT)
+    if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->padOpacity[1] = 255;
     }else{
       self->padOpacity[1] = 100;
@@ -65,13 +72,19 @@ bool gp_isShow(Gameplay* self){
 }
 
 void InitGameplay(Gameplay *gameplay, AppContext *ctx){
+  char *textureSources [LINE_COUNT] ={
+    "resources/texture/Arrow_YangAdaPutihnya-03.png",
+    "resources/texture/Arrow_YangAdaPutihnya-04.png",
+    "resources/texture/Arrow_YangAdaPutihnya-02.png",
+    "resources/texture/Arrow_YangAdaPutihnya-01.png"
+  };
   gameplay->ctx = ctx;
   gameplay->width = 400;
-  gameplay->texturePath[0] = "src/core/Mawl/arrow.png";
+  memcpy(gameplay->texturePaths, textureSources, sizeof(textureSources));
   for (int i = 0; i < LINE_COUNT; i++)
   {
     gameplay->padOpacity[i] = 100;
-    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i;
+    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i +10;
     gameplay->padPositions[i].y = 48;
   }
   
@@ -81,7 +94,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
 void _LoadNoteTexture(Gameplay*self){
   for (int i = 0; i < TEXTURE_COUNT; i++)
   {
-    self->textureToLoad[i] = LoadTexture(self->texturePath[i]);
+    self->textureToLoad[i] = LoadTexture(self->texturePaths[i]);
   }
   
 }

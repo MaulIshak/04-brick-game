@@ -19,35 +19,45 @@ void note_draw(DrawableNote *self){
 void note_update(DrawableNote *self){
   float dt = GetFrameTime();
   if(!self->timer.is_started) {
-    timer_start(&self->timer, 1);
-}
-  if(!self->isBeatmapLoaded){
+    timer_start(&self->timer, 3);
+
+  }
+  if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
     self->beatmap = GetSelectedMusicBeatmap(self->ctx);
     for (int i = 0; i < self->beatmap.len; i++)
     {
       self->beatmap.items[i].position.y = -99;
       self->beatmap.items[i].isSpawned = false;
     }
-      self->isBeatmapLoaded = true;
       PlaySelectedTrack(self->ctx);
+      self->isBeatmapLoaded = true;
+
   }
-  for (int i = 0; i <  self->beatmap.len; i++)
-  {
-    // Note *note = self->beatmap.items[i];
-    double elapsed = time_elapsed(&(self->timer));
-    double to_hit = ms_to_s(self->beatmap.items[i].hit_at_ms);
-    // printf("elapsed: %d to hit: %d", elapsed, to_hit);
-    if(!(elapsed > to_hit - self->timeToHitPad) ){
-        continue;
+  // if(is_timer_end(&self->timer) && !self->isTrackPlayed){
+  //   PlaySelectedTrack(self->ctx);
+  //   self->isTrackPlayed = true;
+  //   timer_start(&self->timer, 0);
+  // }
+  if(is_timer_end(&self->timer)){
+    for (int i = 0; i <  self->beatmap.len; i++)
+    {
+      // Note *note = self->beatmap.items[i];
+      double elapsed = time_elapsed(&(self->timer));
+      double to_hit = ms_to_s(self->beatmap.items[i].hit_at_ms);
+      // printf("elapsed: %d to hit: %d", elapsed, to_hit);
+      if(!(elapsed > to_hit - self->timeToHitPad) ){
+          continue;
+      }
+      if(!self->beatmap.items[i].isSpawned){
+        self->beatmap.items[i].position.y = self->ctx->screen_height;
+        self->beatmap.items[i].isSpawned = true;
+      }
+      float note_k = ( (self->ctx->screen_height-100)/self->timeToHitPad) * dt ; 
+      self->beatmap.items[i].position.y -= note_k;
+      // printf("y=%d\n", self->beatmap.items[i].position.y);
     }
-    if(!self->beatmap.items[i].isSpawned){
-      self->beatmap.items[i].position.y = self->ctx->screen_height;
-      self->beatmap.items[i].isSpawned = true;
-    }
-    float note_k = ( self->ctx->screen_height/self->timeToHitPad) * dt ; 
-    self->beatmap.items[i].position.y -= note_k;
-    // printf("y=%d\n", self->beatmap.items[i].position.y);
   }
+
   
 }
 bool note_isShow(DrawableNote *self){
@@ -69,6 +79,7 @@ void InitNote(DrawableNote *self, AppContext *ctx, Gameplay *gp){
     false,0,1
   };
   self->gp = gp;
+  self->isTrackPlayed = false;
 }
 
 void _drawBeatmapNote(DrawableNote* self, Note note){

@@ -18,6 +18,7 @@ typedef struct {
   float noteToPad;
   float timeToHitPad;
   Timer timer;
+  bool isTrackPlayed;
 }DrawableNote;
 
 void note_draw(DrawableNote *);
