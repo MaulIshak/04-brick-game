@@ -13,7 +13,8 @@ typedef struct Gameplay{
   int width;
   Texture2D textureToLoad[TEXTURE_COUNT];
   char *texturePath [TEXTURE_COUNT];
-  int lineNotesOpacity[LINE_COUNT];
+  int padOpacity[LINE_COUNT];
+  Vector2 padPositions[LINE_COUNT];
 }Gameplay;
 
 
