@@ -20,6 +20,8 @@ typedef struct Note {
     double hit_at_ms;
     // posisi dari note
     Vector2 position;
+    // apakah note sudah didraw
+    bool isSpawned;
 } Note;
 
 // Beatmap adalah map yang akan digunakan pada saat gameplay. isinya terdiri dari array of notes
