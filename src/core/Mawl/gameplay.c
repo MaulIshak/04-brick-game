@@ -1,6 +1,5 @@
 #include "raylib.h"
 #include "context.h"
-#include "note.h"
 #include "macro.h"
 #include "gameplay.h"
 #include <string.h>
@@ -36,9 +35,9 @@ void gp_draw(Gameplay* self){
 
     }
     // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyPressed(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->padOpacity[2] = 255;
-      printf("Hit time: %f\n", self->gameTime);
+      // printf("Hit time: %f\n", self->gameTime);
     }else{
       self->padOpacity[2] = 100;
     }

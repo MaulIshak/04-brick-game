@@ -14,6 +14,14 @@ typedef enum Accuracy{
   GOOD,
   MISS
 } Accuracy;
+typedef struct{
+  int perfectUpperOffset;
+  int perfectLowerOffset;
+  int goodUpperOffset;
+  int goodLowerOffset;
+  int missUpperOffset;
+  int missLowerOffset;
+} AccuracyOffset;
 
 typedef struct {
   // Ref ke gameplay
@@ -39,6 +47,7 @@ typedef struct {
   bool isFirstHit;
   // Enum akurasi untuk menandakan akurasi note yang dihit
   Accuracy acc;
+  AccuracyOffset accOff;
 }DrawableNote;
 
 // Public
@@ -52,6 +61,7 @@ void _drawBeatmapNote(DrawableNote*,Note);
 bool _isNoteHit(DrawableNote*, Note);
 void _drawAccuracy(DrawableNote*);
 void _updateNotePosition(DrawableNote*);
+void _noteHitHandler(DrawableNote*, Note);
 
 // Implement Interface
 impl_scene(DrawableNote*, Note_toScene, note_draw, note_update, note_isShow);

@@ -23,10 +23,6 @@ void note_draw(DrawableNote *self){
     }
 }
 void note_update(DrawableNote *self){
-
-  // Dapatkan frametime
-  float dt = GetFrameTime();
-
   // Mulai timer/countdown untuk memulai game (3 detik)
   if(!self->timer.is_started) {
     timer_start(&self->timer, 3);
@@ -52,33 +48,8 @@ void note_update(DrawableNote *self){
     }
 
     if(is_timer_end(&self->timer)){
-      for (int i = 0; i <  self->beatmap.len; i++)
-      {
-        double elapsed = time_elapsed(&(self->timer));
-        double to_hit = ms_to_s(self->beatmap.items[i].hit_at_ms);
-        if(!(elapsed > to_hit - self->timeToHitPad)){
-          continue;
-        }
-        if(!self->beatmap.items[i].isSpawned){
-          self->beatmap.items[i].position.y = self->ctx->screen_height;
-          self->beatmap.items[i].isSpawned = true;
-        }
-      float note_k = ( (self->ctx->screen_height-100)/self->timeToHitPad) * dt ; 
-      self->beatmap.items[i].position.y -= note_k;
-      if(self->gp->gameTime >= self->beatmap.items[i].hit_at_ms-10 && self->gp->gameTime <= self->beatmap.items[i].hit_at_ms +10 && i >= 50){
-        printf("Hit! : %d Time: %f index: %d\n", self->beatmap.items[i].direction, self->gp->gameTime - 2000, i);
-      }
-
-      if(_isNoteHit(self, self->beatmap.items[i])){
-        printf("Hit!");
-        self->beatmap.items[i].position.x= -999;
-        if(!self->isFirstHit){
-          self->isFirstHit = true;
-        } 
-      }
+      _updateNotePosition(self);
     }
-    
-  }
   
 }
 bool note_isShow(DrawableNote *self){
@@ -106,6 +77,11 @@ void InitNote(DrawableNote *self, AppContext *ctx, Gameplay *gp){
   self->isTrackPlayed = false;
   self->isFirstHit = false;
   self->acc = PERFECT;
+  self->accOff = (AccuracyOffset){
+    50, 50,
+    100, 100,
+    300, 300
+  };
 
 }
 
@@ -138,88 +114,82 @@ void _drawBeatmapNote(DrawableNote* self, Note note){
 }
 
 bool _isNoteHit(DrawableNote*self, Note note ){
-            // DOWN ARROW (MIDDLE LEFT)
-            if((IsKeyPressed(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
-              if(note.position.y < self->gp->padPositions[0].y + 30 && note.position.y > self->gp->padPositions[0].y - 10){ 
-                self->acc = PERFECT; 
-                return true;
-              
-              }
-              if(note.position.y < self->gp->padPositions[0].y + 50 && note.position.y > self->gp->padPositions[0].y - 30){
-                self->acc = GOOD; 
-                return true;
-              
-              }
-              if(note.position.y < self->gp->padPositions[0].y + 80 && note.position.y > self->gp->padPositions[0].y - 40){  
-                self->acc = MISS; 
-                return true;
-              
-              }
-              return false;
-            }
-        
-            // LEFT ARROW (LEFT)
-            if((IsKeyPressed(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) && note.direction == NOTE_LEFT){
-              if(note.position.y < self->gp->padPositions[0].y + 30 && note.position.y > self->gp->padPositions[0].y - 10){ 
-                self->acc = PERFECT; 
-                return true;
-              
-              }
-              if(note.position.y < self->gp->padPositions[0].y + 50 && note.position.y > self->gp->padPositions[0].y - 30){
-                self->acc = GOOD; 
-                return true;
-              
-              }
-              if(note.position.y < self->gp->padPositions[0].y + 80 && note.position.y > self->gp->padPositions[0].y - 40){  
-                self->acc = MISS; 
-                return true;
-              
-              }
-              return false;
-            }
-      
-        
-            // UP ARROW (MIDDLE RIGHT)
-            if(IsKeyPressed(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) && note.direction == NOTE_UP){
-              if(note.position.y < self->gp->padPositions[0].y + 20 && note.position.y > self->gp->padPositions[0].y - 5){ 
-                self->acc = PERFECT; 
-                return true;
-              
-              }
-              if(note.position.y < self->gp->padPositions[0].y + 40 && note.position.y > self->gp->padPositions[0].y - 20){
-                self->acc = GOOD; 
-                return true;
-              
-              }
-              if(note.position.y < self->gp->padPositions[0].y + 80 && note.position.y > self->gp->padPositions[0].y - 40){  
-                self->acc = MISS; 
-                return true;
-              
-              }
-              return false;
-            }
-        
-            // RIGHT ARROW (RIGHT)
-            if(IsKeyPressed(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2) && note.direction == NOTE_RIGHT){
-              if(note.position.y < self->gp->padPositions[0].y + 30 && note.position.y > self->gp->padPositions[0].y - 10){ 
-                self->acc = PERFECT; 
-                return true;
-              
-              }
-              if(note.position.y < self->gp->padPositions[0].y + 50 && note.position.y > self->gp->padPositions[0].y - 30){
-                self->acc = GOOD; 
-                return true;
-              
-              }
-              if(note.position.y < self->gp->padPositions[0].y + 80 && note.position.y > self->gp->padPositions[0].y - 40){  
-                self->acc = MISS; 
-                return true;
-              
-              }
-              return false;
-            }
-            
-        return false;
+  // DOWN ARROW (MIDDLE LEFT)
+  if((IsKeyPressed(KEY_DOWN) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
+    if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
+      self->acc = PERFECT; 
+      printf("PERFECT\n");
+      return true;
+    }else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset){
+      printf("GOOD\n");
+      self->acc = GOOD; 
+      return true;
+    } else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset){
+      printf("MISS\n");
+      self->acc = MISS; 
+      return true;
+    }
+    return false;
+  }
+
+  // LEFT ARROW (LEFT)
+  if((IsKeyPressed(KEY_LEFT) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) && note.direction == NOTE_LEFT){
+    if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
+      self->acc = PERFECT; 
+      printf("PERFECT\n");
+      return true;
+    }else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset){
+      printf("GOOD\n");
+      self->acc = GOOD; 
+      return true;
+    } else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset){
+      printf("MISS\n");
+      self->acc = MISS; 
+      return true;
+    }
+    return false;
+  }
+
+
+  // UP ARROW (MIDDLE RIGHT)
+  if(IsKeyPressed(KEY_UP) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) && note.direction == NOTE_UP){
+    if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
+      self->acc = PERFECT; 
+      printf("PERFECT\n");
+      return true;
+    }else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset){
+      printf("GOOD\n");
+      self->acc = GOOD; 
+      return true;
+    } else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset){
+      printf("MISS\n");
+      self->acc = MISS; 
+      return true;
+    }
+    return false;
+  }
+
+  // RIGHT ARROW (RIGHT)
+  if(IsKeyPressed(KEY_RIGHT) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2) && note.direction == NOTE_RIGHT){
+    if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
+      self->acc = PERFECT; 
+      printf("PERFECT\n");
+      return true;
+    }else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset){
+      printf("GOOD\n");
+      self->acc = GOOD; 
+      return true;
+    } else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset){
+      printf("MISS\n");
+      self->acc = MISS; 
+      return true;
+    }
+    return false;
+  }
+  
+
+
+  return false;
 
 }
 
@@ -242,4 +212,48 @@ void _drawAccuracy(DrawableNote* self){
     break;
   }
   DrawText(accuracyText, self->gp->width/2 - MeasureText(accuracyText,40)/2,self->gp->padPositions[0].y+100, 40, color);
+}
+
+void _updateNotePosition(DrawableNote* self){
+  // Dapatkan frametime
+  float dt = GetFrameTime();
+
+  for (int i = 0; i <  self->beatmap.len; i++)
+  {
+    double elapsed = time_elapsed(&(self->timer));
+    double to_hit = ms_to_s(self->beatmap.items[i].hit_at_ms);
+    if(!(elapsed > to_hit - self->timeToHitPad)){
+      continue;
+    }
+    if(!self->beatmap.items[i].isSpawned){
+      self->beatmap.items[i].position.y = self->ctx->screen_height;
+      self->beatmap.items[i].isSpawned = true;
+    }
+    float note_k = ( (self->ctx->screen_height-100)/self->timeToHitPad) * dt ; 
+    self->beatmap.items[i].position.y -= note_k;
+
+    _noteHitHandler(self, self->beatmap.items[i]);
+
+    }
+}
+
+void _noteHitHandler(DrawableNote* self, Note note){
+  // if(self->gp->gameTime >= note.hit_at_ms +self->accOff.missLowerOffset){
+  //   // printf("Hit! : %d Time: %f\n", note.direction, self->gp->gameTime - 2000);
+  //   self->acc = MISS;
+  //   if(!self->isFirstHit){
+  //     note.position.x= -999;
+  //     self->isFirstHit = true;
+  //   }
+  // }
+
+  if(_isNoteHit(self, note)){
+    // printf("Hit!");
+    note.position.x= -999;
+    if(!self->isFirstHit){
+      self->isFirstHit = true;
+    }
+  }else{
+    
+  }
 }
