@@ -8,28 +8,22 @@
 #include "timer.h"
 
 void gp_draw(Gameplay* self){
-  // for (int i = 0; i < TEXTURE_COUNT; i++)
-  // {
-    // }
+
     Color primary = (Color){ 255, 255, 255, 255 };
-    
     Color secondary = (Color){0 ,50 , 100, 255 };
+
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
     DrawRectangleGradientEx(rec,secondary, primary, primary, secondary);
-    // DrawRectangleRec(rec,primary);
+
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
-    // DrawLine(0,100,self->width, 100, BLACK);
+
     for (int i = 0; i < LINE_COUNT; i++)
     {
       DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, 1.5f, (Color){ 240, 240, 240, self->padOpacity[i] });
     }
-    
-    // DrawTextureEx(self->textureToLoad[0], self->padPositions[0],0f, .2f, (Color){ 240, 240, 240, self->padOpacity[0] });
-    // DrawTextureEx(self->textureToLoad[0], (Vector2){220, 0},90.0f, .2f, (Color){ 240, 240, 240, self->padOpacity[1] });
-    // DrawTextureEx(self->textureToLoad[0], (Vector2){200, 110},270.0f, .2f, (Color){ 240, 240, 240, self->padOpacity[2] });
-    // DrawTextureEx(self->textureToLoad[0], (Vector2){300, 0},.0f, .2f, (Color){ 240, 240, 240, self->padOpacity[3] });
+  
     
   }
   void gp_update(Gameplay* self){
@@ -114,9 +108,4 @@ void _LoadNoteTexture(Gameplay*self){
 void _UpdateGameTime(Gameplay* self){
   float currentTime = GetTime();
   self->gameTime =s_to_ms(currentTime - self->startGameTime - 3);
-  // self->gameTimeElapsed += GetFrameTime()
-  // printf("Game Time : %f\n", self->gameTime);
-  // if(self->gameTimeElapsed >= 0.001){
-  //   self->gameTimeElapsed = 0;
-  // }
 }

@@ -6,9 +6,9 @@
 #include <stdio.h>
 
 void note_draw(DrawableNote *self){
+  // Cek apakah beatmap sudah diload
   if(self->isBeatmapLoaded){
       for(int i = 0; i < self->beatmap.len; i++) {
-        // printf("x= %f y=%f\n", self->beatmap.items[0].position.x,self->beatmap.items[0].position.y );
         if(self->beatmap.items[i].position.y < 0) {
             continue;
         }
@@ -16,15 +16,23 @@ void note_draw(DrawableNote *self){
 
       }
     }
+
+    // Mulai gambar akurasi hanya jika note pertama sampai
     if(self->isFirstHit){
-     _drawAccuracy(self);
+      _drawAccuracy(self);
     }
 }
 void note_update(DrawableNote *self){
+
+  // Dapatkan frametime
   float dt = GetFrameTime();
+
+  // Mulai timer/countdown untuk memulai game (3 detik)
   if(!self->timer.is_started) {
     timer_start(&self->timer, 3);
   }
+
+  // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
   if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
     self->beatmap = GetSelectedMusicBeatmap(self->ctx);
     for (int i = 0; i < self->beatmap.len; i++)
@@ -34,17 +42,13 @@ void note_update(DrawableNote *self){
       self->beatmap.items[i].isSpawned = false;
     }
       self->isBeatmapLoaded = true;
-      
-      
     }
+
     if(is_timer_end(&self->timer)){
       for (int i = 0; i <  self->beatmap.len; i++)
       {
-        // Note *note = self->beatmap.items[i];
         double elapsed = time_elapsed(&(self->timer));
         double to_hit = ms_to_s(self->beatmap.items[i].hit_at_ms);
-        // printf("%f\n", to_hit - self->timeToHitPad);
-        // printf("elapsed: %d to hit: %d", elapsed, to_hit);
         if(!(elapsed > to_hit - self->timeToHitPad)){
           continue;
         }
@@ -58,7 +62,6 @@ void note_update(DrawableNote *self){
       }
       float note_k = ( (self->ctx->screen_height-100)/self->timeToHitPad) * dt ; 
       self->beatmap.items[i].position.y -= note_k;
-      // printf("y=%d\n", self->beatmap.items[i].position.y);
       if(self->gp->gameTime >= self->beatmap.items[i].hit_at_ms-10 && self->gp->gameTime <= self->beatmap.items[i].hit_at_ms +10 && i >= 50){
         printf("Hit! : %d Time: %f index: %d\n", self->beatmap.items[i].direction, self->gp->gameTime - 2000, i);
       }
