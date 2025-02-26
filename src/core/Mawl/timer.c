@@ -25,3 +25,4 @@ double ms_to_s(double ms){
 double s_to_ms(double s){
     return s * 1000;
 }
+

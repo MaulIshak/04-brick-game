@@ -24,41 +24,45 @@ void note_update(DrawableNote *self){
   float dt = GetFrameTime();
   if(!self->timer.is_started) {
     timer_start(&self->timer, 3);
-
   }
   if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
     self->beatmap = GetSelectedMusicBeatmap(self->ctx);
     for (int i = 0; i < self->beatmap.len; i++)
     {
-      self->beatmap.items[i].position.y = -99;
+      self->beatmap.items[i].hit_at_ms += self->gp->gameTimeOffset;
+      self->beatmap.items[i].position.y = -999;
       self->beatmap.items[i].isSpawned = false;
     }
-      PlaySelectedTrack(self->ctx);
       self->isBeatmapLoaded = true;
-
-  }
-  // if(is_timer_end(&self->timer) && !self->isTrackPlayed){
-  //   PlaySelectedTrack(self->ctx);
-  //   self->isTrackPlayed = true;
-  //   timer_start(&self->timer, 0);
-  // }
-  if(is_timer_end(&self->timer)){
-    for (int i = 0; i <  self->beatmap.len; i++)
-    {
-      // Note *note = self->beatmap.items[i];
-      double elapsed = time_elapsed(&(self->timer));
-      double to_hit = ms_to_s(self->beatmap.items[i].hit_at_ms);
-      // printf("elapsed: %d to hit: %d", elapsed, to_hit);
-      if(!(elapsed > to_hit - self->timeToHitPad) ){
+      
+      
+    }
+    if(is_timer_end(&self->timer)){
+      for (int i = 0; i <  self->beatmap.len; i++)
+      {
+        // Note *note = self->beatmap.items[i];
+        double elapsed = time_elapsed(&(self->timer));
+        double to_hit = ms_to_s(self->beatmap.items[i].hit_at_ms);
+        // printf("%f\n", to_hit - self->timeToHitPad);
+        // printf("elapsed: %d to hit: %d", elapsed, to_hit);
+        if(!(elapsed > to_hit - self->timeToHitPad)){
           continue;
-      }
-      if(!self->beatmap.items[i].isSpawned){
-        self->beatmap.items[i].position.y = self->ctx->screen_height;
-        self->beatmap.items[i].isSpawned = true;
+        }
+        if(!self->isTrackPlayed){
+          PlaySelectedTrack(self->ctx);
+          self->isTrackPlayed = true;
+        }
+        if(!self->beatmap.items[i].isSpawned){
+          self->beatmap.items[i].position.y = self->ctx->screen_height;
+          self->beatmap.items[i].isSpawned = true;
       }
       float note_k = ( (self->ctx->screen_height-100)/self->timeToHitPad) * dt ; 
       self->beatmap.items[i].position.y -= note_k;
       // printf("y=%d\n", self->beatmap.items[i].position.y);
+      if(self->gp->gameTime >= self->beatmap.items[i].hit_at_ms-10 && self->gp->gameTime <= self->beatmap.items[i].hit_at_ms +10 && i >= 50){
+        printf("Hit! : %d Time: %f index: %d\n", self->beatmap.items[i].direction, self->gp->gameTime - 2000, i);
+      }
+
       if(_isNoteHit(self, self->beatmap.items[i])){
         printf("Hit!");
         self->beatmap.items[i].position.x= -999;
@@ -67,7 +71,7 @@ void note_update(DrawableNote *self){
         } 
       }
     }
-    printf("y= %f\n",self->beatmap.items[0].position.y);
+    // printf("y= %f\n",self->beatmap.items[0].position.y);
     
   }
   
@@ -94,6 +98,7 @@ void InitNote(DrawableNote *self, AppContext *ctx, Gameplay *gp){
   self->isTrackPlayed = false;
   self->isFirstHit = false;
   self->acc = PERFECT;
+
 }
 
 void _drawBeatmapNote(DrawableNote* self, Note note){
@@ -146,7 +151,7 @@ bool _isNoteHit(DrawableNote*self, Note note ){
             }
         
             // LEFT ARROW (LEFT)
-            if(IsKeyPressed(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2) && note.direction == NOTE_LEFT){
+            if((IsKeyPressed(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) && note.direction == NOTE_LEFT){
               if(note.position.y < self->gp->padPositions[0].y + 30 && note.position.y > self->gp->padPositions[0].y - 10){ 
                 self->acc = PERFECT; 
                 return true;

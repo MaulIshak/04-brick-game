@@ -4,6 +4,8 @@
 #include "macro.h"
 #include "gameplay.h"
 #include <string.h>
+#include <stdio.h>
+#include "timer.h"
 
 void gp_draw(Gameplay* self){
   // for (int i = 0; i < TEXTURE_COUNT; i++)
@@ -31,10 +33,18 @@ void gp_draw(Gameplay* self){
     
   }
   void gp_update(Gameplay* self){
+    if(!self->timer.is_started){
+      self->startGameTime = GetTime();
+      timer_start(&(self->timer), 3);
+    }
+    if(is_timer_end(&(self->timer))){
+      _UpdateGameTime(self);
 
+    }
     // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    if(IsKeyPressed(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->padOpacity[2] = 255;
+      printf("Hit time: %f\n", self->gameTime);
     }else{
       self->padOpacity[2] = 100;
     }
@@ -87,8 +97,10 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
     gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i +10;
     gameplay->padPositions[i].y = 48;
   }
-  
+  gameplay->gameTime = 0;
   _LoadNoteTexture(gameplay);
+  gameplay->timer = (Timer){false, 0,0};
+  gameplay->gameTimeOffset = 2000;
 }
 
 void _LoadNoteTexture(Gameplay*self){
@@ -97,4 +109,14 @@ void _LoadNoteTexture(Gameplay*self){
     self->textureToLoad[i] = LoadTexture(self->texturePaths[i]);
   }
   
+}
+
+void _UpdateGameTime(Gameplay* self){
+  float currentTime = GetTime();
+  self->gameTime =s_to_ms(currentTime - self->startGameTime - 3);
+  // self->gameTimeElapsed += GetFrameTime()
+  // printf("Game Time : %f\n", self->gameTime);
+  // if(self->gameTimeElapsed >= 0.001){
+  //   self->gameTimeElapsed = 0;
+  // }
 }
