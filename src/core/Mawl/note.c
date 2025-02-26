@@ -31,6 +31,13 @@ void note_update(DrawableNote *self){
   if(!self->timer.is_started) {
     timer_start(&self->timer, 3);
   }
+  if(!self->musicTimer.is_started){
+    timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
+  }
+  if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
+    PlaySelectedTrack(self->ctx);
+    self->isTrackPlayed = true;
+  }
 
   // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
   if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
@@ -52,14 +59,10 @@ void note_update(DrawableNote *self){
         if(!(elapsed > to_hit - self->timeToHitPad)){
           continue;
         }
-        if(!self->isTrackPlayed){
-          PlaySelectedTrack(self->ctx);
-          self->isTrackPlayed = true;
-        }
         if(!self->beatmap.items[i].isSpawned){
           self->beatmap.items[i].position.y = self->ctx->screen_height;
           self->beatmap.items[i].isSpawned = true;
-      }
+        }
       float note_k = ( (self->ctx->screen_height-100)/self->timeToHitPad) * dt ; 
       self->beatmap.items[i].position.y -= note_k;
       if(self->gp->gameTime >= self->beatmap.items[i].hit_at_ms-10 && self->gp->gameTime <= self->beatmap.items[i].hit_at_ms +10 && i >= 50){
@@ -74,7 +77,6 @@ void note_update(DrawableNote *self){
         } 
       }
     }
-    // printf("y= %f\n",self->beatmap.items[0].position.y);
     
   }
   
@@ -95,7 +97,10 @@ void InitNote(DrawableNote *self, AppContext *ctx, Gameplay *gp){
   self->noteTexture[2] = LoadTexture("resources/texture/Arrow.png"); // panah atas;
   self->noteTexture[3] = LoadTexture("resources/texture/Arrow-2.png"); // panah kanan
   self->timer = (Timer){
-    false,0,1
+    false,0,0
+  };
+  self->musicTimer = (Timer){
+    false,0,0
   };
   self->gp = gp;
   self->isTrackPlayed = false;

@@ -32,6 +32,7 @@ typedef struct {
   float timeToHitPad;
   // Timer
   Timer timer;
+  Timer musicTimer;
   // Penanda apakah musik sudah dimainkan atau belum
   bool isTrackPlayed;
   // Penanda apakah note pertama sudah hit/miss atau belum
