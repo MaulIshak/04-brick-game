@@ -5,7 +5,7 @@
 #include "timer.h"
 #include <stdio.h>
 
-void note_draw(DrawableNote *self){
+void note_draw(NoteManager *self){
   // Cek apakah beatmap sudah diload
   if(self->isBeatmapLoaded){
       for(int i = 0; i < self->beatmap.len; i++) {
@@ -13,7 +13,9 @@ void note_draw(DrawableNote *self){
             continue;
         }
         _drawBeatmapNote(self, self->beatmap.items[i]);
-
+        // if(self->gp->gameTime >= self->beatmap.items[i].hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= self->beatmap.items[i].hit_at_ms +self->accOff.perfectLowerOffset){
+        //   DrawRectangle(self->beatmap.items[i].position.x,self->beatmap.items[i].position.y, 100, 100, BLACK);
+        // }
       }
     }
 
@@ -22,7 +24,7 @@ void note_draw(DrawableNote *self){
       _drawAccuracy(self);
     }
 }
-void note_update(DrawableNote *self){
+void note_update(NoteManager *self){
   // Mulai timer/countdown untuk memulai game (3 detik)
   if(!self->timer.is_started) {
     timer_start(&self->timer, 3);
@@ -52,14 +54,14 @@ void note_update(DrawableNote *self){
     }
   
 }
-bool note_isShow(DrawableNote *self){
+bool note_isShow(NoteManager *self){
   if(self->ctx->app_state == APP_PLAYING){
     return true;
   }
   return false;
 }
 
-void InitNote(DrawableNote *self, AppContext *ctx, Gameplay *gp){
+void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp){
   self->isBeatmapLoaded = false;
   self->ctx = ctx;
   self->timeToHitPad = 1.5f;
@@ -78,14 +80,14 @@ void InitNote(DrawableNote *self, AppContext *ctx, Gameplay *gp){
   self->isFirstHit = false;
   self->acc = PERFECT;
   self->accOff = (AccuracyOffset){
-    50, 50,
-    100, 100,
+    75, 75,
+    150, 150,
     300, 300
   };
 
 }
 
-void _drawBeatmapNote(DrawableNote* self, Note note){
+void _drawBeatmapNote(NoteManager* self, Note note){
   float loc =  self->ctx->screen_width/6;
   Texture2D textureToDraw;
   Vector2 position = note.position;
@@ -113,7 +115,7 @@ void _drawBeatmapNote(DrawableNote* self, Note note){
   
 }
 
-bool _isNoteHit(DrawableNote*self, Note note ){
+bool _isNoteHit(NoteManager*self, Note note ){
   // DOWN ARROW (MIDDLE LEFT)
   if((IsKeyPressed(KEY_DOWN) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
     if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
@@ -187,13 +189,11 @@ bool _isNoteHit(DrawableNote*self, Note note ){
     return false;
   }
   
-
-
   return false;
 
 }
 
-void _drawAccuracy(DrawableNote* self){
+void _drawAccuracy(NoteManager* self){
   char *accuracyText;
   Color color;
   switch (self->acc)
@@ -214,7 +214,7 @@ void _drawAccuracy(DrawableNote* self){
   DrawText(accuracyText, self->gp->width/2 - MeasureText(accuracyText,40)/2,self->gp->padPositions[0].y+100, 40, color);
 }
 
-void _updateNotePosition(DrawableNote* self){
+void _updateNotePosition(NoteManager* self){
   // Dapatkan frametime
   float dt = GetFrameTime();
 
@@ -229,7 +229,7 @@ void _updateNotePosition(DrawableNote* self){
       self->beatmap.items[i].position.y = self->ctx->screen_height;
       self->beatmap.items[i].isSpawned = true;
     }
-    float note_k = ( (self->ctx->screen_height-100)/self->timeToHitPad) * dt ; 
+    float note_k = ( (self->ctx->screen_height - 45)/self->timeToHitPad) * dt ; 
     self->beatmap.items[i].position.y -= note_k;
 
     _noteHitHandler(self, self->beatmap.items[i]);
@@ -237,7 +237,7 @@ void _updateNotePosition(DrawableNote* self){
     }
 }
 
-void _noteHitHandler(DrawableNote* self, Note note){
+void _noteHitHandler(NoteManager* self, Note note){
   // if(self->gp->gameTime >= note.hit_at_ms +self->accOff.missLowerOffset){
   //   // printf("Hit! : %d Time: %f\n", note.direction, self->gp->gameTime - 2000);
   //   self->acc = MISS;
@@ -246,6 +246,7 @@ void _noteHitHandler(DrawableNote* self, Note note){
   //     self->isFirstHit = true;
   //   }
   // }
+
 
   if(_isNoteHit(self, note)){
     // printf("Hit!");

@@ -14,6 +14,7 @@ typedef enum Accuracy{
   GOOD,
   MISS
 } Accuracy;
+
 typedef struct{
   int perfectUpperOffset;
   int perfectLowerOffset;
@@ -22,6 +23,14 @@ typedef struct{
   int missUpperOffset;
   int missLowerOffset;
 } AccuracyOffset;
+
+// typedef struct{
+//     NoteDirection direction;
+//     double hit_at_ms;
+//     Vector2 position;
+//     bool isSpawned;
+// }DrawableNote;
+
 
 typedef struct {
   // Ref ke gameplay
@@ -48,22 +57,23 @@ typedef struct {
   // Enum akurasi untuk menandakan akurasi note yang dihit
   Accuracy acc;
   AccuracyOffset accOff;
-}DrawableNote;
+}NoteManager;
 
 // Public
-void note_draw(DrawableNote *);
-void note_update(DrawableNote *);
-bool note_isShow(DrawableNote *);
-void InitNote(DrawableNote*, AppContext*, Gameplay *);
+void note_draw(NoteManager *);
+void note_update(NoteManager *);
+bool note_isShow(NoteManager *);
+void InitNote(NoteManager*, AppContext*, Gameplay *);
 
 // Private
-void _drawBeatmapNote(DrawableNote*,Note);
-bool _isNoteHit(DrawableNote*, Note);
-void _drawAccuracy(DrawableNote*);
-void _updateNotePosition(DrawableNote*);
-void _noteHitHandler(DrawableNote*, Note);
+void _drawBeatmapNote(NoteManager*,Note);
+bool _isNoteHit(NoteManager*, Note);
+void _drawAccuracy(NoteManager*);
+void _updateNotePosition(NoteManager*);
+void _noteHitHandler(NoteManager*, Note);
+// void _extractNoteFromBeatmap(NoteManager*, DrawableNote*);
 
 // Implement Interface
-impl_scene(DrawableNote*, Note_toScene, note_draw, note_update, note_isShow);
+impl_scene(NoteManager*, Note_toScene, note_draw, note_update, note_isShow);
 
 #endif // NOTE_H

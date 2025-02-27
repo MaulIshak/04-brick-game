@@ -48,7 +48,7 @@ int main()
   BeatmapCreator creator = CreateBeatmap(&ctx);
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
 
-  DrawableNote note;
+  NoteManager note;
   InitNote(&note, &ctx, &gameplay);
   Drawable note_draw = Note_toScene(&note);
   

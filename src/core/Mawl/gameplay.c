@@ -17,7 +17,7 @@ void gp_draw(Gameplay* self){
     DrawRectangleGradientEx(rec,secondary, primary, primary, secondary);
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
-
+    DrawFPS(0,0);
     for (int i = 0; i < LINE_COUNT; i++)
     {
       DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, 1.5f, (Color){ 240, 240, 240, self->padOpacity[i] });
