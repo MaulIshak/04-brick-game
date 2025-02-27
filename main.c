@@ -8,6 +8,8 @@
 #include "press_to_play.h"
 #include "beatmap_creator.h"
 
+#include "score.h"
+
 #include "macro.h"
 
 #include "context.h"
@@ -47,8 +49,12 @@ int main()
   BeatmapCreator creator = CreateBeatmap(&ctx);
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
   
+  ScoreManage score_manage = InitScore(&ctx);
+  Drawable score_draw = Score_ToScene(&score_manage);
+  
+
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, bg_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, score_draw, bg_draw};
 
   
   int draws_len = ARRAY_LEN(draws);
