@@ -13,6 +13,8 @@
 
 #include "context.h"
 #include "gameplay.h"
+
+#include "score.h"
 #include <stdlib.h>
 
 
@@ -52,8 +54,12 @@ int main()
   InitNote(&note, &ctx, &gameplay);
   Drawable note_draw = Note_toScene(&note);
   
+  ScoreManage score_manage = InitScore(&ctx, &gameplay);
+  Drawable score_draw = Score_ToScene(&score_manage);
+  
+
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, note_draw,  bg_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw};
 
   
   int draws_len = ARRAY_LEN(draws);
