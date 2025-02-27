@@ -1,58 +1,68 @@
 #include "raylib.h"
 #include "context.h"
-#include "note.h"
 #include "macro.h"
 #include "gameplay.h"
+#include <string.h>
+#include <stdio.h>
+#include "timer.h"
 
 void gp_draw(Gameplay* self){
-  // for (int i = 0; i < TEXTURE_COUNT; i++)
-  // {
-    // }
-    Color primary = (Color){ 240, 240, 240, 255 };
-    
-    // Color secondary = (Color){ 190, 190, 190, 255 };
+
+    Color primary = (Color){ 255, 255, 255, 255 };
+    Color secondary = (Color){0 ,50 , 100, 255 };
+
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
-    // DrawRectangleGradientEx(rec,primary,secondary, secondary, primary);
-    DrawRectangleRec(rec,primary);
+    DrawRectangleGradientEx(rec,secondary, primary, primary, secondary);
+
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
-    DrawTextureEx(self->textureToLoad[0], (Vector2){120, 110},180.0f, .2f, (Color){ 240, 240, 240, self->lineNotesOpacity[0] });
-    DrawTextureEx(self->textureToLoad[0], (Vector2){220, 0},90.0f, .2f, (Color){ 240, 240, 240, self->lineNotesOpacity[1] });
-    DrawTextureEx(self->textureToLoad[0], (Vector2){200, 110},270.0f, .2f, (Color){ 240, 240, 240, self->lineNotesOpacity[2] });
-    DrawTextureEx(self->textureToLoad[0], (Vector2){300, 0},.0f, .2f, (Color){ 240, 240, 240, self->lineNotesOpacity[3] });
+
+    for (int i = 0; i < LINE_COUNT; i++)
+    {
+      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, 1.5f, (Color){ 240, 240, 240, self->padOpacity[i] });
+    }
+  
     
   }
   void gp_update(Gameplay* self){
+    if(!self->timer.is_started){
+      self->startGameTime = GetTime();
+      timer_start(&(self->timer), 3);
+    }
+    if(is_timer_end(&(self->timer))){
+      _UpdateGameTime(self);
 
-    // UP ARROW (MIDDLE RIGHT)
-    if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
-      self->lineNotesOpacity[2] = 255;
+    }
+    // DOWN ARROW (MIDDLE LEFT)
+    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+      self->padOpacity[2] = 255;
+      // printf("Hit time: %f\n", self->gameTime);
     }else{
-      self->lineNotesOpacity[2] = 100;
+      self->padOpacity[2] = 100;
     }
 
     // LEFT ARROW (LEFT)
     if(IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
-      self->lineNotesOpacity[0] = 255;
+      self->padOpacity[0] = 255;
     }else{
-      self->lineNotesOpacity[0] = 100;
+      self->padOpacity[0] = 100;
       
     }
 
-    // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
-      self->lineNotesOpacity[1] = 255;
+    // UP ARROW (MIDDLE RIGHT)
+    if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
+      self->padOpacity[1] = 255;
     }else{
-      self->lineNotesOpacity[1] = 100;
+      self->padOpacity[1] = 100;
       
     }
 
     // RIGHT ARROW (RIGHT)
     if(IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
-      self->lineNotesOpacity[3] = 255;
+      self->padOpacity[3] = 255;
     }else{
-      self->lineNotesOpacity[3] = 100;
+      self->padOpacity[3] = 100;
       
     }
   }
@@ -65,21 +75,36 @@ bool gp_isShow(Gameplay* self){
 }
 
 void InitGameplay(Gameplay *gameplay, AppContext *ctx){
+  char *textureSources [LINE_COUNT] ={
+    "resources/texture/Arrow_YangAdaPutihnya-03.png",
+    "resources/texture/Arrow_YangAdaPutihnya-04.png",
+    "resources/texture/Arrow_YangAdaPutihnya-02.png",
+    "resources/texture/Arrow_YangAdaPutihnya-01.png"
+  };
   gameplay->ctx = ctx;
-  gameplay->width = 430;
-  gameplay->texturePath[0] = "src/core/Mawl/arrow.png";
+  gameplay->width = 400;
+  memcpy(gameplay->texturePaths, textureSources, sizeof(textureSources));
   for (int i = 0; i < LINE_COUNT; i++)
   {
-    gameplay->lineNotesOpacity[i] = 100;
+    gameplay->padOpacity[i] = 100;
+    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i +10;
+    gameplay->padPositions[i].y = 48;
   }
-  
+  gameplay->gameTime = 0;
   _LoadNoteTexture(gameplay);
+  gameplay->timer = (Timer){false, 0,0};
+  gameplay->gameTimeOffset = 2000;
 }
 
 void _LoadNoteTexture(Gameplay*self){
   for (int i = 0; i < TEXTURE_COUNT; i++)
   {
-    self->textureToLoad[i] = LoadTexture(self->texturePath[i]);
+    self->textureToLoad[i] = LoadTexture(self->texturePaths[i]);
   }
   
+}
+
+void _UpdateGameTime(Gameplay* self){
+  float currentTime = GetTime();
+  self->gameTime =s_to_ms(currentTime - self->startGameTime - 3);
 }

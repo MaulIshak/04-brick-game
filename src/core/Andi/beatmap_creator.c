@@ -78,8 +78,7 @@ void BeatmapCreator_Update(BeatmapCreator* self){
     }
 
     if(self->is_recording_session_end && !self->is_map_written){
-        WriteBeatmapToFile(&self->bmt, GetSelectedMusicName(self->ctx));
-        GetSelectedMusicBeatmap(self->ctx);
+        WriteSelectedMusicBeatmapToFile(&self->bmt, GetSelectedMusicName(self->ctx), 20, 0.4);
         self->is_map_written = true;
     }
 
@@ -108,19 +107,3 @@ bool BeatmapCreator_IsShow(BeatmapCreator* self){
     return false;
 }
 
-void WriteBeatmapToFile(Beatmap* btm, const char* music_name){
-    char buff[2048] = {0};
-    strcat(buff, "resources/");
-    strcat(buff, music_name);
-    strcat(buff, ".map");
-    FILE *f = fopen(buff, "w");
-    // setup nama musik, skor, akurasi.
-    fprintf(f, "%s\n0\n0.00\n", music_name);
-    
-    for(int i = 0; i < btm->len; i++) {
-        int dir = (int)btm->items[i].direction;
-        int hit_at = (int)btm->items[i].hit_at_ms;
-        fprintf(f, "%d %d\n", dir, hit_at);
-    }
-    fclose(f);
-}

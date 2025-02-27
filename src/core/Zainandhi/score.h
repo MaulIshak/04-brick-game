@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "context.h"
+#include "gameplay.h"
 #ifndef SCORE_H
 #define SCORE_H
 
@@ -8,9 +9,10 @@ typedef struct ScoreManage
 {
     AppContext* ctx;
     int value;
+    int width;
 }ScoreManage;
 
-ScoreManage InitScore(AppContext *ctx);
+ScoreManage InitScore(AppContext *ctx, Gameplay *gameplay);
 
 void AddScore(ScoreManage *score, int amount);
 

@@ -7,13 +7,14 @@
 #include "loading.h"
 #include "press_to_play.h"
 #include "beatmap_creator.h"
-
-#include "score.h"
+#include "note.h"
 
 #include "macro.h"
 
 #include "context.h"
 #include "gameplay.h"
+
+#include "score.h"
 #include <stdlib.h>
 
 
@@ -26,7 +27,7 @@ int main()
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  // ctx.app_state = APP_BEATMAP_CREATOR;
+  ctx.app_state = APP_PLAYING;
   Loading loading = {
     .ctx = &ctx
   };
@@ -48,13 +49,17 @@ int main()
   
   BeatmapCreator creator = CreateBeatmap(&ctx);
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
+
+  DrawableNote note;
+  InitNote(&note, &ctx, &gameplay);
+  Drawable note_draw = Note_toScene(&note);
   
-  ScoreManage score_manage = InitScore(&ctx);
+  ScoreManage score_manage = InitScore(&ctx, &gameplay);
   Drawable score_draw = Score_ToScene(&score_manage);
   
 
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, score_draw, bg_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw};
 
   
   int draws_len = ARRAY_LEN(draws);
