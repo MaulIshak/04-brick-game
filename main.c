@@ -25,7 +25,7 @@ int main()
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  ctx.app_state = APP_BEATMAP_CREATOR;
+  // ctx.app_state = APP_BEATMAP_CREATOR;
   Loading loading = {
     .ctx = &ctx
   };
