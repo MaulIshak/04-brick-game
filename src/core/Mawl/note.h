@@ -9,23 +9,71 @@
 #define NOTE_H
 #define NOTE_TEXTURE_COUNT 4
 
+typedef enum Accuracy{
+  PERFECT,
+  GOOD,
+  MISS
+} Accuracy;
+
+typedef struct{
+  int perfectUpperOffset;
+  int perfectLowerOffset;
+  int goodUpperOffset;
+  int goodLowerOffset;
+  int missUpperOffset;
+  int missLowerOffset;
+} AccuracyOffset;
+
+// typedef struct{
+//     NoteDirection direction;
+//     double hit_at_ms;
+//     Vector2 position;
+//     bool isSpawned;
+// }DrawableNote;
+
+
 typedef struct {
+  // Ref ke gameplay
   Gameplay *gp;
+  // Ref ke AppContext
   AppContext *ctx;
+  // Beatmap untuk ditampilkan
   Beatmap beatmap;
+  // Texture setiap note untuk diload
   Texture2D noteTexture[NOTE_TEXTURE_COUNT];
+  // Penanda apakah beatmap sudah diload atau belum
   bool isBeatmapLoaded;
+  // Jarak note ke pad
   float noteToPad;
+  // Waktu untuk hit pad (speed);
   float timeToHitPad;
+  // Timer
   Timer timer;
+  Timer musicTimer;
+  // Penanda apakah musik sudah dimainkan atau belum
   bool isTrackPlayed;
-}DrawableNote;
+  // Penanda apakah note pertama sudah hit/miss atau belum
+  bool isFirstHit;
+  // Enum akurasi untuk menandakan akurasi note yang dihit
+  Accuracy acc;
+  AccuracyOffset accOff;
+}NoteManager;
 
-void note_draw(DrawableNote *);
-void note_update(DrawableNote *);
-bool note_isShow(DrawableNote *);
-void InitNote(DrawableNote*, AppContext*, Gameplay *);
-void _drawBeatmapNote(DrawableNote*,Note);
+// Public
+void note_draw(NoteManager *);
+void note_update(NoteManager *);
+bool note_isShow(NoteManager *);
+void InitNote(NoteManager*, AppContext*, Gameplay *);
 
-impl_scene(DrawableNote*, Note_toScene, note_draw, note_update, note_isShow);
+// Private
+void _drawBeatmapNote(NoteManager*,Note);
+bool _isNoteHit(NoteManager*, Note);
+void _drawAccuracy(NoteManager*);
+void _updateNotePosition(NoteManager*);
+void _noteHitHandler(NoteManager*, Note);
+// void _extractNoteFromBeatmap(NoteManager*, DrawableNote*);
+
+// Implement Interface
+impl_scene(NoteManager*, Note_toScene, note_draw, note_update, note_isShow);
+
 #endif // NOTE_H
