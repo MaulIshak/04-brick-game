@@ -4,13 +4,13 @@
 #include "gameplay.h"
 #include "context.h"
 
-ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay, ScoreManager *score)
+ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
 {
-    AppContext ctx;
-
-    score->isBeatmapLoaded = false;
+    // AppContext ctx;
 
     ScoreManager score;
+
+    score.isBeatmapLoaded = false;
 
     score.value = 0;
 
@@ -25,21 +25,21 @@ void AddScore(ScoreManager *score, Accuracy acc)
 {
     int maxScore = 1000; 
 
-    int perfect = maxScore/score->beatmap;
-    int good = perfect/2;
+    int perfect = 100;
+    int good = 50;
     int miss = 0;
 
-    if (strcmp(acc, PERFECT))
+    if (acc == PERFECT)
     {
-        score = score + perfect;
+        score->value = score->value + perfect;
     }
-    else if (strcmp(acc, GOOD))
+    else if (acc == GOOD)
     {
-        score = score + good;
+        score->value = score->value + good;
     }
     else
     {
-        score = score + miss;
+        score->value = score->value + miss;
     }
 }
 

@@ -15,7 +15,7 @@ typedef struct ScoreManager
     Beatmap beatmap;
 }ScoreManager;
 
-ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay, ScoreManager *score);
+ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay);
 
 void AddScore(ScoreManager *score, Accuracy acc);
 

@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    "*.embeddedhtml": "html",
     "stdio.h": "c",
     "typeinfo": "cpp",
     "*.inc": "cpp",
@@ -25,7 +26,8 @@
     "raylib.h": "c",
     "stdlib.h": "c",
     "beatmap_creator.h": "c",
-    "background.h": "c"
+    "background.h": "c",
+    "type_traits": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
