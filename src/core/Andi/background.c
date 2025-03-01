@@ -77,13 +77,13 @@ void Background_Draw(Background* self){
     // }
 
     DrawTextureEx(self->transition_texture, (Vector2){(-self->transition_texture.width) + (self->start_transition_frame * 40), 0},0, 1, WHITE);
-   if(ShouldChangeScene()) {
-    DrawText("CHANGE SCENE NOW!!", 0, 0, 24, RED);
-   }
+//    if(ShouldChangeScene()) {
+//     DrawText("CHANGE SCENE NOW!!", 0, 0, 24, RED);
+//    }
 
-   if(IsTransitionEnd()) {
-    DrawText("TRANSITION IS ENDED", 0, 0, 24, RED);
-   }
+//    if(IsTransitionEnd()) {
+//     DrawText("TRANSITION IS ENDED", 0, 0, 24, RED);
+//    }
 }
 void Background_Update(Background* self){
 
@@ -98,10 +98,10 @@ void Background_Update(Background* self){
         
     //     printf("%4f HZ \n", fft_out[i].r);
     // }
-    if(!ok) {
-        StartTransition();
-        ok = true;
-    }
+    // if(!ok) {
+    //     StartTransition();
+    //     ok = true;
+    // }
     
     if(IsTransition) {
         if(!self->is_transition_running) {
