@@ -24,7 +24,8 @@
     "gameplay.h": "c",
     "raylib.h": "c",
     "stdlib.h": "c",
-    "beatmap_creator.h": "c"
+    "beatmap_creator.h": "c",
+    "background.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
