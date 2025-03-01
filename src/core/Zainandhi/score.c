@@ -2,41 +2,68 @@
 #include "raylib.h"
 #include "score.h"
 #include "gameplay.h"
+#include "context.h"
 
-ScoreManage InitScore(AppContext *ctx, Gameplay *gameplay)
+ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay, ScoreManager *score)
 {
-    ScoreManage score;
+    AppContext ctx;
 
-    score.value = 1000000;
+    score->isBeatmapLoaded = false;
+
+    ScoreManager score;
+
+    score.value = 0;
 
     score.ctx = ctx;
 
-    score.width = ctx->screen_width - gameplay->width; 
+    score.width = ctx->screen_width - gameplay->width;
 
     return score;
 }
 
-// void AddScore(ScoreManage *score, int amount)
-// {
-//     score->value =+ amount;
-// }
+void AddScore(ScoreManager *score, Accuracy acc)
+{
+    int maxScore = 1000; 
 
-void DrawScore(ScoreManage *score)
+    int perfect = maxScore/score->beatmap;
+    int good = perfect/2;
+    int miss = 0;
+
+    if (strcmp(acc, PERFECT))
+    {
+        score = score + perfect;
+    }
+    else if (strcmp(acc, GOOD))
+    {
+        score = score + good;
+    }
+    else
+    {
+        score = score + miss;
+    }
+}
+
+void DrawScore(ScoreManager *score)
 {
     char scoreText[20];
     sprintf(scoreText, "Score %d", score->value);
     DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, score->ctx->screen_height, DARKGRAY);
-    DrawText(scoreText, score->ctx->screen_width - score->width + (score->width/2) - (MeasureText(scoreText, 20)/2), 100, 20, WHITE);
+    DrawText(scoreText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 20) / 2), 100, 20, WHITE);
 }
 
-void UpdateScore(ScoreManage *score)
+void UpdateScore(ScoreManager *score)
 {
-
+    if (!score->isBeatmapLoaded)
+    {
+        score->beatmap = GetSelectedMusicBeatmap(score->ctx);
+        score->isBeatmapLoaded = true;
+    }
 }
 
-bool IsShowScore(ScoreManage *score)
+bool IsShowScore(ScoreManager *score)
 {
-    if(score->ctx->app_state == APP_PLAYING){
+    if (score->ctx->app_state == APP_PLAYING)
+    {
         return true;
     }
     return false;
