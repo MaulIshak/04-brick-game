@@ -2,6 +2,7 @@
 #include "context.h"
 #include <stdio.h>
 #include "raylib.h"
+#include "macro.h"
 
 void EndOfTheGame_Draw(EndOfTheGame *self){
     (void)self;
@@ -29,19 +30,19 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     DrawText(buff, self->ctx->screen_width * 4.5 / 6 - MeasureText(buff, 32) / 2, 435, 32, BLACK);
 
     // DRAW BUTTON Restart
-    DrawRectangle((self->ctx->screen_width/4) / 2, (self->ctx->screen_height/2) + 150,200, 60, BLUE);
-    DrawText("Restart", (self->ctx->screen_width/4) / 2 + 100 - (MeasureText("Restart", 32) / 2), (self->ctx->screen_height/2) + 165, 32, WHITE);
+    DrawRectangle((self->ctx->screen_width/4) / 2, (self->ctx->screen_height/2) + 150,200, 60, PRIMARY_COLOR);
+    DrawText("<- Restart", (self->ctx->screen_width/4) / 2 + 100 - (MeasureText("<- Restart", 32) / 2), (self->ctx->screen_height/2) + 165, 32, WHITE);
     // DRAW BUTTON Continue
-    DrawRectangle(((self->ctx->screen_width/4) / 2 + 6) * 4, (self->ctx->screen_height/2) + 150,200, 60, ORANGE);
-    DrawText("Continue", ((self->ctx->screen_width/4) / 2 + 6) * 4 + 100 - (MeasureText("Continue", 32) / 2), (self->ctx->screen_height/2) + 165, 32, WHITE);
+    DrawRectangle(((self->ctx->screen_width/4) / 2 + 6) * 4, (self->ctx->screen_height/2) + 150,200, 60, SECONDARY_COLOR);
+    DrawText("Continue ->", ((self->ctx->screen_width/4) / 2 + 6) * 4 + 100 - (MeasureText("Continue ->", 32) / 2), (self->ctx->screen_height/2) + 165, 32, WHITE);
 
     EndBlendMode();
 }
 void EndOfTheGame_Update(EndOfTheGame *self){
-    if(IsKeyPressed(KEY_UP)) {
+    if(IsKeyPressed(KEY_LEFT)) {
         self->ctx->app_state = APP_SELECT;
     }
-    if (IsKeyPressed(KEY_LEFT)) {
+    if (IsKeyPressed(KEY_RIGHT)) {
         self->ctx->app_state = APP_PRESS_TO_PLAY;
     }
 }
