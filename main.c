@@ -13,6 +13,7 @@
 #include "beatmap_creator.h"
 #include "eotg.h"
 #include "note.h"
+#include "selection_menu.h"
 
 #include "macro.h"
 
@@ -52,6 +53,10 @@ int main()
   Background bg = CreateBackground(&ctx);
   Drawable bg_draw = Background_ToScene(&bg);
 
+  SelectionMenu selection_menu = {
+    .ctx = &ctx
+  };
+  Drawable selection_menu_draw = SelectionMenu_ToScene(&selection_menu);
   
   Gameplay gameplay;
   InitGameplay(&gameplay,&ctx);
@@ -69,7 +74,7 @@ int main()
   
 
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw};
 
   
   int draws_len = ARRAY_LEN(draws);
@@ -102,6 +107,7 @@ int main()
       }
     }
 
+    DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
     EndDrawing();
   }
   DestroyContext(&ctx);
