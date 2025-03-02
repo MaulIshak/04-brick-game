@@ -17,10 +17,19 @@
     "kiss_fft.h": "c",
     "string.h": "c",
     "macro.h": "c",
-    "selection_menu.h": "c",
-    "scene.h": "c",
+    "timer.h": "c",
+    "stdbool.h": "c",
+    "math.h": "c",
     "context.h": "c",
-    "raylib.h": "c"
+    "note.h": "c",
+    "gameplay.h": "c",
+    "raylib.h": "c",
+    "stdlib.h": "c",
+    "beatmap_creator.h": "c",
+    "background.h": "c",
+    "type_traits": "c",
+    "raymath.h": "c",
+    "stdint.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

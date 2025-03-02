@@ -3,9 +3,9 @@
 
 void Loading_Draw(Loading *self){
   // untuk menghilangkan warning, hapus ketika akan digunakan
-  (void)self;
-  DrawRectangle(0,0, 10,10, RED);
-  DrawRectangle(40,0, 10,10, BLUE);
+  // (void)self;
+  // DrawRectangle(0,0, 10,10, RED);
+  // DrawRectangle(40,0, 10,10, BLUE);
 }
 
 void Loading_Update(Loading *self){

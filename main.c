@@ -3,15 +3,24 @@
 #include <stdio.h>
 #include "raylib.h"
 
+// Library untuk raymath
+// #define RAYMATH_IMPLEMENTATION
+#include "raymath.h"
+
 #include "background.h"
 #include "loading.h"
 #include "press_to_play.h"
+#include "beatmap_creator.h"
+#include "eotg.h"
+#include "note.h"
 #include "selection_menu.h"
 
 #include "macro.h"
 
 #include "context.h"
 #include "gameplay.h"
+
+#include "score.h"
 #include <stdlib.h>
 
 
@@ -24,17 +33,16 @@ int main()
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  ctx.app_state = APP_SELECT;
-
+  // ctx.app_state = APP_BEATMAP_CREATOR;
+  ctx.app_state = END_OF_THE_GAME;
   Loading loading = {
     .ctx = &ctx
   };
   Drawable loading_draw = Loading_ToScene(&loading);
-
-  SelectionMenu selection_menu = {
+  EndOfTheGame eotg = {
     .ctx = &ctx
   };
-  Drawable selection_menu_draw = SelectionMenu_ToScene(&selection_menu);
+  Drawable eotg_draw = EndOfTheGame_ToScene(&eotg);
   
   PressToPlay press_to_play = {
     .ctx = &ctx
@@ -45,19 +53,35 @@ int main()
   Background bg = CreateBackground(&ctx);
   Drawable bg_draw = Background_ToScene(&bg);
 
+  SelectionMenu selection_menu = {
+    .ctx = &ctx
+  };
+  Drawable selection_menu_draw = SelectionMenu_ToScene(&selection_menu);
   
-  // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
   Gameplay gameplay;
   InitGameplay(&gameplay,&ctx);
   Drawable gameplay_draw = Gameplay_ToScene(&gameplay);
+  
+  BeatmapCreator creator = CreateBeatmap(&ctx);
+  Drawable creator_draw = BeatmapCreator_ToScene(&creator);
 
-  Drawable draws[] = {loading_draw, selection_menu_draw, press_to_play_draw, gameplay_draw, bg_draw};
+  NoteManager note;
+  InitNote(&note, &ctx, &gameplay);
+  Drawable note_draw = Note_toScene(&note);
+  
+  ScoreManager score_manager = InitScore(&ctx, &gameplay);
+  Drawable score_draw = Score_ToScene(&score_manager);
+  
+
+  // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
+  Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw};
+
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   
+  ctx.selected_track = 2;
   #ifdef TEST_CONTEXT 
-    ctx.selected_track = 1;
     PlaySelectedTrack(&ctx);
   #endif
   while (!WindowShouldClose())

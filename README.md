@@ -3,7 +3,7 @@
 Buka command line lalu eksekusi perintah dibawah ini. Pastikan eksekusi didalam git bash.
 
 ```sh
-./init.sh
+./init.bat
 ```
 
 # Extensi

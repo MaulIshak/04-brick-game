@@ -1,3 +1,4 @@
+#!/bin/sh
 CC="bin/zig/zig-windows-x86_64-0.13.0/zig.exe cc"
 INPUT="main.c external/raylib/lib/libraylib.a  external/kiss_fft/kiss_fft.c"
 FLAGS="-Wall -Wextra -g -ggdb -Wno-unused-function -Wno-unused-parameter"
@@ -12,6 +13,7 @@ done
 
 echo "Generating compile_json"
 
+rm compile_json_1
 $CC -MJ compile_json_1 $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
 
 rm compile_commands.json
@@ -25,7 +27,7 @@ echo "Compiling..."
 
 echo $CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
 
-$CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
+time $CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
 # $CC -E $FLAGS $I_PATH $INPUT $L_PATH $LIBS >> expand.c
 if [ $? -ne 0 ]; then
     echo "Compilation failed. Exiting."
