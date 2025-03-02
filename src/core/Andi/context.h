@@ -67,6 +67,8 @@ typedef enum State {
     APP_PLAYING,
     // aplikasi dalam mode title screen
     APP_PRESS_TO_PLAY,
+
+    
 } State;
 
 // App Context adalah seluruh data yang diperlukan dalam jalannya aplikasi

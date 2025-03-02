@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    "*.embeddedhtml": "html",
     "stdio.h": "c",
     "typeinfo": "cpp",
     "*.inc": "cpp",
@@ -15,7 +16,11 @@
     "unordered_map": "c",
     "kiss_fft.h": "c",
     "string.h": "c",
-    "macro.h": "c"
+    "macro.h": "c",
+    "selection_menu.h": "c",
+    "scene.h": "c",
+    "context.h": "c",
+    "raylib.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

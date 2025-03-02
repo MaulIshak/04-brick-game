@@ -6,6 +6,7 @@
 #include "background.h"
 #include "loading.h"
 #include "press_to_play.h"
+#include "selection_menu.h"
 
 #include "macro.h"
 
@@ -23,11 +24,17 @@ int main()
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
+  ctx.app_state = APP_SELECT;
 
   Loading loading = {
     .ctx = &ctx
   };
   Drawable loading_draw = Loading_ToScene(&loading);
+
+  SelectionMenu selection_menu = {
+    .ctx = &ctx
+  };
+  Drawable selection_menu_draw = SelectionMenu_ToScene(&selection_menu);
   
   PressToPlay press_to_play = {
     .ctx = &ctx
@@ -44,7 +51,7 @@ int main()
   InitGameplay(&gameplay,&ctx);
   Drawable gameplay_draw = Gameplay_ToScene(&gameplay);
 
-  Drawable draws[] = {loading_draw, press_to_play_draw, gameplay_draw, bg_draw};
+  Drawable draws[] = {loading_draw, selection_menu_draw, press_to_play_draw, gameplay_draw, bg_draw};
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
