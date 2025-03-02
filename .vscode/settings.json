@@ -27,7 +27,9 @@
     "stdlib.h": "c",
     "beatmap_creator.h": "c",
     "background.h": "c",
-    "type_traits": "c"
+    "type_traits": "c",
+    "raymath.h": "c",
+    "stdint.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

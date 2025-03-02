@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include "raylib.h"
 
+// Library untuk raymath
+// #define RAYMATH_IMPLEMENTATION
+#include "raymath.h"
+
 #include "background.h"
 #include "loading.h"
 #include "press_to_play.h"
