@@ -3,16 +3,23 @@
 #include <stdio.h>
 #include "raylib.h"
 
+// Library untuk raymath
+// #define RAYMATH_IMPLEMENTATION
+#include "raymath.h"
+
 #include "background.h"
 #include "loading.h"
 #include "press_to_play.h"
 #include "beatmap_creator.h"
 #include "eotg.h"
+#include "note.h"
 
 #include "macro.h"
 
 #include "context.h"
 #include "gameplay.h"
+
+#include "score.h"
 #include <stdlib.h>
 
 
@@ -52,9 +59,17 @@ int main()
   
   BeatmapCreator creator = CreateBeatmap(&ctx);
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
+
+  NoteManager note;
+  InitNote(&note, &ctx, &gameplay);
+  Drawable note_draw = Note_toScene(&note);
   
+  ScoreManager score_manager = InitScore(&ctx, &gameplay);
+  Drawable score_draw = Score_ToScene(&score_manager);
+  
+
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, bg_draw, eotg_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw};
 
   
   int draws_len = ARRAY_LEN(draws);

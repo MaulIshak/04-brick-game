@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "array_list.h"
 
+
 const char *resources[] = {
     "resources/Guardian of The Former Seas",
     "resources/Pest of The Cosmos",
@@ -32,15 +33,39 @@ Tracks InitTracks() {
         int len = strlen(buff);
         buff[len - 4] = '\0';
         m.looping = false;
+
+        strcat(buff, ".map");
+        GetScoreAndAccuracy(buff, &track->high_score, &track->accuracy);
+        buff[len - 4] = '\0';
+
         track->music = m;
-        track->high_score = 0;
+        printf("Hello World");
         
         strcpy((char *)&track->music_name, (char *)&buff[10]);
         buff[0] = '\0';
+        #ifdef DEBUG
+        printf("Loaded %s | Score %d | Accuracy %f \n", track->music_name, track->high_score, track->accuracy);
+        #endif
     }
 
     return tr;
 }
+
+void GetScoreAndAccuracy(const char* file_name, int *scoreOut, float *accuracyOut){
+    FILE *f = fopen(file_name, "r");
+    char buff[2048];
+    // buang nama musik
+    fgets(buff, 2048, f);
+
+    fgets(buff, 2048, f);
+    *scoreOut = atoi(buff);
+    
+    fgets(buff, 2048, f);
+    *accuracyOut = (float)atof(buff);
+
+    fclose(f);
+}
+
 
 void DestroyTracks(Tracks *tracks) {
     for(int i = 0; i < tracks->len; i++) {
@@ -100,7 +125,7 @@ void StopSelectedTrack(AppContext *ctx) {
     printf("StopSelectedTrack: Stopping %s\n",  ctx->tracks.track[selected].music_name);
     #endif
 }
-
+// TODO: memoize this function
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
     ctx->_beatmap.len = 0;
     int selected = ctx->selected_track;
@@ -169,4 +194,28 @@ char *GetSelectedMusicName(AppContext* ctx) {
     size_t selected = ctx->selected_track;
     assert(ctx->selected_track != -1);
     return ctx->tracks.track[selected].music_name;
+}
+
+void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int score, float accuracy){
+    char buff[2048] = {0};
+    Beatmap map = *btm;
+    strcat(buff, "resources/");
+    strcat(buff, music_name);
+    strcat(buff, ".map");
+    FILE *f = fopen(buff, "w");
+    // setup nama musik, skor, akurasi.
+    fprintf(f, "%s\n%d\n%f\n", music_name, score, accuracy);
+    
+    for(int i = 0; i < btm->len; i++) {
+        int dir = (int)btm->items[i].direction;
+        int hit_at = (int)btm->items[i].hit_at_ms;
+        fprintf(f, "%d %d\n", dir, hit_at);
+    }
+    fclose(f);
+}
+
+void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
+    int selected = ctx->selected_track;
+    Beatmap map = GetSelectedMusicBeatmap(ctx);
+    WriteSelectedMusicBeatmapToFile(&map, ctx->tracks.track[selected].music_name, score, acc);
 }

@@ -20,6 +20,8 @@ typedef struct Note {
     double hit_at_ms;
     // posisi dari note
     Vector2 position;
+    // apakah note sudah didraw
+    bool isSpawned;
 } Note;
 
 // Beatmap adalah map yang akan digunakan pada saat gameplay. isinya terdiri dari array of notes
@@ -38,6 +40,8 @@ typedef struct Track {
     char music_name[255];
     // skor tertinggi dari musik ini
     int high_score;
+    // akurasi dari musik ini
+    float accuracy;
 } Track;
 
 // Tracks berisi list dari Track yang tersedia
@@ -105,6 +109,7 @@ void DestroyTracks(Tracks *tracks);
 // prosedur cleanup. tidak digunakan dalam scene, tapi di akhir aplikasi
 void DestroyContext(AppContext *ctx);
 
+
 void SelectMusic(AppContext* ctx, int music_index);
 // Update context. digunakan pada saat gameloop
 void UpdateContext(AppContext* ctx);
@@ -118,5 +123,12 @@ void SeekSelectedTrack(AppContext* ctx, float second);
 bool IsSelectedMusicEnd(AppContext* ctx);
 // ambil nama musik.
 char *GetSelectedMusicName(AppContext* ctx);
+// Private fn:
+// Untuk mengambil skor dan akurasi, gunakan `ctx.score`
+// ambil skor dan akurasi dari file map. 
+void GetScoreAndAccuracy(const char* file_name, int *scoreOut, float *accuracyOut);
+void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int score, float accuracy);
 
+// Set skor ke file .map
+void SetScoreAndAccuracy(AppContext* ctx, int score, int acc);
 #endif // CONTEXT_H
