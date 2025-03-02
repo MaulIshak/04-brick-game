@@ -7,6 +7,7 @@
 #include "loading.h"
 #include "press_to_play.h"
 #include "beatmap_creator.h"
+#include "eotg.h"
 
 #include "macro.h"
 
@@ -25,10 +26,15 @@ int main()
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
+  ctx.app_state = END_OF_THE_GAME;
   Loading loading = {
     .ctx = &ctx
   };
   Drawable loading_draw = Loading_ToScene(&loading);
+  EndOfTheGame eotg = {
+    .ctx = &ctx
+  };
+  Drawable eotg_draw = EndOfTheGame_ToScene(&eotg);
   
   PressToPlay press_to_play = {
     .ctx = &ctx
@@ -48,7 +54,7 @@ int main()
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
   
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, bg_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, creator_draw, gameplay_draw, bg_draw, eotg_draw};
 
   
   int draws_len = ARRAY_LEN(draws);
