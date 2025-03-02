@@ -27,7 +27,7 @@ int main()
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  ctx.app_state = APP_PLAYING;
+  // ctx.app_state = APP_BEATMAP_CREATOR;
   Loading loading = {
     .ctx = &ctx
   };
@@ -54,8 +54,8 @@ int main()
   InitNote(&note, &ctx, &gameplay);
   Drawable note_draw = Note_toScene(&note);
   
-  ScoreManage score_manage = InitScore(&ctx, &gameplay);
-  Drawable score_draw = Score_ToScene(&score_manage);
+  ScoreManager score_manager = InitScore(&ctx, &gameplay);
+  Drawable score_draw = Score_ToScene(&score_manager);
   
 
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang

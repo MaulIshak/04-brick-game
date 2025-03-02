@@ -1,27 +1,30 @@
 #include "scene.h"
 #include "context.h"
 #include "gameplay.h"
+#include "note.h"
 #ifndef SCORE_H
 #define SCORE_H
 
 
-typedef struct ScoreManage
+typedef struct ScoreManager
 {
     AppContext* ctx;
     int value;
     int width;
-}ScoreManage;
+    bool isBeatmapLoaded;
+    Beatmap beatmap;
+}ScoreManager;
 
-ScoreManage InitScore(AppContext *ctx, Gameplay *gameplay);
+ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay);
 
-void AddScore(ScoreManage *score, int amount);
+void AddScore(ScoreManager *score, Accuracy acc);
 
-void DrawScore(ScoreManage *score);
+void DrawScore(ScoreManager *score);
 
-void UpdateScore(ScoreManage *score);
+void UpdateScore(ScoreManager *score);
 
-bool IsShowScore(ScoreManage *score);
+bool IsShowScore(ScoreManager *score);
 
-impl_scene(ScoreManage*, Score_ToScene, DrawScore, UpdateScore, IsShowScore);
+impl_scene(ScoreManager*, Score_ToScene, DrawScore, UpdateScore, IsShowScore);
 
 #endif
