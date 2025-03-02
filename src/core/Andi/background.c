@@ -3,6 +3,7 @@
 #include "kiss_fft.h"
 #include "string.h"
 #include "raymath.h"
+#include "macro.h"
 // defined from https://github.com/tsoding/musializer/blob/762a729ff69ba1f984b0f2604e0eac08af46327c/src/plug.c#L69
 #define FFT_SIZE (1<<13)
 // #define FFT_SIZE (1024)
@@ -46,8 +47,8 @@ Background CreateBackground(AppContext* ctx){
     Texture2D transition_texture = LoadTexture("resources/texture/Transition.png");
     ParticleConfig opt = {
         .area = {.x = 0, .y = 0, .width = ctx->screen_width, .height = ctx->screen_height},
-        .start_color = DARKGREEN,
-        .end_color = RED,
+        .start_color = PRIMARY_COLOR,
+        .end_color = SECONDARY_COLOR,
     };
 
     _particle_config = opt;
@@ -124,7 +125,7 @@ void Background_Update(Background* self){
     // }
 
     if(!self->timer.is_started) {
-     
+        EnableParticle();
         timer_start(&self->timer, 0);
     }
 

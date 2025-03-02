@@ -11,6 +11,7 @@ const char *resources[] = {
     "resources/Guardian of The Former Seas",
     "resources/Pest of The Cosmos",
     "resources/LGR",
+    "resources/ToyLand",
 };
 
 Tracks InitTracks() {
