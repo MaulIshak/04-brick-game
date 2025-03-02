@@ -9,10 +9,10 @@ void note_draw(NoteManager *self){
   // Cek apakah beatmap sudah diload
   if(self->isBeatmapLoaded){
       for(int i = 0; i < self->beatmap.len; i++) {
-        if(self->beatmap.items[i].position.y < 0) {
+        if(self->note[i].position.y < 0) {
             continue;
         }
-        _drawBeatmapNote(self, self->beatmap.items[i]);
+        _drawBeatmapNote(self, self->note[i]);
         // if(self->gp->gameTime >= self->beatmap.items[i].hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= self->beatmap.items[i].hit_at_ms +self->accOff.perfectLowerOffset){
         //   DrawRectangle(self->beatmap.items[i].position.x,self->beatmap.items[i].position.y, 100, 100, BLACK);
         // }
@@ -45,6 +45,7 @@ void note_update(NoteManager *self){
       self->beatmap.items[i].hit_at_ms += self->gp->gameTimeOffset;
       self->beatmap.items[i].position.y = -999;
       self->beatmap.items[i].isSpawned = false;
+      _extractNoteFromBeatmap(self);
     }
       self->isBeatmapLoaded = true;
     }
@@ -87,7 +88,7 @@ void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp){
 
 }
 
-void _drawBeatmapNote(NoteManager* self, Note note){
+void _drawBeatmapNote(NoteManager* self, DrawableNote note){
   float loc =  self->ctx->screen_width/6;
   Texture2D textureToDraw;
   Vector2 position = note.position;
@@ -115,7 +116,7 @@ void _drawBeatmapNote(NoteManager* self, Note note){
   
 }
 
-bool _isNoteHit(NoteManager*self, Note note ){
+bool _isNoteHit(NoteManager*self, DrawableNote note ){
   // DOWN ARROW (MIDDLE LEFT)
   if((IsKeyPressed(KEY_DOWN) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
     if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
@@ -221,23 +222,23 @@ void _updateNotePosition(NoteManager* self){
   for (int i = 0; i <  self->beatmap.len; i++)
   {
     double elapsed = time_elapsed(&(self->timer));
-    double to_hit = ms_to_s(self->beatmap.items[i].hit_at_ms);
+    double to_hit = ms_to_s(self->note[i].hit_at_ms);
     if(!(elapsed > to_hit - self->timeToHitPad)){
       continue;
     }
-    if(!self->beatmap.items[i].isSpawned){
-      self->beatmap.items[i].position.y = self->ctx->screen_height;
-      self->beatmap.items[i].isSpawned = true;
+    if(!self->note[i].isSpawned){
+      self->note[i].position.y = self->ctx->screen_height;
+      self->note[i].isSpawned = true;
     }
     float note_k = ( (self->ctx->screen_height - 45)/self->timeToHitPad) * dt ; 
-    self->beatmap.items[i].position.y -= note_k;
+    self->note[i].position.y -= note_k;
 
-    _noteHitHandler(self, self->beatmap.items[i]);
+    _noteHitHandler(self, self->note[i]);
 
     }
 }
 
-void _noteHitHandler(NoteManager* self, Note note){
+void _noteHitHandler(NoteManager* self, DrawableNote note){
   // if(self->gp->gameTime >= note.hit_at_ms +self->accOff.missLowerOffset){
   //   // printf("Hit! : %d Time: %f\n", note.direction, self->gp->gameTime - 2000);
   //   self->acc = MISS;
@@ -257,4 +258,14 @@ void _noteHitHandler(NoteManager* self, Note note){
   }else{
     
   }
+}
+
+void _extractNoteFromBeatmap(NoteManager* self){
+  for (int i = 0; i < self->beatmap.len; i++)
+  {
+    self->note[i].direction = self->beatmap.items[i].direction; 
+    self->note[i].hit_at_ms = self->beatmap.items[i].hit_at_ms; 
+    self->note[i].position = self->beatmap.items[i].position; 
+  }
+  
 }
