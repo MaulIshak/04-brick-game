@@ -6,15 +6,14 @@
 #include <stdio.h>
 #include "timer.h"
 
+static Color secondary = (Color){ 0x70, 0xC6, 0xFF, 255 };
+static Color primary = (Color){187 ,225 , 250, 255 };
+
 void gp_draw(Gameplay* self){
-
-    Color primary = (Color){ 255, 255, 255, 255 };
-    Color secondary = (Color){0 ,50 , 100, 255 };
-
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
-    DrawRectangleGradientEx(rec,secondary, primary, primary, secondary);
+    DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     DrawFPS(0,0);

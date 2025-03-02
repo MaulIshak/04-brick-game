@@ -47,7 +47,7 @@ void DrawScore(ScoreManager *score)
 {
     char scoreText[20];
     sprintf(scoreText, "Score %d", score->value);
-    DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, score->ctx->screen_height, DARKGRAY);
+    DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, score->ctx->screen_height,BLACK);
     DrawText(scoreText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 20) / 2), 100, 20, WHITE);
 }
 
