@@ -11,6 +11,7 @@ const char *resources[] = {
     "resources/Guardian of The Former Seas",
     "resources/Pest of The Cosmos",
     "resources/LGR",
+    "resources/ToyLand",
 };
 
 Tracks InitTracks() {
@@ -125,7 +126,7 @@ void StopSelectedTrack(AppContext *ctx) {
     printf("StopSelectedTrack: Stopping %s\n",  ctx->tracks.track[selected].music_name);
     #endif
 }
-
+// TODO: memoize this function
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
     ctx->_beatmap.len = 0;
     int selected = ctx->selected_track;

@@ -24,12 +24,13 @@ typedef struct{
   int missLowerOffset;
 } AccuracyOffset;
 
-// typedef struct{
-//     NoteDirection direction;
-//     double hit_at_ms;
-//     Vector2 position;
-//     bool isSpawned;
-// }DrawableNote;
+typedef struct{
+    NoteDirection direction;
+    double hit_at_ms;
+    Vector2 position;
+    bool isSpawned;
+    bool isHit;
+}DrawableNote;
 
 
 typedef struct {
@@ -57,6 +58,7 @@ typedef struct {
   // Enum akurasi untuk menandakan akurasi note yang dihit
   Accuracy acc;
   AccuracyOffset accOff;
+  DrawableNote note [1024];
 }NoteManager;
 
 // Public
@@ -66,12 +68,12 @@ bool note_isShow(NoteManager *);
 void InitNote(NoteManager*, AppContext*, Gameplay *);
 
 // Private
-void _drawBeatmapNote(NoteManager*,Note);
-bool _isNoteHit(NoteManager*, Note);
+void _drawBeatmapNote(NoteManager*,DrawableNote);
+bool _isNoteHit(NoteManager*, DrawableNote);
 void _drawAccuracy(NoteManager*);
 void _updateNotePosition(NoteManager*);
-void _noteHitHandler(NoteManager*, Note);
-// void _extractNoteFromBeatmap(NoteManager*, DrawableNote*);
+void _noteHitHandler(NoteManager*, DrawableNote);
+void _extractNoteFromBeatmap(NoteManager*);
 
 // Implement Interface
 impl_scene(NoteManager*, Note_toScene, note_draw, note_update, note_isShow);

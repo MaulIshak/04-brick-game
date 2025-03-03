@@ -75,6 +75,8 @@ typedef enum State {
     APP_PRESS_TO_PLAY,
     // aplikasi dalam mode pembuatan beatmap
     APP_BEATMAP_CREATOR,
+    // menampilkan hasil score setelah permainan selesai, ditambakan oleh Nabil
+    END_OF_THE_GAME,
 } State;
 
 // App Context adalah seluruh data yang diperlukan dalam jalannya aplikasi
