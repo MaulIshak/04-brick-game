@@ -1,4 +1,3 @@
-#pragma once
 #include "context.h"
 #include "scene.h"
 #include "raylib.h"
@@ -8,6 +7,7 @@
 #ifndef NOTE_H
 #define NOTE_H
 #define NOTE_TEXTURE_COUNT 4
+// #include "score.h"
 
 typedef enum Accuracy{
   PERFECT,
@@ -72,7 +72,7 @@ void _drawBeatmapNote(NoteManager*,DrawableNote);
 bool _isNoteHit(NoteManager*, DrawableNote);
 void _drawAccuracy(NoteManager*);
 void _updateNotePosition(NoteManager*);
-void _noteHitHandler(NoteManager*, DrawableNote);
+void _noteHitHandler(NoteManager*, DrawableNote*);
 void _extractNoteFromBeatmap(NoteManager*);
 
 // Implement Interface
