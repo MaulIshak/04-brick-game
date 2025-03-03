@@ -11,11 +11,11 @@ typedef struct SelectionMenu {
     int count;
     int selected;
 
+    float rotationOffset;
+    float targetRotationOffset;
+    
     float selectionYOffset;
     float targetYOffset;
-    
-    float selectionXOffset;
-    float targetXOffset;
     
     float fontsize;
 } SelectionMenu;
