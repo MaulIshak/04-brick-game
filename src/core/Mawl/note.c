@@ -37,7 +37,18 @@ void note_update(NoteManager *self){
     self->isTrackPlayed = true;
   }
 
-  // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
+  if(self->isTrackPlayed){
+    if(IsSelectedMusicEnd(self->ctx)){
+        self->ctx->app_state = END_OF_THE_GAME;
+        self->isTrackPlayed = false;
+        self->isBeatmapLoaded = false;
+        self->isFirstHit = false;
+        self->timer.is_started = false;
+        self->musicTimer.is_started = false;
+        self->isBeatmapLoaded = false;
+        
+    }
+  }  // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
   if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
     self->beatmap = GetSelectedMusicBeatmap(self->ctx);
     for (int i = 0; i < self->beatmap.len; i++)
@@ -53,8 +64,10 @@ void note_update(NoteManager *self){
     if(is_timer_end(&self->timer)){
       _updateNotePosition(self);
     }
+
   
 }
+
 bool note_isShow(NoteManager *self){
   if(self->ctx->app_state == APP_PLAYING){
     return true;
@@ -155,7 +168,7 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
 
 
   // UP ARROW (MIDDLE RIGHT)
-  if(IsKeyPressed(KEY_UP) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) && note.direction == NOTE_UP){
+  if((IsKeyPressed(KEY_UP) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)) && note.direction == NOTE_UP){
     if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
       self->acc = PERFECT; 
       printf("PERFECT\n");
@@ -173,7 +186,7 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   }
 
   // RIGHT ARROW (RIGHT)
-  if(IsKeyPressed(KEY_RIGHT) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2) && note.direction == NOTE_RIGHT){
+  if((IsKeyPressed(KEY_RIGHT) || IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) && note.direction == NOTE_RIGHT){
     if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
       self->acc = PERFECT; 
       printf("PERFECT\n");
@@ -247,11 +260,15 @@ void _noteHitHandler(NoteManager* self, DrawableNote note){
   //     self->isFirstHit = true;
   //   }
   // }
+  if(note.isHit){
+    note.position.x= -999;
+  }
 
 
   if(_isNoteHit(self, note)){
+    note.isHit = true;
     // printf("Hit!");
-    note.position.x= -999;
+
     if(!self->isFirstHit){
       self->isFirstHit = true;
     }
