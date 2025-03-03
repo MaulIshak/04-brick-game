@@ -29,7 +29,10 @@
     "background.h": "c",
     "type_traits": "c",
     "raymath.h": "c",
-    "stdint.h": "c"
+    "stdint.h": "c",
+    "complex": "c",
+    "cstdlib": "c",
+    "valarray": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

@@ -28,13 +28,13 @@ int main()
 {
   const int screenWidth = 600;
   const int screenHeight = 800;
-
+  
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = END_OF_THE_GAME;
+  ctx.app_state = APP_SELECT;
   Loading loading = {
     .ctx = &ctx
   };
@@ -107,7 +107,7 @@ int main()
       }
     }
 
-    DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
+    // DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
     EndDrawing();
   }
   DestroyContext(&ctx);
