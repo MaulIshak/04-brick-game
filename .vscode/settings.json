@@ -30,9 +30,7 @@
     "type_traits": "c",
     "raymath.h": "c",
     "stdint.h": "c",
-    "complex": "c",
-    "cstdlib": "c",
-    "valarray": "c"
+    "scene.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
