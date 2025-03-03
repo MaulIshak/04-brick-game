@@ -72,7 +72,7 @@ bool note_isShow(NoteManager *self){
   return false;
 }
 
-void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp){
+void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp, ScoreManager *scoreManager){
   self->isBeatmapLoaded = false;
   self->ctx = ctx;
   self->timeToHitPad = 1.5f;
@@ -95,6 +95,7 @@ void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp){
     70, 70,
     100, 100
   };
+  self->scoreManager = scoreManager;
 
 }
 
@@ -249,7 +250,14 @@ void _updateNotePosition(NoteManager* self){
 }
 
 void _noteHitHandler(NoteManager* self, DrawableNote *note){
-  // if(self->gp->gameTime >= note.hit_at_ms +self->accOff.missLowerOffset){
+  if(self->gp->gameTime >= note->hit_at_ms +self->accOff.missLowerOffset){
+    if(!note->isHit){
+      note->isHit = true;
+      printf("MISS\n");
+      self->isFirstHit = true;
+      self->acc = MISS;
+    }
+  }
   //   // printf("Hit! : %d Time: %f\n", note.direction, self->gp->gameTime - 2000);
   //   self->acc = MISS;
   //   if(!self->isFirstHit){
@@ -261,15 +269,15 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
     note->position.x= -999;
   }
 
-
-  if(_isNoteHit(self, *note)){
-    note->isHit = true;
-    // printf("Hit!");
-    if(!self->isFirstHit){
-      self->isFirstHit = true;
+  if(!note->isHit){
+    if(_isNoteHit(self, *note)){
+      note->isHit = true;
+      AddScore(self->scoreManager, self->acc);
+      // printf("Hit!");
+      if(!self->isFirstHit){
+        self->isFirstHit = true;
+      }
     }
-  }else{
-    
   }
 }
 
