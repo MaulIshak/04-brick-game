@@ -25,6 +25,10 @@ void AddScore(ScoreManager *score, Accuracy acc)
 {
     int maxScore = 1000; 
 
+    // int perfect = maxScore/score->beatmap.len;
+    // int good = perfect/2;
+    // int miss = 0;
+    
     int perfect = 100;
     int good = 50;
     int miss = 0;
