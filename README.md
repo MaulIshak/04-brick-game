@@ -1,6 +1,6 @@
 # Project Setup
 
-Buka command line lalu eksekusi perintah dibawah ini
+Buka command line lalu eksekusi perintah dibawah ini. Pastikan eksekusi didalam git bash.
 
 ```sh
 ./init.bat
@@ -15,7 +15,7 @@ Untuk penglaman development yang lebih baik, gunakan vscode dan install extensi 
 Untuk menjalankan program, buka command line lalu eksekusi perintah ini.
 
 ```sh
-./build.bat
+./build.sh
 ```
 
 ## Penjelasan
@@ -23,3 +23,7 @@ Untuk menjalankan program, buka command line lalu eksekusi perintah ini.
 script `init.bat` akan mendowload zig compiler versi 0.13.0 dan menaruhnya di folder `bin/zig`. Ini dilakukan agar semua anggota memiliki compiler dengan jenis yang sama untuk menghindari masalah masalah mengenai compiler yang tidak kompatible.
 
 script `build.bat` akan mengcompile project
+
+# Arsitektur
+
+TODO:

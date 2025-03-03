@@ -1,8 +1,36 @@
 {
-    "files.associations": {
-        "stdio.h": "c",
-        "typeinfo": "cpp",
-        "*.inc": "cpp"
-    },
-    "C_Cpp.errorSquiggles": "disabled"
+  "files.associations": {
+    "*.embeddedhtml": "html",
+    "stdio.h": "c",
+    "typeinfo": "cpp",
+    "*.inc": "cpp",
+    "algorithm": "c",
+    "bitset": "c",
+    "execution": "c",
+    "iterator": "c",
+    "xhash": "c",
+    "xmemory": "c",
+    "xtree": "c",
+    "xutility": "c",
+    "map": "c",
+    "unordered_map": "c",
+    "kiss_fft.h": "c",
+    "string.h": "c",
+    "macro.h": "c",
+    "timer.h": "c",
+    "stdbool.h": "c",
+    "math.h": "c",
+    "context.h": "c",
+    "note.h": "c",
+    "gameplay.h": "c",
+    "raylib.h": "c",
+    "stdlib.h": "c",
+    "beatmap_creator.h": "c",
+    "background.h": "c",
+    "type_traits": "c",
+    "raymath.h": "c",
+    "stdint.h": "c",
+    "scene.h": "c"
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }

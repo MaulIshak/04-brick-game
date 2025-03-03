@@ -3,6 +3,8 @@
 #include <stdio.h>
 
 void PressToPlay_Draw(PressToPlay *self){
+    // untuk menghilangkan warning, hapus ketika akan digunakan
+  (void)self;
     DrawText("TEKAN APA SAJA UNTUK MULAI", 10,10, 16, BLACK);
 }
 void PressToPlay_Update(PressToPlay *self){
