@@ -107,7 +107,7 @@ int main()
       }
     }
 
-    DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
+    // DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
     EndDrawing();
   }
   DestroyContext(&ctx);
