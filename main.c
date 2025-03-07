@@ -14,6 +14,7 @@
 #include "eotg.h"
 #include "note.h"
 #include "selection_menu.h"
+#include "animasi.h"
 
 #include "macro.h"
 
@@ -34,10 +35,14 @@ int main()
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_PLAYING;
+  ctx.app_state = APP_LOADING;
   Loading loading = {
     .ctx = &ctx
   };
+
+    LoadingLoadTextures(&loading);
+    LoadingInitPositions(&loading);
+
   Drawable loading_draw = Loading_ToScene(&loading);
   EndOfTheGame eotg = {
     .ctx = &ctx
