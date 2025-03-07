@@ -10,6 +10,14 @@ typedef struct SelectionMenu {
     AppContext *ctx;
     int count;
     int selected;
+
+    float rotationOffset;
+    float targetRotationOffset;
+    
+    float selectionYOffset;
+    float targetYOffset;
+    
+    float fontsize;
 } SelectionMenu;
 
 

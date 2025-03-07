@@ -34,7 +34,7 @@ void gp_draw(Gameplay* self){
 
     }
     // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->padOpacity[2] = 255;
       // printf("Hit time: %f\n", self->gameTime);
     }else{
@@ -50,7 +50,7 @@ void gp_draw(Gameplay* self){
     }
 
     // UP ARROW (MIDDLE RIGHT)
-    if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
+    if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->padOpacity[1] = 255;
     }else{
       self->padOpacity[1] = 100;

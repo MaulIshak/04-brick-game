@@ -29,13 +29,13 @@ int main()
 {
   const int screenWidth = 600;
   const int screenHeight = 800;
-
+  
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_LOADING;
+  ctx.app_state = APP_SELECT;
   Loading loading = {
     .ctx = &ctx
   };
@@ -70,13 +70,13 @@ int main()
   BeatmapCreator creator = CreateBeatmap(&ctx);
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
 
-  NoteManager note;
-  InitNote(&note, &ctx, &gameplay);
-  Drawable note_draw = Note_toScene(&note);
   
   ScoreManager score_manager = InitScore(&ctx, &gameplay);
   Drawable score_draw = Score_ToScene(&score_manager);
   
+  NoteManager note;
+  InitNote(&note, &ctx, &gameplay, &score_manager);
+  Drawable note_draw = Note_toScene(&note);
 
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
   Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw};
