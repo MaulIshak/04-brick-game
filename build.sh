@@ -13,10 +13,11 @@ done
 
 echo "Generating compile_json"
 
-rm compile_json_1
-$CC -MJ compile_json_1 $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
+rm -f compile_json_1 compile_commands.json
+touch compile_json_1 compile_commands.json
 
-rm compile_commands.json
+$CC -MJ compile_json_1 $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
+sleep 1
 echo "[" > compile_commands.json
 cat compile_json_1 >> compile_commands.json
 echo "{}" >> compile_commands.json
