@@ -23,7 +23,7 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     DrawText("Perfect", self->ctx->screen_width/6 - 10, 465, 32, BLACK);
     DrawText(buff, self->ctx->screen_width/6 - 10 + MeasureText("Perfect", 32) / 2 - MeasureText(buff, 32) / 2, 435, 32, BLACK);
     sprintf(buff, "%d", 34); // Sign with self->ctx->score.good
-    DrawText("Great", self->ctx->screen_width/2 - MeasureText("Good", 32) / 2, 465, 32, BLACK);
+    DrawText("Good", self->ctx->screen_width/2 - MeasureText("Good", 32) / 2, 465, 32, BLACK);
     DrawText(buff, self->ctx->screen_width/2 - MeasureText(buff, 32) / 2, 435, 32, BLACK);
     sprintf(buff, "%d", 12); // Sign with self->ctx->score.miss
     DrawText("Miss", self->ctx->screen_width * 4.5 / 6 - MeasureText("Miss", 32) / 2, 465, 32, BLACK);
