@@ -26,7 +26,6 @@ Tracks InitTracks() {
     int len = ARRAY_LEN(resources);
     tr.len = len;
     char buff[255] = {0};
-    // TODO: parse dari file .map untuk ambil skor nya
     for(int i = 0; i < len; i++) {
         Track *track = &tr.track[i];
         strcat(buff, resources[i]);
@@ -221,4 +220,15 @@ void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
     int selected = ctx->selected_track;
     Beatmap map = GetSelectedMusicBeatmap(ctx);
     WriteSelectedMusicBeatmapToFile(&map, ctx->tracks.track[selected].music_name, score, acc);
+}
+
+float GetSelectedMusicLength(AppContext* ctx){
+    int selected = ctx->selected_track;
+    Music music = ctx->tracks.track[selected].music;
+    return GetMusicTimeLength(music); 
+}
+float GetSelectedMusicTimePlayed(AppContext* ctx){
+    int selected = ctx->selected_track;
+    Music music = ctx->tracks.track[selected].music;
+    return GetMusicTimePlayed(music);
 }

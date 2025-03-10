@@ -7,8 +7,8 @@
 
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
-#define PARTICLE_LEN 25
-#define PATICLE_HEIGHT 100
+#define PARTICLE_LEN 250
+#define PATICLE_HEIGHT 200
 
 typedef enum TransitionPhase {
     TRANSITION_NONE,
