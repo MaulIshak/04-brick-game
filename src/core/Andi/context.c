@@ -80,7 +80,7 @@ void DestroyContext(AppContext *ctx) {
     DestroyTracks(&ctx->tracks);
     free(ctx->_beatmap.items);
 }
-
+const char* font_path = "resources/font/JetBrainsMono-Regular.ttf";
 AppContext CreateContext(int screen_width , int screen_height ){
     Tracks tracks = InitTracks();
     AppContext ctx = {
@@ -95,6 +95,8 @@ AppContext CreateContext(int screen_width , int screen_height ){
     ctx._beatmap.items = malloc(sizeof(Note) * 10);
     ctx._beatmap.cap = 10;
     ctx._beatmap.len = 0;
+    Font font = LoadFont(font_path);
+    ctx.font = font;
     return ctx;
 }
 
