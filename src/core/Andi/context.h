@@ -121,6 +121,12 @@ void StopSelectedTrack(AppContext* ctx);
 void SeekSelectedTrack(AppContext* ctx, float second);
 // Cek apakah musik selesai
 bool IsSelectedMusicEnd(AppContext* ctx);
+
+// Mengambil panjang waktu dari musik (dalam detik)
+float GetSelectedMusicLength(AppContext* ctx);
+// Mengambil time played dari musik
+float GetSelectedMusicTimePlayed(AppContext* ctx);
+
 // ambil nama musik.
 char *GetSelectedMusicName(AppContext* ctx);
 // Private fn:
