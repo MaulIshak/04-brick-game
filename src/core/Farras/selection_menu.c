@@ -33,9 +33,9 @@ void SelectionMenu_Draw(SelectionMenu *self) {
       
       DrawRectangle(xPosition - textPadding, yPosition - textPadding, textSize.x + 2 * textPadding < 400 ? 400 : textSize.x + 2 * textPadding, textSize.y + 2 * textPadding * 2, bgColor);
       
-      DrawTextEx(GetFontDefault(), self->ctx->tracks.track[i].music_name, (Vector2){ xPosition, yPosition }, fontsize * scale, 2, textColor);
+      DrawTextEx(self->ctx->font, self->ctx->tracks.track[i].music_name, (Vector2){ xPosition, yPosition }, fontsize * scale, 2, textColor);
       
-      DrawTextEx(GetFontDefault(), TextFormat("Best Score: %d", self->ctx->tracks.track[i].high_score), (Vector2){ xPosition, yPosition + 20 * scale + textPadding }, 20 * scale, 2, textColor);
+      DrawTextEx(self->ctx->font, TextFormat("Best Score: %d", self->ctx->tracks.track[i].high_score), (Vector2){ xPosition, yPosition + 20 * scale + textPadding }, 20 * scale, 2, textColor);
       
       DrawRectangle(xPosition, yPosition, 10, 10, RED);
   }
