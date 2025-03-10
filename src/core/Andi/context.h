@@ -56,6 +56,7 @@ typedef struct Score {
     long int point;
     // persentase dari akurasi
     double accuracy;
+    int perfect, good, miss;
     // Streak
     int streak;
 } Score;
@@ -96,6 +97,8 @@ typedef struct AppContext {
     int selected_track;
     // Menentukan apakah music sedang berjalan.
     bool is_music_playing;
+    // Font yang kita gunakan
+    Font font;
 
     // Private Field: buffer untuk `GetSelectedMusicBeatmap()`
     Beatmap _beatmap;
@@ -122,7 +125,9 @@ void SeekSelectedTrack(AppContext* ctx, float second);
 // Cek apakah musik selesai
 bool IsSelectedMusicEnd(AppContext* ctx);
 
+// Mengambil panjang waktu dari musik (dalam detik)
 float GetSelectedMusicLength(AppContext* ctx);
+// Mengambil time played dari musik
 float GetSelectedMusicTimePlayed(AppContext* ctx);
 
 // ambil nama musik.

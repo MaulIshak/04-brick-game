@@ -4,4 +4,5 @@ out/*.exe
 out/*.pdb
 bin/zig/*
 compile_commands.json
+compile_json_1
 .zig-cache/
