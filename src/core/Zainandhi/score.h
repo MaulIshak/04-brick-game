@@ -1,10 +1,14 @@
 #include "scene.h"
 #include "context.h"
 #include "gameplay.h"
-#include "note.h"
 #ifndef SCORE_H
 #define SCORE_H
 
+typedef enum Accuracy{
+    PERFECT,
+    GOOD,
+    MISS
+} Accuracy;
 
 typedef struct ScoreManager
 {

@@ -11,7 +11,7 @@ void timer_start(Timer* t, double second){
 }
 
 bool is_timer_end(Timer* t){
-    return (GetTime() - t->timer_start) >=  + t->second;
+    return (GetTime() - t->timer_start) >= t->second;
 }
 
 double time_elapsed(Timer* t) {

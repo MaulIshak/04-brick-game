@@ -29,7 +29,9 @@
     "background.h": "c",
     "type_traits": "c",
     "raymath.h": "c",
-    "stdint.h": "c"
+    "stdint.h": "c",
+    "scene.h": "c",
+    "cmath": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
