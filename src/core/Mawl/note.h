@@ -61,6 +61,7 @@ typedef struct {
   DrawableNote note [1024];
   Accuracy acc;
   ScoreManager *scoreManager;
+  bool isNewGame;
 }NoteManager;
 
 // Public
@@ -76,6 +77,7 @@ void _drawAccuracy(NoteManager*);
 void _updateNotePosition(NoteManager*);
 void _noteHitHandler(NoteManager*, DrawableNote*);
 void _extractNoteFromBeatmap(NoteManager*);
+void _resetNoteManager(NoteManager*);
 
 // Implement Interface
 impl_scene(NoteManager*, Note_toScene, note_draw, note_update, note_isShow);
