@@ -51,6 +51,7 @@ void note_update(NoteManager *self){
         self->timer.is_started = false;
         self->musicTimer.is_started = false;
         self->isNewGame = true;
+        self->gp->timer.is_started = false;
         return;
       }
     }  
@@ -269,7 +270,7 @@ void _updateNotePosition(NoteManager* self){
 void _noteHitHandler(NoteManager* self, DrawableNote *note){
   if(self->gp->gameTime >= note->hit_at_ms +self->accOff.missLowerOffset){
     if(!note->isHit){
-      // note->isHit = true; // BUGNYA DISINI!
+      note->isHit = true; // BUGNYA DISINI!
       // printf("MISS\n");
       self->isFirstHit = true;
       self->acc = MISS;

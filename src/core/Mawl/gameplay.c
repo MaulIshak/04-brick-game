@@ -106,4 +106,5 @@ void _LoadNoteTexture(Gameplay*self){
 void _UpdateGameTime(Gameplay* self){
   float currentTime = GetTime();
   self->gameTime =s_to_ms(currentTime - self->startGameTime - 3);
+  printf("%.2f\n", self->gameTime);
 }

@@ -99,7 +99,7 @@ int main()
         draws[i].scene->Update(draws[i].self);
       }
     }
-    printf("%d", note.note->isHit);
+    // printf("%d", note.note->isHit);
 
     BeginDrawing();
 
