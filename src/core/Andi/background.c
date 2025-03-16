@@ -93,7 +93,7 @@ void Background_Draw(Background* self){
     // }
 
     DrawTextureEx(self->transition_texture, (Vector2){(-self->transition_texture.width) + (self->start_transition_frame * 40), 0},0, 1, WHITE);
-
+    
     if(_show_particle) {
         for(int i = 0; i < PARTICLE_LEN; i++) {
             float factor_color = ((_particle_config.area.height + _particle_config.area.y) - self->particles[i].pos.y) / PATICLE_HEIGHT;
@@ -128,6 +128,8 @@ void Background_Update(Background* self){
         EnableParticle();
         timer_start(&self->timer, 0);
     }
+
+    
 
     
     if(IsTransition) {

@@ -12,6 +12,8 @@ const char *resources[] = {
     "resources/Pest of The Cosmos",
     "resources/LGR",
     "resources/ToyLand",
+    "resources/BadApple",
+    "resources/PKKMB 2024"
 };
 
 Tracks InitTracks() {
@@ -24,7 +26,6 @@ Tracks InitTracks() {
     int len = ARRAY_LEN(resources);
     tr.len = len;
     char buff[255] = {0};
-    // TODO: parse dari file .map untuk ambil skor nya
     for(int i = 0; i < len; i++) {
         Track *track = &tr.track[i];
         strcat(buff, resources[i]);
@@ -79,7 +80,7 @@ void DestroyContext(AppContext *ctx) {
     DestroyTracks(&ctx->tracks);
     free(ctx->_beatmap.items);
 }
-
+const char* font_path = "resources/font/JetBrainsMono-Regular.ttf";
 AppContext CreateContext(int screen_width , int screen_height ){
     Tracks tracks = InitTracks();
     AppContext ctx = {
@@ -94,6 +95,8 @@ AppContext CreateContext(int screen_width , int screen_height ){
     ctx._beatmap.items = malloc(sizeof(Note) * 10);
     ctx._beatmap.cap = 10;
     ctx._beatmap.len = 0;
+    Font font = LoadFont(font_path);
+    ctx.font = font;
     return ctx;
 }
 
@@ -219,4 +222,15 @@ void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
     int selected = ctx->selected_track;
     Beatmap map = GetSelectedMusicBeatmap(ctx);
     WriteSelectedMusicBeatmapToFile(&map, ctx->tracks.track[selected].music_name, score, acc);
+}
+
+float GetSelectedMusicLength(AppContext* ctx){
+    int selected = ctx->selected_track;
+    Music music = ctx->tracks.track[selected].music;
+    return GetMusicTimeLength(music); 
+}
+float GetSelectedMusicTimePlayed(AppContext* ctx){
+    int selected = ctx->selected_track;
+    Music music = ctx->tracks.track[selected].music;
+    return GetMusicTimePlayed(music);
 }
