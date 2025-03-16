@@ -85,7 +85,7 @@ int main()
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   
-  ctx.selected_track = 5;
+  ctx.selected_track = 6;
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif

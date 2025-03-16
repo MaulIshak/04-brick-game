@@ -14,6 +14,7 @@ const char *resources[] = {
     "resources/ToyLand",
     "resources/BadApple",
     "resources/PKKMB 2024",
+    "resources/Infinite Cosmodynamics"
 };
 
 Tracks InitTracks() {
