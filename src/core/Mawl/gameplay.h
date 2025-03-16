@@ -8,6 +8,7 @@
 #include "raylib.h"
 #include "context.h"
 #include "timer.h"
+#include "progress_bar.h"
 
 typedef struct Gameplay{
   // Context aplikasi
@@ -29,6 +30,8 @@ typedef struct Gameplay{
   // Offset
   double gameTimeOffset;
   Timer timer;
+  // Progress Bar
+  ProgressBar progressBar;
 }Gameplay;
 
 
