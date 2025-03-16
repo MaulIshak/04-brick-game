@@ -5,9 +5,11 @@
 #include <string.h>
 #include <stdio.h>
 #include "timer.h"
+#include "progress_bar.h"
 
-static Color secondary = (Color){ 0x70, 0xC6, 0xFF, 255 };
-static Color primary = (Color){187 ,225 , 250, 255 };
+
+static Color secondary = BLACK;
+static Color primary = BLACK;
 
 void gp_draw(Gameplay* self){
     Rectangle rec = {
@@ -16,12 +18,12 @@ void gp_draw(Gameplay* self){
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
-    DrawFPS(0,0);
     for (int i = 0; i < LINE_COUNT; i++)
     {
-      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, 1.5f, (Color){ 240, 240, 240, self->padOpacity[i] });
+      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padOpacity[i] });
     }
-  
+    
+    DrawProgressBar(&self->progressBar);
     
   }
   void gp_update(Gameplay* self){
@@ -33,8 +35,10 @@ void gp_draw(Gameplay* self){
       _UpdateGameTime(self);
 
     }
+    UpdateProgressBar(&self->progressBar, self);
+
     // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
+    if(IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->padOpacity[2] = 255;
       // printf("Hit time: %f\n", self->gameTime);
     }else{
@@ -42,7 +46,7 @@ void gp_draw(Gameplay* self){
     }
 
     // LEFT ARROW (LEFT)
-    if(IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
+    if(IsKeyDown(KEY_LEFT) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
       self->padOpacity[0] = 255;
     }else{
       self->padOpacity[0] = 100;
@@ -50,7 +54,7 @@ void gp_draw(Gameplay* self){
     }
 
     // UP ARROW (MIDDLE RIGHT)
-    if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    if(IsKeyDown(KEY_UP) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->padOpacity[1] = 255;
     }else{
       self->padOpacity[1] = 100;
@@ -58,7 +62,7 @@ void gp_draw(Gameplay* self){
     }
 
     // RIGHT ARROW (RIGHT)
-    if(IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
+    if(IsKeyDown(KEY_RIGHT) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
       self->padOpacity[3] = 255;
     }else{
       self->padOpacity[3] = 100;
@@ -75,10 +79,10 @@ bool gp_isShow(Gameplay* self){
 
 void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   char *textureSources [LINE_COUNT] ={
-    "resources/texture/Arrow_YangAdaPutihnya-03.png",
-    "resources/texture/Arrow_YangAdaPutihnya-04.png",
-    "resources/texture/Arrow_YangAdaPutihnya-02.png",
-    "resources/texture/Arrow_YangAdaPutihnya-01.png"
+    "resources/texture/Pad_Active-01.png",
+    "resources/texture/Pad_Active-02.png",
+    "resources/texture/Pad_Active-03.png",
+    "resources/texture/Pad_Active-04.png"
   };
   gameplay->ctx = ctx;
   gameplay->width = 400;
@@ -86,13 +90,15 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   for (int i = 0; i < LINE_COUNT; i++)
   {
     gameplay->padOpacity[i] = 100;
-    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i +10;
+    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i + 10;
     gameplay->padPositions[i].y = 48;
   }
   gameplay->gameTime = 0;
   _LoadNoteTexture(gameplay);
   gameplay->timer = (Timer){false, 0,0};
   gameplay->gameTimeOffset = 2000;
+
+  InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->ctx->screen_width/2 + 100, 30, SECONDARY_COLOR);
 }
 
 void _LoadNoteTexture(Gameplay*self){
@@ -106,4 +112,5 @@ void _LoadNoteTexture(Gameplay*self){
 void _UpdateGameTime(Gameplay* self){
   float currentTime = GetTime();
   self->gameTime =s_to_ms(currentTime - self->startGameTime - 3);
+  printf("%.2f\n", self->gameTime);
 }

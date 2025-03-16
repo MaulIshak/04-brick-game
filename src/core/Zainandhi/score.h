@@ -4,7 +4,8 @@
 #ifndef SCORE_H
 #define SCORE_H
 
-typedef enum Accuracy{
+typedef enum Accuracy
+{
     PERFECT,
     GOOD,
     MISS
@@ -12,14 +13,26 @@ typedef enum Accuracy{
 
 typedef struct ScoreManager
 {
-    AppContext* ctx;
+    AppContext *ctx;
     int value;
+    // double accuracy;
+    int perfect, good, miss;
+    
     int width;
+    int perfectCombo;
     bool isBeatmapLoaded;
     Beatmap beatmap;
-}ScoreManager;
+
+    Texture2D fireFrames[3];
+    int currentFrame;
+    float frameTimer;
+} ScoreManager;
 
 ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay);
+
+void LoadingLoadTexturesFire(ScoreManager *score);
+
+void LoadingUnloadTexturesFire(ScoreManager *score);
 
 void AddScore(ScoreManager *score, Accuracy acc);
 
@@ -29,6 +42,6 @@ void UpdateScore(ScoreManager *score);
 
 bool IsShowScore(ScoreManager *score);
 
-impl_scene(ScoreManager*, Score_ToScene, DrawScore, UpdateScore, IsShowScore);
+impl_scene(ScoreManager *, Score_ToScene, DrawScore, UpdateScore, IsShowScore);
 
 #endif
