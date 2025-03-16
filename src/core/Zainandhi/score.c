@@ -3,6 +3,7 @@
 #include "score.h"
 #include "gameplay.h"
 #include "context.h"
+#include "sfx.h"
 
 ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
 {
@@ -11,6 +12,12 @@ ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
     score.isBeatmapLoaded = false;
 
     score.value = 0;
+
+    score.perfect = 0;
+    
+    score.good = 0;
+    
+    score.miss = 0;
 
     score.ctx = ctx;
 
@@ -46,21 +53,27 @@ void AddScore(ScoreManager *score, Accuracy acc)
 
     if (acc == PERFECT)
     {
+        PlayPerfectSfx();
         score->value += perfect;
         score->perfectCombo++;
         sumPerfect++;
+        score->perfect++;
     }
     else if (acc == GOOD)
     {
+        PlayGoodSfx();
         score->value += good;
         score->perfectCombo = 0;
         sumGood++;
+        score->good++;
     }
     else
     {
+        PlayMissSfx();
         score->value += miss;
         score->perfectCombo = 0;
         sumMiss++;
+        score->miss++;
     }
 
     if (totalNotesHit > 0)
@@ -130,6 +143,9 @@ void UpdateScore(ScoreManager *score)
     }
 
     score->ctx->score.point = score->value;
+    score->ctx->score.perfect = score->perfect;
+    score->ctx->score.good = score->good;
+    score->ctx->score.miss = score->miss;
 }
 
 bool IsShowScore(ScoreManager *score)
