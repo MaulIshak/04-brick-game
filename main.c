@@ -15,6 +15,7 @@
 #include "note.h"
 #include "selection_menu.h"
 #include "animasi.h"
+#include "sfx.h"
 
 #include "macro.h"
 
@@ -33,6 +34,7 @@ int main()
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
   InitAudioDevice();
 
+  InitSfx();
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
   ctx.app_state = APP_PRESS_TO_PLAY;
@@ -89,9 +91,22 @@ int main()
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif
-  while (!WindowShouldClose())
-  {
+  
+  while (!WindowShouldClose()) {
     UpdateContext(&ctx);
+
+    if (ctx.app_state != APP_PLAYING) {
+        if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_A) || IsKeyPressed(KEY_W) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) {
+          PlayArrowSfx(KEY_RIGHT);
+        }
+        if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_S) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) {
+          PlayArrowSfx(KEY_LEFT);
+        }
+        if (IsKeyPressed(KEY_ENTER)) {
+            PlayEnterSfx();
+        }
+    }
+    
     for (int i = 0; i < draws_len; i++)
     {
       if (draws[i].scene->IsShow(draws[i].self))
@@ -117,6 +132,7 @@ int main()
     EndDrawing();
   }
   DestroyContext(&ctx);
+  UnloadSfx();
   CloseAudioDevice();
   CloseWindow();
 

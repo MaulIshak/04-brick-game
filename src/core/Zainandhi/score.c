@@ -3,6 +3,7 @@
 #include "score.h"
 #include "gameplay.h"
 #include "context.h"
+#include "sfx.h"
 
 ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
 {
@@ -52,6 +53,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
 
     if (acc == PERFECT)
     {
+        PlayPerfectSfx();
         score->value += perfect;
         score->perfectCombo++;
         sumPerfect++;
@@ -59,6 +61,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
     }
     else if (acc == GOOD)
     {
+        PlayGoodSfx();
         score->value += good;
         score->perfectCombo = 0;
         sumGood++;
@@ -66,6 +69,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
     }
     else
     {
+        PlayMissSfx();
         score->value += miss;
         score->perfectCombo = 0;
         sumMiss++;
