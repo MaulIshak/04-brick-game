@@ -9,7 +9,7 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     char buff[256] = {0};
     char* grade = "PERFECT";
     printf("Point: %ld\n", self->ctx->score.point);
-    printf("Accuracy: %d\n", self->ctx->score.point);
+    printf("Accuracy: %d\n", self->ctx->score.accuracy);
     printf("Perfect: %d\n", self->ctx->score.perfect);
     printf("Good: %d\n", self->ctx->score.good);
     printf("Miss: %d\n", self->ctx->score.miss);
