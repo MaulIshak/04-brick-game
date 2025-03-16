@@ -35,7 +35,7 @@ int main()
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_LOADING;
+  ctx.app_state = APP_PRESS_TO_PLAY;
   Loading loading = {
     .ctx = &ctx
   };
@@ -99,6 +99,7 @@ int main()
         draws[i].scene->Update(draws[i].self);
       }
     }
+    printf("%d", note.note->isHit);
 
     BeginDrawing();
 
