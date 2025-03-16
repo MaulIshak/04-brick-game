@@ -75,10 +75,10 @@ bool gp_isShow(Gameplay* self){
 
 void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   char *textureSources [LINE_COUNT] ={
-    "resources/texture/Arrow_YangAdaPutihnya-03.png",
-    "resources/texture/Arrow_YangAdaPutihnya-04.png",
-    "resources/texture/Arrow_YangAdaPutihnya-02.png",
-    "resources/texture/Arrow_YangAdaPutihnya-01.png"
+    "resources/texture/Pad_Active-01.png",
+    "resources/texture/Pad_Active-02.png",
+    "resources/texture/Pad_Active-03.png",
+    "resources/texture/Pad_Active-04.png"
   };
   gameplay->ctx = ctx;
   gameplay->width = 400;

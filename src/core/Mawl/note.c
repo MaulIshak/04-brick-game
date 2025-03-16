@@ -87,10 +87,10 @@ void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp, ScoreManager *sc
   self->isBeatmapLoaded = false;
   self->ctx = ctx;
   self->timeToHitPad = 1.5f;
-  self->noteTexture[0] = LoadTexture("resources/texture/Arrow-3.png"); // panah kiri
-  self->noteTexture[1] = LoadTexture("resources/texture/Arrow-1.png"); // panah bawah
-  self->noteTexture[2] = LoadTexture("resources/texture/Arrow.png"); // panah atas;
-  self->noteTexture[3] = LoadTexture("resources/texture/Arrow-2.png"); // panah kanan
+  self->noteTexture[0] = LoadTexture("resources/texture/Arrow-01.png"); // panah kiri
+  self->noteTexture[1] = LoadTexture("resources/texture/Arrow-03.png"); // panah bawah
+  self->noteTexture[2] = LoadTexture("resources/texture/Arrow-02.png"); // panah atas;
+  self->noteTexture[3] = LoadTexture("resources/texture/Arrow-04.png"); // panah kanan
   self->timer = (Timer){
     false,0,0
   };
