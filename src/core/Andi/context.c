@@ -13,7 +13,7 @@ const char *resources[] = {
     "resources/LGR",
     "resources/ToyLand",
     "resources/BadApple",
-    "resources/PKKMB 2024"
+    "resources/PKKMB 2024",
 };
 
 Tracks InitTracks() {
@@ -80,7 +80,7 @@ void DestroyContext(AppContext *ctx) {
     DestroyTracks(&ctx->tracks);
     free(ctx->_beatmap.items);
 }
-const char* font_path = "resources/font/JetBrainsMono-Regular.ttf";
+const char* font_path = "resources/font/Jersey15-Regular.ttf";
 AppContext CreateContext(int screen_width , int screen_height ){
     Tracks tracks = InitTracks();
     AppContext ctx = {

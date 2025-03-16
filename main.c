@@ -35,7 +35,7 @@ int main()
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_LOADING;
+  ctx.app_state = APP_SELECT;
   Loading loading = {
     .ctx = &ctx
   };
@@ -58,9 +58,8 @@ int main()
   Background bg = CreateBackground(&ctx);
   Drawable bg_draw = Background_ToScene(&bg);
 
-  SelectionMenu selection_menu = {
-    .ctx = &ctx
-  };
+  SelectionMenu selection_menu;
+  InitSelectionMenu(&selection_menu, &ctx);
   Drawable selection_menu_draw = SelectionMenu_ToScene(&selection_menu);
   
   Gameplay gameplay;
