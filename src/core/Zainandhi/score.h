@@ -16,6 +16,7 @@ typedef struct ScoreManager
     AppContext *ctx;
     int value;
     // double accuracy;
+    int perfect, good, miss;
     
     int width;
     int perfectCombo;
