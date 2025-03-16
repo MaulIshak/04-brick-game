@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "timer.h"
+#include "progress_bar.h"
+
 
 static Color secondary = (Color){ 0x70, 0xC6, 0xFF, 255 };
 static Color primary = (Color){187 ,225 , 250, 255 };
@@ -16,12 +18,12 @@ void gp_draw(Gameplay* self){
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
-    DrawFPS(0,0);
     for (int i = 0; i < LINE_COUNT; i++)
     {
       DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, 1.5f, (Color){ 240, 240, 240, self->padOpacity[i] });
     }
-  
+    
+    DrawProgressBar(&self->progressBar);
     
   }
   void gp_update(Gameplay* self){
@@ -33,6 +35,8 @@ void gp_draw(Gameplay* self){
       _UpdateGameTime(self);
 
     }
+    UpdateProgressBar(&self->progressBar, self);
+
     // DOWN ARROW (MIDDLE LEFT)
     if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->padOpacity[2] = 255;
@@ -93,6 +97,8 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   _LoadNoteTexture(gameplay);
   gameplay->timer = (Timer){false, 0,0};
   gameplay->gameTimeOffset = 2000;
+
+  InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->ctx->screen_width/2 + 100, 30, SECONDARY_COLOR);
 }
 
 void _LoadNoteTexture(Gameplay*self){
