@@ -13,13 +13,13 @@ void gp_draw(Gameplay* self){
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
-    // DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
+    DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     DrawFPS(0,0);
     for (int i = 0; i < LINE_COUNT; i++)
     {
-      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, 1.5f, (Color){ 240, 240, 240, self->padOpacity[i] });
+      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padOpacity[i] });
     }
   
     
@@ -86,7 +86,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   for (int i = 0; i < LINE_COUNT; i++)
   {
     gameplay->padOpacity[i] = 100;
-    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i +10;
+    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i + 10;
     gameplay->padPositions[i].y = 48;
   }
   gameplay->gameTime = 0;
