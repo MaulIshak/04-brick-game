@@ -95,7 +95,7 @@ void Background_Draw(Background* self){
         float hz = (fft_out[(int)freq].r);
         
         if(hz > 1) {
-            rad += hz * 0.005;
+            rad += hz * 0.01;
         }
         // char buff[20];
         // sprintf(buff, "%lf", hz);
