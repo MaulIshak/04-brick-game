@@ -33,7 +33,8 @@ void Background_MusicCallback(void *bufferData, unsigned int frames){
     }
 }
 
-inline float amp(kiss_fft_cpx z)
+// compute amplitude
+float amp(kiss_fft_cpx z)
 {
     float a = z.r;
     float b = z.i;
@@ -66,31 +67,43 @@ Background CreateBackground(AppContext* ctx){
         .particle_option = opt,  
     };
 
+    bg.objects = FlyingObject_Create(ctx);
+
     return bg;
 }
 
 void Background_Draw(Background* self){
     
-    // int bottom = self->ctx->screen_height;
-    // float step = 1.06;
+    int bottom = self->ctx->screen_height;
+    float step = 1.06;
+    float rad = 0;
+    for(float freq = 1;  freq < FFT_SIZE; freq = (freq * step)) {
+        // int f1 = (int)ceilf(freq);
+        // int total = 0;
+        // int count = 0;
+        // int next_freq = (int)(freq * step);
+        // float avg = 0;
 
-    // for(float freq = 1;  freq < FFT_SIZE; freq = (freq * step)) {
-    //     int f1 = (int)ceilf(freq);
-    //     int total = 0;
-    //     int count = 0;
-    //     int next_freq = (int)(freq * step);
-    //     int avg = 0;
+        // for(int i = f1; i < next_freq && i < FFT_SIZE; i++) {
+        //     total += fft_out[i].r;
+        //     count++;
+        // }
+        // if (count > 0) {
+        //     avg = (float)total / (float)count;
+        // }
+        // avg *= 3;
+        float hz = (fft_out[(int)freq].r);
+        
+        if(hz > 1) {
+            rad += hz * 0.005;
+        }
+        // char buff[20];
+        // sprintf(buff, "%lf", hz);
+        // DrawText(buff, 20 * freq, 20, 20, BLUE);
+        // DrawRectangle(freq, bottom - avg, 5, avg, Fade(BLACK, 0.125));
+    }
+    // DrawCircle(self->ctx->screen_width / 2, self->ctx->screen_height / 2, rad, BLUE );
 
-    //     for(int i = f1; i < next_freq && i < FFT_SIZE; i++) {
-    //         total += fft_out[i].r;
-    //         count++;
-    //     }
-    //     if (count > 0) {
-    //         avg = total / count;
-    //     }
-    //     avg *= 3;
-    //     DrawRectangle(freq, bottom - avg, 5, avg, Fade(RED, 0.125));
-    // }
 
     DrawTextureEx(self->transition_texture, (Vector2){(-self->transition_texture.width) + (self->start_transition_frame * 40), 0},0, 1, WHITE);
     
@@ -105,6 +118,7 @@ void Background_Draw(Background* self){
             DrawRectangleV((Vector2){x_pos, self->particles[i].pos.y}, (Vector2){self->particles[i].radius, self->particles[i].radius}, c);
         }
     }
+    FlyingObject_Draw(&self->objects);
 }
 void Background_Update(Background* self){
     
@@ -114,10 +128,11 @@ void Background_Update(Background* self){
     //     fft_in[i].r = fft_in[i].r*hann;
     // }
 
-    // kiss_fft(self->config, fft_in, fft_out);
+    kiss_fft(self->config, fft_in, fft_out);
+    FlyingObject_Update(&self->objects, self->ctx);
     // for(int i = 0; i < FFT_SIZE; i++) {
         
-    //     printf("%4f HZ \n", fft_out[i].r);
+        // printf("%4f HZ \n", fft_out[i].r);
     // }
     // if(!ok) {
     //     StartTransition();
