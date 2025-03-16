@@ -37,7 +37,7 @@ int main()
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
   ctx.app_state = APP_SELECT;
-  ctx.app_state = APP_PRESS_TO_PLAY;
+  // ctx.app_state = APP_PRESS_TO_PLAY;
   Loading loading = {
     .ctx = &ctx
   };
