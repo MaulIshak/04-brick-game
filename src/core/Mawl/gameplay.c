@@ -8,14 +8,14 @@
 #include "progress_bar.h"
 
 
-static Color secondary = (Color){ 0x70, 0xC6, 0xFF, 255 };
-static Color primary = (Color){187 ,225 , 250, 255 };
+static Color secondary = BLACK;
+static Color primary = BLACK;
 
 void gp_draw(Gameplay* self){
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
-    DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
+    // DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     for (int i = 0; i < LINE_COUNT; i++)
@@ -38,7 +38,7 @@ void gp_draw(Gameplay* self){
     UpdateProgressBar(&self->progressBar, self);
 
     // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_DOWN) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
+    if(IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->padOpacity[2] = 255;
       // printf("Hit time: %f\n", self->gameTime);
     }else{
@@ -46,7 +46,7 @@ void gp_draw(Gameplay* self){
     }
 
     // LEFT ARROW (LEFT)
-    if(IsKeyDown(KEY_LEFT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
+    if(IsKeyDown(KEY_LEFT) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
       self->padOpacity[0] = 255;
     }else{
       self->padOpacity[0] = 100;
@@ -54,7 +54,7 @@ void gp_draw(Gameplay* self){
     }
 
     // UP ARROW (MIDDLE RIGHT)
-    if(IsKeyDown(KEY_UP) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    if(IsKeyDown(KEY_UP) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->padOpacity[1] = 255;
     }else{
       self->padOpacity[1] = 100;
@@ -62,7 +62,7 @@ void gp_draw(Gameplay* self){
     }
 
     // RIGHT ARROW (RIGHT)
-    if(IsKeyDown(KEY_RIGHT) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
+    if(IsKeyDown(KEY_RIGHT) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
       self->padOpacity[3] = 255;
     }else{
       self->padOpacity[3] = 100;
@@ -112,4 +112,5 @@ void _LoadNoteTexture(Gameplay*self){
 void _UpdateGameTime(Gameplay* self){
   float currentTime = GetTime();
   self->gameTime =s_to_ms(currentTime - self->startGameTime - 3);
+  printf("%.2f\n", self->gameTime);
 }
