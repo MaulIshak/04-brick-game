@@ -67,7 +67,7 @@ Background CreateBackground(AppContext* ctx){
         .particle_option = opt,  
     };
 
-    bg.objects = FlyingObject_Create(ctx);
+    // bg.objects = FlyingObject_Create(ctx);
 
     return bg;
 }
@@ -95,7 +95,7 @@ void Background_Draw(Background* self){
         float hz = (fft_out[(int)freq].r);
         
         if(hz > 1) {
-            rad += hz * 0.005;
+            rad += hz * 0.01;
         }
         // char buff[20];
         // sprintf(buff, "%lf", hz);
@@ -129,7 +129,7 @@ void Background_Update(Background* self){
     // }
 
     kiss_fft(self->config, fft_in, fft_out);
-    FlyingObject_Update(&self->objects, self->ctx);
+    // FlyingObject_Update(&self->objects, self->ctx);
     // for(int i = 0; i < FFT_SIZE; i++) {
         
         // printf("%4f HZ \n", fft_out[i].r);
