@@ -148,7 +148,7 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   bool isMiss =self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset;
 
   // Akurasi berdasarkan posisi
-
+  bool isPerfectPos = note.
   // DOWN ARROW (MIDDLE RIGHT)
   if((IsKeyPressed(KEY_DOWN) ||IsKeyPressed(KEY_J)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
     if(isPerfect){

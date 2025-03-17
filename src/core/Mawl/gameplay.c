@@ -107,7 +107,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   gameplay->timer = (Timer){false, 0,0};
   gameplay->gameTimeOffset = 2000;
 
-  InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->ctx->screen_width/2 + 100, 30, SECONDARY_COLOR);
+  InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->width, 30, SECONDARY_COLOR);
   gameplay->padSize = 512*0.16f +5;
 }
 
