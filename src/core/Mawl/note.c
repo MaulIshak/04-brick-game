@@ -117,19 +117,19 @@ void _drawBeatmapNote(NoteManager* self, DrawableNote note){
   switch (note.direction)
   {
   case NOTE_LEFT:
-      position.x = self->gp->padPositions[0].x + 10 ;
+      position.x = self->gp->padPositions[0].x;
       textureToDraw = self->noteTexture[0];
       break;
   case NOTE_RIGHT:
-      position.x = self->gp->padPositions[3].x + 10;
+      position.x = self->gp->padPositions[3].x;
       textureToDraw = self->noteTexture[3];
       break;
   case NOTE_UP:
-      position.x = self->gp->padPositions[1].x + 10;
+      position.x = self->gp->padPositions[1].x;
       textureToDraw = self->noteTexture[2];
       break;
   case NOTE_DOWN:
-      position.x = self->gp->padPositions[2].x + 10;
+      position.x = self->gp->padPositions[2].x;
       textureToDraw = self->noteTexture[1];
       break;
   }
