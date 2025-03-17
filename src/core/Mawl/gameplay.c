@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "timer.h"
+#include "progress_bar.h"
+
 
 static Color secondary = BLACK;
 static Color primary = BLACK;
@@ -13,15 +15,15 @@ void gp_draw(Gameplay* self){
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
-    // DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
+    DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
-    DrawFPS(0,0);
     for (int i = 0; i < LINE_COUNT; i++)
     {
-      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, 1.5f, (Color){ 240, 240, 240, self->padOpacity[i] });
+      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padOpacity[i] });
     }
-  
+    
+    DrawProgressBar(&self->progressBar);
     
   }
   void gp_update(Gameplay* self){
@@ -33,6 +35,8 @@ void gp_draw(Gameplay* self){
       _UpdateGameTime(self);
 
     }
+    UpdateProgressBar(&self->progressBar, self);
+
     // DOWN ARROW (MIDDLE LEFT)
     if(IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->padOpacity[2] = 255;
@@ -86,13 +90,15 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   for (int i = 0; i < LINE_COUNT; i++)
   {
     gameplay->padOpacity[i] = 100;
-    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i +10;
+    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i + 10;
     gameplay->padPositions[i].y = 48;
   }
   gameplay->gameTime = 0;
   _LoadNoteTexture(gameplay);
   gameplay->timer = (Timer){false, 0,0};
   gameplay->gameTimeOffset = 2000;
+
+  InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->ctx->screen_width/2 + 100, 30, SECONDARY_COLOR);
 }
 
 void _LoadNoteTexture(Gameplay*self){
@@ -106,5 +112,5 @@ void _LoadNoteTexture(Gameplay*self){
 void _UpdateGameTime(Gameplay* self){
   float currentTime = GetTime();
   self->gameTime =s_to_ms(currentTime - self->startGameTime - 3);
-  printf("%.2f\n", self->gameTime);
+  // printf("%.2f\n", self->gameTime);
 }

@@ -2,13 +2,17 @@
 #include "animasi.h"
 
 void LoadingLoadTextures(Loading *self) {
-    for (int i = 0; i < 4; i++) {
-        self->texture[i] = LoadTexture("resources/texture/lambang-contoh.png");  
+    for (int i = 0; i < 5; i++) {
+        self->texture[0] = LoadTexture("resources/texture/Arrow-1.png");
+        self->texture[1] = LoadTexture("resources/texture/Arrow-2.png");
+        self->texture[2] = LoadTexture("resources/texture/Arrow-3.png");
+        self->texture[3] = LoadTexture("resources/texture/Arrow.png");
+        self->texture[4] = LoadTexture("resources/texture/LOGO.png");  
     }
 }
 
 void LoadingUnloadTextures(Loading *self) {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         UnloadTexture(self->texture[i]);
     }
 }
@@ -17,48 +21,49 @@ void LoadingInitPositions(Loading *self) {
     int spacingX = SCREEN_WIDTH / 4;
     int centerX = SCREEN_WIDTH / 2;
     int centerY = SCREEN_HEIGHT / 2;
-
-    self->positions[0] = (Vector2){ spacingX - 250, centerY - 270 };
-    self->positions[1] = (Vector2){ SCREEN_WIDTH + 50, centerY - 270 };
-    self->positions[2] = (Vector2){ spacingX - 350, centerY + 70 };
-    self->positions[3] = (Vector2){ SCREEN_WIDTH + 100, centerY + 70 };
+    self->FadeIn = 255.0f;
 }
 
 void LoadingUpdatePositions(Loading *self) {
-    int leftStop = SCREEN_WIDTH / 3 - 100;
-    int rightStop = 2 * SCREEN_WIDTH / 3;
-    static float verticalOffsets[4] = {0};
-    static int direction[4] = {1, -1, 1, -1};
-    static float speeds[4] = {0.07f, 0.10f, 0.12f, 0.13f}; // Kecepatan berbeda tiap tekstur
+    float FadeInSpeed = 2.5f;
+    static int fadeDirection = -1;
+    static bool isFadeActive = true;
+    static float fadeTimer = 0.0f;
 
-    for (int i = 0; i < 4; i++) {
-        if (i % 2 == 0) { // Grup kiri
-            if (self->positions[i].x < leftStop) {
-                self->positions[i].x += TEXT_SPEED;
-                if (self->positions[i].x > leftStop) self->positions[i].x = leftStop;
-            }
-        } else { // Grup kanan
-            if (self->positions[i].x > rightStop) {
-                self->positions[i].x -= TEXT_SPEED;
-                if (self->positions[i].x < rightStop) self->positions[i].x = rightStop;
-            }
-        }
+    if (!isFadeActive) return; // Jika animasi selesai, keluar
+
+    if (fadeTimer > 0) {
+        fadeTimer--;
+        return; // Jangan lanjutkan perubahan fade selama delay
+    }
+
+    self->FadeIn += fadeDirection * FadeInSpeed;
+
+    // Cek apakah mencapai batas fade in / out
+    if (self->FadeIn <= 0) {
+        self->FadeIn = 0;
+        fadeDirection = 1;
+        fadeTimer = 60;  // Delay sebelum mulai fade in
+    } 
+    else if (self->FadeIn >= 255) {
+        self->FadeIn = 255;
+        fadeDirection = -1;
         
-        // Gerakan naik-turun langsung sejak awal
-        verticalOffsets[i] += direction[i] * speeds[i];
-        if (verticalOffsets[i] > 25 || verticalOffsets[i] < -25) {
-            direction[i] *= -1;
-        }
-        self->positions[i].y += direction[i] * speeds[i];
+        // **Hentikan fade setelah kembali ke nilai awal**
+        isFadeActive = false;
     }
 }
 
 void LoadingDrawTextures(Loading *self) {
-    for (int i = 0; i < 4; i++) {
-        DrawTextureEx(self->texture[i], self->positions[i], 0.0f, 0.2f, WHITE);
-    }
+
+    int centerXTex = SCREEN_WIDTH / 2 - self->texture[4].width / 2 - 120;
+    int centerYTex = SCREEN_HEIGHT / 2 - self->texture[4].height / 2 - 120;
+
+    DrawRectangle(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,(Color){0,0,0,(unsigned char)self->FadeIn});
+    DrawTextureEx(self->texture[4], (Vector2){ centerXTex, centerYTex }, 0.0f, 1.5f, (Color){255,255,255,255});
 }
 
 bool LoadingIsShow(Loading *self) {
     return self->ctx->app_state == APP_LOADING;
 }
+

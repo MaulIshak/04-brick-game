@@ -4,10 +4,12 @@
 #include "kiss_fft.h"
 #include "timer.h"
 #include "stdint.h"
+#include "flying_object.h"
+
 
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
-#define PARTICLE_LEN 250
+#define PARTICLE_LEN 20
 #define PATICLE_HEIGHT 200
 
 typedef enum TransitionPhase {
@@ -32,6 +34,7 @@ typedef struct ParticleConfig {
     Color end_color;  // warna partikel akhir sebelum menghilang
 } ParticleConfig;
 
+
 typedef struct Background {
     AppContext* ctx;
     kiss_fft_cfg config;
@@ -44,10 +47,12 @@ typedef struct Background {
     Particle particles[PARTICLE_LEN];
     Timer timer;
     uint64_t frame;
+    // test
+    FlyingObjects objects;  
 } Background;
 
 void push_fft(float frame);
-
+inline float amp(kiss_fft_cpx z);
 void Background_MusicCallback(void *bufferData, unsigned int frames);
 Background CreateBackground(AppContext* ctx);
 void Background_Draw(Background* self);

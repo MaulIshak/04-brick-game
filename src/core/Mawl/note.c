@@ -102,9 +102,9 @@ void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp, ScoreManager *sc
   self->isFirstHit = false;
   self->acc = PERFECT;
   self->accOff = (AccuracyOffset){
-    40, 50,
-    50, 60,
-    60, 70
+    50, 50,
+    70, 70,
+    80, 80
   };
   self->scoreManager = scoreManager;
   self->isBeatmapLoaded = false;
@@ -135,7 +135,7 @@ void _drawBeatmapNote(NoteManager* self, DrawableNote note){
   }
 
   if(!note.isHit){
-    DrawTextureEx(textureToDraw, position,0,1.5,WHITE);
+    DrawTextureEx(textureToDraw, position,0,.16,WHITE);
   }
 
   

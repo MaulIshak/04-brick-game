@@ -31,7 +31,11 @@
     "raymath.h": "c",
     "stdint.h": "c",
     "scene.h": "c",
-    "cmath": "c"
+    "cmath": "c",
+    "barrier": "c",
+    "charconv": "c",
+    "memory_resource": "c",
+    "__config": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
