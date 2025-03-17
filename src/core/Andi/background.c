@@ -67,7 +67,7 @@ Background CreateBackground(AppContext* ctx){
         .particle_option = opt,  
     };
 
-    // bg.objects = FlyingObject_Create(ctx);
+    bg.objects = FlyingObject_Create(ctx);
 
     return bg;
 }
