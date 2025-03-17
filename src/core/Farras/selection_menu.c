@@ -12,6 +12,9 @@ float flashAlpha = 0.0f;  // Transparansi efek kilau
 int lastSelected = -1;     // Menyimpan track yang terakhir dipilih
 
 void SelectionMenu_Draw(SelectionMenu *self) {
+    FlyingObject_Draw(&self->flying_objects);
+
+
     int boxWidth = 400;
     float fontsize = 30;
     float textPadding = 10;
@@ -71,17 +74,19 @@ void SelectionMenu_Draw(SelectionMenu *self) {
             (Vector2){ xPosition, yPosition + (textPadding) / 2 }, (fontsize - 10) * scale, 2, textColor);
     }
 
-    // Kurangi alpha efek kilau agar perlahan hilang
     if (flashAlpha > 0.0f) {
-        flashAlpha -= 0.03f;  // Kecepatan fade-out
+        flashAlpha -= 0.03f;  
         if (flashAlpha < 0.0f) flashAlpha = 0.0f;
     }
 
-    FlyingObject_Draw(&self->flying_objects);
+    
+    DrawTexture(self->background, 0, 0, WHITE);
 }
 
 
 void SelectionMenu_Update(SelectionMenu *self) {
+  FlyingObject_Update(&self->flying_objects, self->ctx);
+
   static float time = 0;
   static float delay = 0.35f;
   static bool keyHeld = false;
@@ -167,8 +172,6 @@ void SelectionMenu_Update(SelectionMenu *self) {
 
   self->targetRotationOffset = -self->ctx->selected_track;
   self->rotationOffset += (self->targetRotationOffset - self->rotationOffset) * 0.1f;
-
-  FlyingObject_Update(&self->flying_objects, self->ctx);
 }
 
 bool SelectionMenu_IsShow(SelectionMenu *self) {
@@ -193,4 +196,6 @@ void InitSelectionMenu(SelectionMenu *self, AppContext *ctx) {
     self->isShow = false;
 
     self->flying_objects = FlyingObject_Create(ctx);
+
+    self->background = LoadTexture("resources/background/backgroundEmpty.png");
 }

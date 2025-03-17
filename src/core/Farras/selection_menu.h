@@ -20,6 +20,7 @@ typedef struct SelectionMenu {
     bool isShow;
 
     FlyingObjects flying_objects;
+    Texture2D background;
 } SelectionMenu;
 
 static void AudioProcessEffectLPF(void *buffer, unsigned int frames);

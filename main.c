@@ -116,7 +116,7 @@ int main()
 
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    ClearBackground((Color) {207, 239, 252, 255});
 
     for (int i = 0; i < draws_len; i++)
     {
