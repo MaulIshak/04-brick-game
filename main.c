@@ -37,7 +37,6 @@ int main()
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
   ctx.app_state = APP_SELECT;
-  // ctx.app_state = APP_PRESS_TO_PLAY;
   Loading loading = {
     .ctx = &ctx
   };
@@ -86,7 +85,7 @@ int main()
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   
-  ctx.selected_track = 5;
+  ctx.selected_track = 6;
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif
