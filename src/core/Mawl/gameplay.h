@@ -46,6 +46,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx);
 // Private procedure
 void _LoadNoteTexture(Gameplay *self);
 void _UpdateGameTime(Gameplay* self);
+void _drawAccZone(Gameplay* self);
 
 impl_scene(Gameplay*, Gameplay_ToScene,gp_draw,gp_update, gp_isShow);
 
