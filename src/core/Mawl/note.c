@@ -135,7 +135,7 @@ void _drawBeatmapNote(NoteManager* self, DrawableNote note){
   }
 
   if(!note.isHit){
-    DrawLineEx((Vector2){self->gp->padPositions[0].x,position.y + self->gp->padSize/2}, (Vector2){self->gp->padPositions[3].x + self->gp->padSize, position.y + self->gp->padSize/2}, 5, BLACK);
+    // DrawLineEx((Vector2){self->gp->padPositions[0].x,position.y + self->gp->padSize/2}, (Vector2){self->gp->padPositions[3].x + self->gp->padSize, position.y + self->gp->padSize/2}, 5, BLACK);
     DrawTextureEx(textureToDraw, position,0,.16,WHITE);
   }
 
@@ -151,6 +151,9 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   bool isGood =self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset;
   bool isMiss =self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset;
 
+  (void) isPerfect;
+  (void) isGood;
+  (void) isMiss;
   // Akurasi berdasarkan posisi
   bool isPerfectPos = notePos >= padY + 20 && notePos <= padY + self->gp->padSize - 20;
   bool isGoodPos = notePos >= padY  && notePos <= padY + self->gp->padSize;
