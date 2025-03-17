@@ -135,6 +135,7 @@ void _drawBeatmapNote(NoteManager* self, DrawableNote note){
   }
 
   if(!note.isHit){
+    DrawLineEx((Vector2){self->gp->padPositions[0].x,position.y + self->gp->padSize/2}, (Vector2){self->gp->padPositions[3].x + self->gp->padSize, position.y + self->gp->padSize/2}, 5, BLACK);
     DrawTextureEx(textureToDraw, position,0,.16,WHITE);
   }
 
@@ -143,15 +144,17 @@ void _drawBeatmapNote(NoteManager* self, DrawableNote note){
 
 bool _isNoteHit(NoteManager*self, DrawableNote note ){
   double ps = self->gp->padSize;
+  double notePos = note.position.y + ps/2;
+  double padY = self->gp->padPositions[0].y;
   // Akurasi berdasarkan waktu
   bool isPerfect = self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset;
   bool isGood =self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset;
   bool isMiss =self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset;
 
   // Akurasi berdasarkan posisi
-  bool isPerfectPos = note.position.y + ps/2 >= self->gp->padPositions[0].x && note.position.y + ps/2 <= self->gp->padPositions[0].x + self->gp->padSize;
-  bool isGoodPos = note.position.y + ps/2 >= self->gp->padPositions[0].x - 30 && note.position.y + ps/2 <= self->gp->padPositions[0].x + self->gp->padSize + 30;
-  bool isMissPos = note.position.y + ps/2>= self->gp->padPositions[0].x - 50 && note.position.y+ ps/2 <= self->gp->padPositions[0].x + self->gp->padSize - 50;
+  bool isPerfectPos = notePos >= padY + 30 && notePos <= padY + self->gp->padSize - 30;
+  bool isGoodPos = notePos >= padY  && notePos <= padY + self->gp->padSize;
+  bool isMissPos = notePos>= padY - 30 && notePos <= padY + self->gp->padSize + 30;
   // DOWN ARROW (MIDDLE RIGHT)
   if((IsKeyPressed(KEY_DOWN) ||IsKeyPressed(KEY_J)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
     if(isPerfectPos){
@@ -278,7 +281,11 @@ void _updateNotePosition(NoteManager* self){
 }
 
 void _noteHitHandler(NoteManager* self, DrawableNote *note){
-  if(self->gp->gameTime >= note->hit_at_ms +self->accOff.missLowerOffset){
+  // Time miss
+  bool isMiss = self->gp->gameTime >= note->hit_at_ms +self->accOff.missLowerOffset;
+  // Position miss
+  bool isMissPos = note->position.y + self->gp->padSize/2 < self->gp->padPositions[0].x - 50;
+  if(isMissPos){
     if(!note->isHit){
       note->isHit = true; // BUGNYA DISINI!
       // printf("MISS\n");

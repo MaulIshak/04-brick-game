@@ -24,6 +24,7 @@ void gp_draw(Gameplay* self){
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
     // DrawRectangleRec(rec3, BLACK);
+    _drawAccZone(self);
 
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
@@ -123,4 +124,20 @@ void _UpdateGameTime(Gameplay* self){
   float currentTime = GetTime();
   self->gameTime =s_to_ms(currentTime - self->startGameTime - 3);
   // printf("%.2f\n", self->gameTime);
+}
+
+void _drawAccZone(Gameplay* self){
+  Rectangle recPerfect = {
+    self->padPositions[0].x, self->padPositions[0].y + 30, self->padPositions[3].x + 10 , self->padSize - 30 - 30
+  };
+  Rectangle recGood = {
+    self->padPositions[0].x, self->padPositions[0].y, self->padPositions[3].x + 10 , self->padSize
+  };
+  Rectangle recMiss = {
+    self->padPositions[0].x, self->padPositions[0].y - 30, self->padPositions[3].x + 10 , self->padSize + 30 + 30
+  };
+
+  DrawRectangleRec(recPerfect, Fade(GREEN, 1));
+  DrawRectangleRec(recGood, Fade(YELLOW, 0.2f));
+  DrawRectangleRec(recMiss, Fade(RED, 0.2f));
 }
