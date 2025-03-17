@@ -76,17 +76,28 @@ void AddScore(ScoreManager *score, Accuracy acc)
         score->miss++;
     }
 
+    // if (totalNotesHit > 0)
+    // {
+    //     score->ctx->score.accuracy = ((sumPerfect + (0.5 * sumGood)) / (float)totalNotesHit) * 100;
+    // }
+
     if (totalNotesHit > 0)
     {
-        score->ctx->score.accuracy = ((sumPerfect + (0.5 * sumGood)) / (float)totalNotesHit) * 100;
+        float newAccuracy = ((sumPerfect + (0.5 * sumGood)) / (float)totalNotesHit) * 100/100;
+
+        score->ctx->score.accuracy = newAccuracy;
     }
+
+    // score->beatmap.len
+
+    // score->ctx->score.accuracy = ((((sumPerfect * 1) + (sumGood * 0.5))/score->beatmap.len)*(100/100));
 }
 
 void DrawScore(ScoreManager *score)
 {
     char scoreText[20];
-    sprintf(scoreText, "%d", score->value);
-    DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, score->ctx->screen_height, BLACK);
+    sprintf(scoreText, "%f", score->ctx->score.accuracy);
+    // DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, score->ctx->screen_height, BLACK);
     
     // if (score->perfectCombo >= 1)
     // {
@@ -102,8 +113,8 @@ void DrawScore(ScoreManager *score)
     //     DrawTexture(score->fireFrames[score->currentFrame], (score->ctx->screen_width - score->width + (score->width / 2) - (fireWidth / 2)), 50, WHITE);
     // }
     
-    DrawText("Score", score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText("Score", 20) / 2), 130, 20, WHITE);
-    DrawText(scoreText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 20) / 2), 160, 20, WHITE);
+    DrawText("Score", score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText("Score", 20) / 2), 10, 20, WHITE);
+    DrawText(scoreText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 20) / 2), 10, 20, WHITE);
 
     static int scoreIncrease = 0;
     static float scoreTimer = 0;

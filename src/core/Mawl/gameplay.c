@@ -15,7 +15,11 @@ void gp_draw(Gameplay* self){
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
+    Rectangle rec2 = {
+      self->padPositions[0].x, 0,self->padPositions[3].x + 10, self->ctx->screen_height
+    };
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
+    DrawRectangleRec(rec2, Fade(BLACK, .5f));
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     for (int i = 0; i < LINE_COUNT; i++)
@@ -85,12 +89,12 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
     "resources/texture/Pad_Active-04.png"
   };
   gameplay->ctx = ctx;
-  gameplay->width = 400;
+  gameplay->width = gameplay->ctx->screen_width;
   memcpy(gameplay->texturePaths, textureSources, sizeof(textureSources));
   for (int i = 0; i < LINE_COUNT; i++)
   {
     gameplay->padOpacity[i] = 100;
-    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i + 10;
+    gameplay->padPositions[i].x = gameplay->ctx->screen_width/5 * i + gameplay->ctx->screen_width/8;
     gameplay->padPositions[i].y = 48;
   }
   gameplay->gameTime = 0;
@@ -112,5 +116,5 @@ void _LoadNoteTexture(Gameplay*self){
 void _UpdateGameTime(Gameplay* self){
   float currentTime = GetTime();
   self->gameTime =s_to_ms(currentTime - self->startGameTime - 3);
-  printf("%.2f\n", self->gameTime);
+  // printf("%.2f\n", self->gameTime);
 }

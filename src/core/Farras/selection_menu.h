@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include "scene.h"
 #include "context.h"
+#include "flying_object.h"
 
 #ifndef SELECTION_MENU_H
 #define SELECTION_MENU_H
@@ -17,6 +18,8 @@ typedef struct SelectionMenu {
     float targetYOffset;
     
     bool isShow;
+
+    FlyingObjects flying_objects;
 } SelectionMenu;
 
 static void AudioProcessEffectLPF(void *buffer, unsigned int frames);

@@ -3,6 +3,7 @@
 #include "scene.h"
 #include <stdio.h>
 #include "math.h"
+#include "flying_object.h"
 
 float textOffsetX = 0;
 int indexMove = 0;
@@ -23,18 +24,12 @@ void SelectionMenu_Draw(SelectionMenu *self) {
     }
 
     ClearBackground(BLACK);
-    DrawCircle(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 100, self->ctx->screen_height / 2 + 500, self->ctx->screen_height, (Color){255, 147, 98, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 200, self->ctx->screen_height / 2 + 600, self->ctx->screen_height, (Color){255, 92, 93, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 300, self->ctx->screen_height / 2 + 700, self->ctx->screen_height, (Color){128, 69, 255, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 400, self->ctx->screen_height / 2 + 800, self->ctx->screen_height, (Color){57, 43, 214, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 500, self->ctx->screen_height / 2 + 900, self->ctx->screen_height, (Color){24, 29, 149, 200});
-
-    for (int spacing = 0; spacing < self->ctx->screen_height; spacing += 20)
-    {
-        DrawRectangle(0, spacing, self->ctx->screen_width, 10, Fade(BLACK, 0.1f));
-    }
-    
+    DrawCircleGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 200}, (Color){255, 147, 98, 200});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 100, self->ctx->screen_height / 2 + 500, self->ctx->screen_height, (Color){255, 147, 98, 200}, (Color){255, 92, 93, 200});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 200, self->ctx->screen_height / 2 + 600, self->ctx->screen_height, (Color){255, 92, 93, 200}, (Color){128, 69, 255, 200});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 300, self->ctx->screen_height / 2 + 700, self->ctx->screen_height, (Color){128, 69, 255, 200}, (Color){57, 43, 214, 200});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 400, self->ctx->screen_height / 2 + 800, self->ctx->screen_height, (Color){57, 43, 214, 200}, (Color){24, 29, 149, 200});
+    DrawCircle(self->ctx->screen_width / 2 - 500, self->ctx->screen_height / 2 + 900, self->ctx->screen_height, (Color){24, 29, 149, 200});    
 
     for (int i = 0 + indexMove; i < self->ctx->tracks.len + indexMove; i++) {
         int distance = abs(i - selected);
@@ -81,6 +76,8 @@ void SelectionMenu_Draw(SelectionMenu *self) {
         flashAlpha -= 0.03f;  // Kecepatan fade-out
         if (flashAlpha < 0.0f) flashAlpha = 0.0f;
     }
+
+    FlyingObject_Draw(&self->flying_objects);
 }
 
 
@@ -170,6 +167,8 @@ void SelectionMenu_Update(SelectionMenu *self) {
 
   self->targetRotationOffset = -self->ctx->selected_track;
   self->rotationOffset += (self->targetRotationOffset - self->rotationOffset) * 0.1f;
+
+  FlyingObject_Update(&self->flying_objects, self->ctx);
 }
 
 bool SelectionMenu_IsShow(SelectionMenu *self) {
@@ -192,4 +191,6 @@ void InitSelectionMenu(SelectionMenu *self, AppContext *ctx) {
     self->targetYOffset = 0;
 
     self->isShow = false;
+
+    self->flying_objects = FlyingObject_Create(ctx);
 }
