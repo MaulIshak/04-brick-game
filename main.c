@@ -71,7 +71,7 @@ int main()
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
 
   ProgressBar bar;
-  ScoreManager score_manager = InitScore(&ctx, &bar);
+  ScoreManager score_manager = InitScore(&ctx, &gameplay);
   Drawable score_draw = Score_ToScene(&score_manager);
   
   NoteManager note;
