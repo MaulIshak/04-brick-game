@@ -3,6 +3,7 @@
 #include "scene.h"
 #include <stdio.h>
 #include "math.h"
+#include "flying_object.h"
 
 float textOffsetX = 0;
 int indexMove = 0;
@@ -75,6 +76,8 @@ void SelectionMenu_Draw(SelectionMenu *self) {
         flashAlpha -= 0.03f;  // Kecepatan fade-out
         if (flashAlpha < 0.0f) flashAlpha = 0.0f;
     }
+
+    FlyingObject_Draw(&self->flying_objects);
 }
 
 
@@ -164,6 +167,8 @@ void SelectionMenu_Update(SelectionMenu *self) {
 
   self->targetRotationOffset = -self->ctx->selected_track;
   self->rotationOffset += (self->targetRotationOffset - self->rotationOffset) * 0.1f;
+
+  FlyingObject_Update(&self->flying_objects, self->ctx);
 }
 
 bool SelectionMenu_IsShow(SelectionMenu *self) {
@@ -186,4 +191,6 @@ void InitSelectionMenu(SelectionMenu *self, AppContext *ctx) {
     self->targetYOffset = 0;
 
     self->isShow = false;
+
+    self->flying_objects = FlyingObject_Create(ctx);
 }
