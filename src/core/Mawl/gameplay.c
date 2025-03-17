@@ -52,10 +52,10 @@ void gp_draw(Gameplay* self){
       self->padOpacity[2] = 255;
       // self->textureToLoad[0] = self->activeTextureToLoad[0]
       // printf("Hit time: %f\n", self->gameTime);
-      self->textureToLoad[3] = self->activeTextureToLoad[3];
+      self->textureToLoad[2] = self->activeTextureToLoad[3];
     }else{
       // self->padOpacity[2] = 100;
-      self->textureToLoad[3] = self->passiveTextureToLoad[3];
+      self->textureToLoad[2] = self->passiveTextureToLoad[3];
     }
     
     // LEFT ARROW (LEFT)
@@ -81,9 +81,9 @@ void gp_draw(Gameplay* self){
     // RIGHT ARROW (RIGHT)
     if(IsKeyDown(KEY_RIGHT) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
       self->padOpacity[3] = 255;
-      self->textureToLoad[2] = self->activeTextureToLoad[2];
+      self->textureToLoad[3] = self->activeTextureToLoad[2];
     }else{
-      self->textureToLoad[2] = self->passiveTextureToLoad[2];
+      self->textureToLoad[3] = self->passiveTextureToLoad[2];
       // self->padOpacity[3] = 100;
       
     }
@@ -100,14 +100,14 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   char *textureSources [LINE_COUNT] ={
     "resources/texture/Pad-01.png",
     "resources/texture/Pad-02.png",
-    "resources/texture/Pad-04.png",
-    "resources/texture/Pad-03.png"
+    "resources/texture/Pad-03.png",
+    "resources/texture/Pad-04.png"
   };
   char *newTextureSource [LINE_COUNT]={
     "resources/texture/Pad_Active-01.png",
     "resources/texture/Pad_Active-02.png",
-    "resources/texture/Pad_Active-03.png",
-    "resources/texture/Pad_Active-04.png"
+    "resources/texture/Pad_Active-04.png",
+    "resources/texture/Pad_Active-03.png"
   };
 
   gameplay->ctx = ctx;
