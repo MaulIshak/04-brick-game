@@ -2,65 +2,71 @@
 #include "animasi.h"
 
 void LoadingLoadTextures(Loading *self) {
-    for (int i = 0; i < 5; i++) {
-        self->texture[0] = LoadTexture("resources/texture/Arrow-1.png");
-        self->texture[1] = LoadTexture("resources/texture/Arrow-2.png");
-        self->texture[2] = LoadTexture("resources/texture/Arrow-3.png");
-        self->texture[3] = LoadTexture("resources/texture/Arrow.png");
-        self->texture[4] = LoadTexture("resources/texture/LOGO.png");  
-    }
+    self->logo = LoadTexture("resources/texture/lambang-contoh.png");  // Pastikan file logo ada
 }
 
 void LoadingUnloadTextures(Loading *self) {
-    for (int i = 0; i < 5; i++) {
-        UnloadTexture(self->texture[i]);
-    }
+    UnloadTexture(self->logo);
 }
 
 void LoadingInitPositions(Loading *self) {
-    int spacingX = SCREEN_WIDTH / 4;
-    int centerX = SCREEN_WIDTH / 2;
-    int centerY = SCREEN_HEIGHT / 2;
-    self->FadeIn = 255.0f;
+    self->alpha = 0.0f;
+    self->timer = 0.0f;
+    self->loadingVisible = true;
+    self->state = LOGO_FADE_IN;
 }
 
 void LoadingUpdatePositions(Loading *self) {
-    float FadeInSpeed = 2.5f;
-    static int fadeDirection = -1;
-    static bool isFadeActive = true;
-    static float fadeTimer = 0.0f;
-
-    if (!isFadeActive) return; // Jika animasi selesai, keluar
-
-    if (fadeTimer > 0) {
-        fadeTimer--;
-        return; // Jangan lanjutkan perubahan fade selama delay
-    }
-
-    self->FadeIn += fadeDirection * FadeInSpeed;
-
-    // Cek apakah mencapai batas fade in / out
-    if (self->FadeIn <= 0) {
-        self->FadeIn = 0;
-        fadeDirection = 1;
-        fadeTimer = 60;  // Delay sebelum mulai fade in
+    if (self->state == LOGO_FADE_IN) {
+        self->alpha += 0.02f;
+        if (self->alpha >= 1.0f) {
+            self->alpha = 1.0f;
+            self->state = LOGO_HOLD;
+            self->timer = 1.5f;
+        }
     } 
-    else if (self->FadeIn >= 255) {
-        self->FadeIn = 255;
-        fadeDirection = -1;
-        
-        // **Hentikan fade setelah kembali ke nilai awal**
-        isFadeActive = false;
+    else if (self->state == LOGO_HOLD) {
+        self->timer -= GetFrameTime();
+        if (self->timer <= 0) {
+            self->state = LOGO_FADE_OUT;
+        }
+    } 
+    else if (self->state == LOGO_FADE_OUT) {
+        self->alpha -= 0.02f;
+        if (self->alpha <= 0.0f) {
+            self->alpha = 0.0f;
+            self->state = LOADING;
+            self->timer = 0.0f;
+        }
+    } 
+    else if (self->state == LOADING) {
+        self->timer += GetFrameTime();
+        if (self->timer >= 0.5f) {
+            self->loadingVisible = !self->loadingVisible;
+            self->timer = 0.0f;
+        }
+        if (self->timer >= 3.0f) {
+            self->state = READY;
+        }
+    } 
+    else if (self->state == READY || IsKeyPressed(KEY_ENTER)) {
+        CloseWindow();  
     }
 }
 
 void LoadingDrawTextures(Loading *self) {
 
-    int centerXTex = SCREEN_WIDTH / 2 - self->texture[4].width / 2 - 120;
-    int centerYTex = SCREEN_HEIGHT / 2 - self->texture[4].height / 2 - 120;
-
-    DrawRectangle(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,(Color){0,0,0,(unsigned char)self->FadeIn});
-    DrawTextureEx(self->texture[4], (Vector2){ centerXTex, centerYTex }, 0.0f, 1.5f, (Color){255,255,255,255});
+    if (self->state == LOGO_FADE_IN || self->state == LOGO_HOLD || self->state == LOGO_FADE_OUT) {
+        DrawTexture(self->logo, SCREEN_WIDTH / 2 - self->logo.width / 2, SCREEN_HEIGHT / 2 - self->logo.height / 2, Fade(WHITE, self->alpha));
+    } 
+    else if (self->state == LOADING) {
+        if (self->loadingVisible) {
+            DrawText("Loading...", SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2, 20, BLACK);
+        }
+    } 
+    else if (self->state == READY) {
+        DrawText("Press Any Key to Start", SCREEN_WIDTH / 2 - 120, SCREEN_HEIGHT / 2, 20, YELLOW);
+    }
 }
 
 bool LoadingIsShow(Loading *self) {
