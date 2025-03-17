@@ -97,7 +97,7 @@ void DrawScore(ScoreManager *score)
 {
     char scoreText[20];
     sprintf(scoreText, "%f", score->ctx->score.accuracy);
-    DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, score->ctx->screen_height, BLACK);
+    // DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, score->ctx->screen_height, BLACK);
     
     // if (score->perfectCombo >= 1)
     // {
