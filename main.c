@@ -30,7 +30,7 @@ int main()
 {
   const int screenWidth = 600;
   const int screenHeight = 800;
-  
+  SetConfigFlags(FLAG_WINDOW_TOPMOST | FLAG_WINDOW_ALWAYS_RUN);
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
   InitAudioDevice();
 

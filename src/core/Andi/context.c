@@ -96,6 +96,8 @@ AppContext CreateContext(int screen_width , int screen_height ){
     ctx._beatmap.items = malloc(sizeof(Note) * 10);
     ctx._beatmap.cap = 10;
     ctx._beatmap.len = 0;
+    ctx._beatmap_name = malloc(sizeof(char) * 400);
+    memset(ctx._beatmap_name, 0, 400);
     Font font = LoadFont(font_path);
     ctx.font = font;
     return ctx;
@@ -132,11 +134,17 @@ void StopSelectedTrack(AppContext *ctx) {
 }
 // TODO: memoize this function
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
+    char *music_name = GetSelectedMusicName(ctx);
+    if (strcmp(ctx->_beatmap_name, music_name ) == 0) {
+        printf("GetSelectedMusicBeatmap: CACHE HIT");
+        return ctx->_beatmap;
+    } else {
+        strcpy(ctx->_beatmap_name, music_name);
+    }
     ctx->_beatmap.len = 0;
     int selected = ctx->selected_track;
     assert(selected != -1);
     char buff[2048] = {0};
-    char *music_name = GetSelectedMusicName(ctx);
     strcat(buff, "resources/");
     strcat(buff, music_name);
     strcat(buff, ".map");
