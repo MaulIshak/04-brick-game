@@ -23,7 +23,7 @@ void gp_draw(Gameplay* self){
     };
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
-    DrawRectangleRec(rec3, BLACK);
+    // DrawRectangleRec(rec3, BLACK);
 
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
