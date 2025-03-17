@@ -1,4 +1,18 @@
 // #define TEST_CONTEXT
+// Menghindari conflicting types: https://github.com/raysan5/raylib/issues/1217#issuecomment-893812805
+#define WIN32_LEAN_AND_MEAN
+#if defined(_WIN32)
+#define WIN32
+#endif
+#if defined(_WIN64)
+#define WIN64
+#define _AMD64_
+#undef _X86_
+#else
+#undef _AMD64_
+#define _X86_
+#endif
+#include <minwindef.h>
 
 #include <stdio.h>
 #include "raylib.h"
@@ -26,17 +40,20 @@
 #include <stdlib.h>
 
 
-int main()
+int _main()
 {
   const int screenWidth = 600;
   const int screenHeight = 800;
+  Image icon = LoadImage("resources/texture/game-icon.png");
   SetConfigFlags(FLAG_WINDOW_TOPMOST | FLAG_WINDOW_ALWAYS_RUN);
+  
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+  SetWindowIcon(icon);
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  // ctx.app_state = APP_LOADING;
+  ctx.app_state = APP_SELECT;
   Loading loading = {
     .ctx = &ctx
   };
@@ -133,6 +150,11 @@ int main()
   UnloadSfx();
   CloseAudioDevice();
   CloseWindow();
+  UnloadImage(icon);
 
   return 0;
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* pCmdLine, int nCmdShow) {
+  return _main();
 }
