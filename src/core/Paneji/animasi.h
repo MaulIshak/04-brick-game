@@ -13,6 +13,7 @@ typedef struct Loading {
     AppContext *ctx;
     Texture2D texture[8];
     Vector2 positions[8];
+    float FadeIn;
 } Loading;
 
 void LoadingLoadTextures(Loading *self);
