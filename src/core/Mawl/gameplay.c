@@ -18,8 +18,13 @@ void gp_draw(Gameplay* self){
     Rectangle rec2 = {
       self->padPositions[0].x, 0,self->padPositions[3].x + 10, self->ctx->screen_height
     };
+    Rectangle rec3 = {
+      self->padPositions[0].x, self->padPositions[0].y, self->padSize , self->padSize
+    };
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
+    DrawRectangleRec(rec3, BLACK);
+
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     for (int i = 0; i < LINE_COUNT; i++)
@@ -103,6 +108,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   gameplay->gameTimeOffset = 2000;
 
   InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->ctx->screen_width/2 + 100, 30, SECONDARY_COLOR);
+  gameplay->padSize = 512*0.16f +5;
 }
 
 void _LoadNoteTexture(Gameplay*self){
