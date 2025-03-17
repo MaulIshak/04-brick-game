@@ -4,8 +4,9 @@
 #include "gameplay.h"
 #include "context.h"
 #include "sfx.h"
+#include "progress_bar.h"
 
-ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
+ScoreManager InitScore(AppContext *ctx, ProgressBar *bar)
 {
     ScoreManager score;
 
@@ -21,7 +22,7 @@ ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
 
     score.ctx = ctx;
 
-    score.width = ctx->screen_width - gameplay->width;
+    score.width = ctx->screen_width - bar->width;
 
     score.perfectCombo = 0;
 
@@ -97,7 +98,7 @@ void DrawScore(ScoreManager *score)
 {
     char scoreText[20];
     sprintf(scoreText, "%f", score->ctx->score.accuracy);
-    DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, score->ctx->screen_height, BLACK);
+    DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, 10, BLACK);
     
     // if (score->perfectCombo >= 1)
     // {
@@ -113,8 +114,8 @@ void DrawScore(ScoreManager *score)
     //     DrawTexture(score->fireFrames[score->currentFrame], (score->ctx->screen_width - score->width + (score->width / 2) - (fireWidth / 2)), 50, WHITE);
     // }
     
-    DrawText("Score", score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText("Score", 20) / 2), 130, 20, WHITE);
-    DrawText(scoreText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 20) / 2), 160, 20, WHITE);
+    DrawText("Score", score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText("Score", 20) / 2), 10, 20, WHITE);
+    DrawText(scoreText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 20) / 2), 10, 20, WHITE);
 
     static int scoreIncrease = 0;
     static float scoreTimer = 0;

@@ -102,6 +102,8 @@ typedef struct AppContext {
 
     // Private Field: buffer untuk `GetSelectedMusicBeatmap()`
     Beatmap _beatmap;
+    // Private Field: buffer untuk cek jika load beatmap yang sama 2x gak load lagi (lambat soalnya)
+    char* _beatmap_name;
 } AppContext;
 
 AppContext CreateContext(int, int);

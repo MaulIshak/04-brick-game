@@ -9,12 +9,24 @@
 #define SCREEN_HEIGHT 800
 #define TEXT_SPEED 4
 
+typedef enum {
+    LOGO_FADE_IN,
+    LOGO_HOLD,
+    LOGO_FADE_OUT,
+    LOADING,
+    READY
+} GameState;
+
 typedef struct Loading {
     AppContext *ctx;
-    Texture2D texture[8];
-    Vector2 positions[8];
-    float FadeIn;
+    Texture2D logo;
+    float alpha;
+    float timer;
+    bool loadingVisible;
+    GameState state;
 } Loading;
+
+
 
 void LoadingLoadTextures(Loading *self);
 void LoadingUnloadTextures(Loading *self);

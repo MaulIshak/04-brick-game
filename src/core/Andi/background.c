@@ -220,10 +220,11 @@ void Background_Update(Background* self){
 }
 
 bool Background_IsShow(Background* self){
-    if(self->ctx->app_state != APP_LOADING) {
-        return true; 
-    }
-    return false;
+    // if(self->ctx->app_state != APP_LOADING) {
+    //     return true; 
+    // }
+    // return false;
+    return true;
 }
 
 void StartTransition() {

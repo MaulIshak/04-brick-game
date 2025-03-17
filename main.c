@@ -30,13 +30,13 @@ int main()
 {
   const int screenWidth = 600;
   const int screenHeight = 800;
-  
+  SetConfigFlags(FLAG_WINDOW_TOPMOST | FLAG_WINDOW_ALWAYS_RUN);
   InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_SELECT;
+  // ctx.app_state = APP_LOADING;
   Loading loading = {
     .ctx = &ctx
   };
@@ -70,8 +70,8 @@ int main()
   BeatmapCreator creator = CreateBeatmap(&ctx);
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
 
-  
-  ScoreManager score_manager = InitScore(&ctx, &gameplay);
+  ProgressBar bar;
+  ScoreManager score_manager = InitScore(&ctx, &bar);
   Drawable score_draw = Score_ToScene(&score_manager);
   
   NoteManager note;
