@@ -17,8 +17,11 @@ typedef struct Gameplay{
   int width;
   // Texture untuk diload
   Texture2D textureToLoad[TEXTURE_COUNT];
+  Texture2D activeTextureToLoad[TEXTURE_COUNT];
+  Texture2D passiveTextureToLoad[TEXTURE_COUNT];
   // Path dari texture untuk diload
   char *texturePaths [TEXTURE_COUNT];
+  char *textureActivePaths [TEXTURE_COUNT];
   // Opacity dari setiap pad
   int padOpacity[LINE_COUNT];
   // Positi setiap pad

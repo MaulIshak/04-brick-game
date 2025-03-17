@@ -27,3 +27,22 @@ script `build.bat` akan mengcompile project
 # Arsitektur
 
 TODO:
+
+# CREDITS:
+
+Tools, Program and Library:  
+- Zig Programming Language - Tools yang membundle C Compiler yang bisa kami vendor supaya tidak banyak konfigurasi lokal [Website](https://ziglang.org/)
+- Raylib - Library grafis penompang project ini [Website](https://www.raylib.com/)
+- Kiss FFT - Library fast fourier transfrom yang mudah digunakan [source](https://github.com/mborgerding/kissfft)
+
+Font & Texture:  
+TODO!!.
+
+Musics: 
+- Guardian of Former Seas : DM Dokuro [Youtube](https://youtu.be/hPEQLU-aD3I?si=9heevkGvYLgjFbVB)
+- Pest of The Cosmos: DM Dokuro [Youtube](https://youtu.be/KJHNdl3R8GM?si=9-p5swVbVlLLFAuX)
+- Polban PKKMB 2024: [Youtube](https://youtu.be/WRBgfxkUZPE?si=PesefKsDdmmXgz6l)
+- Bad Apple: ZUN
+- Line Lets Get Rich - Toy Land : ?
+- Line Lets Get Rich - Title Theme : ?
+- Infinite Cosmodynamics: Yang Lee [Youtube](https://youtu.be/tSOCwLjv3WQ?si=E2CxA5cTtO2vGeuS) 

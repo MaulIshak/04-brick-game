@@ -24,7 +24,7 @@ void gp_draw(Gameplay* self){
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
     // DrawRectangleRec(rec3, BLACK);
-    _drawAccZone(self);
+    // _drawAccZone(self);
 
 
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
@@ -50,32 +50,41 @@ void gp_draw(Gameplay* self){
     // DOWN ARROW (MIDDLE LEFT)
     if(IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->padOpacity[2] = 255;
+      // self->textureToLoad[0] = self->activeTextureToLoad[0]
       // printf("Hit time: %f\n", self->gameTime);
+      self->textureToLoad[3] = self->activeTextureToLoad[3];
     }else{
-      self->padOpacity[2] = 100;
+      // self->padOpacity[2] = 100;
+      self->textureToLoad[3] = self->passiveTextureToLoad[3];
     }
-
+    
     // LEFT ARROW (LEFT)
     if(IsKeyDown(KEY_LEFT) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
       self->padOpacity[0] = 255;
+      self->textureToLoad[0] = self->activeTextureToLoad[0];
     }else{
-      self->padOpacity[0] = 100;
+      // self->padOpacity[0] = 100;
+      self->textureToLoad[0] = self->passiveTextureToLoad[0];
       
     }
 
     // UP ARROW (MIDDLE RIGHT)
     if(IsKeyDown(KEY_UP) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->padOpacity[1] = 255;
+      self->textureToLoad[1] = self->activeTextureToLoad[1];
     }else{
-      self->padOpacity[1] = 100;
+      // self->padOpacity[1] = 100;
+      self->textureToLoad[1] = self->passiveTextureToLoad[1];
       
     }
-
+    
     // RIGHT ARROW (RIGHT)
     if(IsKeyDown(KEY_RIGHT) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
       self->padOpacity[3] = 255;
+      self->textureToLoad[2] = self->activeTextureToLoad[2];
     }else{
-      self->padOpacity[3] = 100;
+      self->textureToLoad[2] = self->passiveTextureToLoad[2];
+      // self->padOpacity[3] = 100;
       
     }
   }
@@ -89,17 +98,25 @@ bool gp_isShow(Gameplay* self){
 
 void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   char *textureSources [LINE_COUNT] ={
+    "resources/texture/Pad-01.png",
+    "resources/texture/Pad-02.png",
+    "resources/texture/Pad-04.png",
+    "resources/texture/Pad-03.png"
+  };
+  char *newTextureSource [LINE_COUNT]={
     "resources/texture/Pad_Active-01.png",
     "resources/texture/Pad_Active-02.png",
     "resources/texture/Pad_Active-03.png",
     "resources/texture/Pad_Active-04.png"
   };
+
   gameplay->ctx = ctx;
   gameplay->width = gameplay->ctx->screen_width;
   memcpy(gameplay->texturePaths, textureSources, sizeof(textureSources));
+  memcpy(gameplay->textureActivePaths, newTextureSource, sizeof(newTextureSource));
   for (int i = 0; i < LINE_COUNT; i++)
   {
-    gameplay->padOpacity[i] = 100;
+    gameplay->padOpacity[i] = 255;
     gameplay->padPositions[i].x = gameplay->ctx->screen_width/5 * i + gameplay->ctx->screen_width/8;
     gameplay->padPositions[i].y = 48;
   }
@@ -115,8 +132,15 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
 void _LoadNoteTexture(Gameplay*self){
   for (int i = 0; i < TEXTURE_COUNT; i++)
   {
-    self->textureToLoad[i] = LoadTexture(self->texturePaths[i]);
+    self->passiveTextureToLoad[i] = LoadTexture(self->texturePaths[i]);
+    self->activeTextureToLoad[i] = LoadTexture(self->textureActivePaths[i]);
   }
+  for (int i = 0; i < TEXTURE_COUNT; i++)
+  {
+    /* code */
+    self->textureToLoad[i] =  self->passiveTextureToLoad[i];
+  }
+  
   
 }
 
