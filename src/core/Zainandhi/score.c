@@ -113,8 +113,8 @@ void DrawScore(ScoreManager *score)
     //     DrawTexture(score->fireFrames[score->currentFrame], (score->ctx->screen_width - score->width + (score->width / 2) - (fireWidth / 2)), 50, WHITE);
     // }
     
-    DrawText("Score", score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText("Score", 20) / 2), 130, 20, WHITE);
-    DrawText(scoreText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 20) / 2), 160, 20, WHITE);
+    DrawText("Score", score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText("Score", 20) / 2), 10, 20, WHITE);
+    DrawText(scoreText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 20) / 2), 10, 20, WHITE);
 
     static int scoreIncrease = 0;
     static float scoreTimer = 0;
