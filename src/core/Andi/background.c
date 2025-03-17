@@ -118,7 +118,7 @@ void Background_Draw(Background* self){
             DrawRectangleV((Vector2){x_pos, self->particles[i].pos.y}, (Vector2){self->particles[i].radius, self->particles[i].radius}, c);
         }
     }
-    FlyingObject_Draw(&self->objects);
+    // FlyingObject_Draw(&self->objects);
 }
 void Background_Update(Background* self){
     

@@ -23,18 +23,12 @@ void SelectionMenu_Draw(SelectionMenu *self) {
     }
 
     ClearBackground(BLACK);
-    DrawCircle(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 100, self->ctx->screen_height / 2 + 500, self->ctx->screen_height, (Color){255, 147, 98, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 200, self->ctx->screen_height / 2 + 600, self->ctx->screen_height, (Color){255, 92, 93, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 300, self->ctx->screen_height / 2 + 700, self->ctx->screen_height, (Color){128, 69, 255, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 400, self->ctx->screen_height / 2 + 800, self->ctx->screen_height, (Color){57, 43, 214, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 500, self->ctx->screen_height / 2 + 900, self->ctx->screen_height, (Color){24, 29, 149, 200});
-
-    for (int spacing = 0; spacing < self->ctx->screen_height; spacing += 20)
-    {
-        DrawRectangle(0, spacing, self->ctx->screen_width, 10, Fade(BLACK, 0.1f));
-    }
-    
+    DrawCircleGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 200}, (Color){255, 147, 98, 200});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 100, self->ctx->screen_height / 2 + 500, self->ctx->screen_height, (Color){255, 147, 98, 200}, (Color){255, 92, 93, 200});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 200, self->ctx->screen_height / 2 + 600, self->ctx->screen_height, (Color){255, 92, 93, 200}, (Color){128, 69, 255, 200});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 300, self->ctx->screen_height / 2 + 700, self->ctx->screen_height, (Color){128, 69, 255, 200}, (Color){57, 43, 214, 200});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 400, self->ctx->screen_height / 2 + 800, self->ctx->screen_height, (Color){57, 43, 214, 200}, (Color){24, 29, 149, 200});
+    DrawCircle(self->ctx->screen_width / 2 - 500, self->ctx->screen_height / 2 + 900, self->ctx->screen_height, (Color){24, 29, 149, 200});    
 
     for (int i = 0 + indexMove; i < self->ctx->tracks.len + indexMove; i++) {
         int distance = abs(i - selected);
