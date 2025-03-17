@@ -152,9 +152,9 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   bool isMiss =self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset;
 
   // Akurasi berdasarkan posisi
-  bool isPerfectPos = notePos >= padY + 30 && notePos <= padY + self->gp->padSize - 30;
+  bool isPerfectPos = notePos >= padY + 20 && notePos <= padY + self->gp->padSize - 20;
   bool isGoodPos = notePos >= padY  && notePos <= padY + self->gp->padSize;
-  bool isMissPos = notePos>= padY - 30 && notePos <= padY + self->gp->padSize + 30;
+  bool isMissPos = notePos >= padY - 20 && notePos <= padY + self->gp->padSize + 20;
   // DOWN ARROW (MIDDLE RIGHT)
   if((IsKeyPressed(KEY_DOWN) ||IsKeyPressed(KEY_J)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
     if(isPerfectPos){
