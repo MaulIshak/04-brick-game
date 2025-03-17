@@ -142,16 +142,26 @@ void _drawBeatmapNote(NoteManager* self, DrawableNote note){
 }
 
 bool _isNoteHit(NoteManager*self, DrawableNote note ){
+  double ps = self->gp->padSize;
+  // Akurasi berdasarkan waktu
+  bool isPerfect = self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset;
+  bool isGood =self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset;
+  bool isMiss =self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset;
+
+  // Akurasi berdasarkan posisi
+  bool isPerfectPos = note.position.y + ps/2 >= self->gp->padPositions[0].x && note.position.y + ps/2 <= self->gp->padPositions[0].x + self->gp->padSize;
+  bool isGoodPos = note.position.y + ps/2 >= self->gp->padPositions[0].x - 30 && note.position.y + ps/2 <= self->gp->padPositions[0].x + self->gp->padSize + 30;
+  bool isMissPos = note.position.y + ps/2>= self->gp->padPositions[0].x - 50 && note.position.y+ ps/2 <= self->gp->padPositions[0].x + self->gp->padSize - 50;
   // DOWN ARROW (MIDDLE RIGHT)
   if((IsKeyPressed(KEY_DOWN) ||IsKeyPressed(KEY_J)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
-    if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
+    if(isPerfectPos){
       self->acc = PERFECT; 
       return true;
-    }else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset){
+    }else if(isGoodPos){
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
-    } else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset){
+    } else if(isMissPos){
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -161,15 +171,15 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
 
   // LEFT ARROW (LEFT)
   if((IsKeyPressed(KEY_LEFT) ||IsKeyPressed(KEY_D)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) && note.direction == NOTE_LEFT){
-    if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
+    if(isPerfectPos){
       self->acc = PERFECT; 
       printf("PERFECT\n");
       return true;
-    }else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset){
+    }else if(isGoodPos){
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
-    } else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset){
+    } else if(isMissPos){
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -180,16 +190,16 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
 
   // UP ARROW (MIDDLE LEFT)
   if((IsKeyPressed(KEY_UP) ||IsKeyPressed(KEY_F)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)) && note.direction == NOTE_UP){
-    if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
+    if(isPerfectPos){
       self->acc = PERFECT; 
       printf("PERFECT\n");
       printf("abcsdsdsd\n\n\n");
       return true;
-    }else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset){
+    }else if(isGoodPos){
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
-    } else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset){
+    } else if(isMissPos){
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -199,15 +209,15 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
 
   // RIGHT ARROW (RIGHT)
   if((IsKeyPressed(KEY_RIGHT) ||IsKeyPressed(KEY_K)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) && note.direction == NOTE_RIGHT){
-    if(self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset){
+    if(isPerfectPos){
       self->acc = PERFECT; 
       printf("PERFECT\n");
       return true;
-    }else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset){
+    }else if(isGoodPos){
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
-    } else if(self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset){
+    } else if(isMissPos){
       printf("MISS\n");
       self->acc = MISS; 
       return true;

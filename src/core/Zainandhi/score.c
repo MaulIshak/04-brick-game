@@ -4,8 +4,9 @@
 #include "gameplay.h"
 #include "context.h"
 #include "sfx.h"
+#include "progress_bar.h"
 
-ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
+ScoreManager InitScore(AppContext *ctx, ProgressBar *bar)
 {
     ScoreManager score;
 
@@ -21,7 +22,7 @@ ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
 
     score.ctx = ctx;
 
-    score.width = ctx->screen_width - gameplay->width;
+    score.width = ctx->screen_width - bar->width;
 
     score.perfectCombo = 0;
 
@@ -97,7 +98,7 @@ void DrawScore(ScoreManager *score)
 {
     char scoreText[20];
     sprintf(scoreText, "%f", score->ctx->score.accuracy);
-    // DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, score->ctx->screen_height, BLACK);
+    DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, 10, BLACK);
     
     // if (score->perfectCombo >= 1)
     // {

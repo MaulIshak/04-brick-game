@@ -32,6 +32,7 @@ typedef struct Gameplay{
   Timer timer;
   // Progress Bar
   ProgressBar progressBar;
+  double padSize;
 }Gameplay;
 
 

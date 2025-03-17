@@ -29,7 +29,7 @@ void UpdateProgressBar(ProgressBar *bar, Gameplay *gameplay) {
 }
 
 void DrawProgressBar(ProgressBar *bar) {
-    DrawRectangle(bar->x, bar->y, bar->width, bar->height, LIGHTGRAY);
+    DrawRectangle(bar->x, bar->y, bar->width, bar->height, BLACK);
     DrawRectangleGradientH(bar->x, bar->y, bar->width * bar->progress, bar->height, SECONDARY_COLOR, TERTIARY_COLOR);
 
 }
