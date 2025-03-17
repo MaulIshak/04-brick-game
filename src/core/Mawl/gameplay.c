@@ -128,13 +128,13 @@ void _UpdateGameTime(Gameplay* self){
 
 void _drawAccZone(Gameplay* self){
   Rectangle recPerfect = {
-    self->padPositions[0].x, self->padPositions[0].y + 30, self->padPositions[3].x + 10 , self->padSize - 30 - 30
+    self->padPositions[0].x, self->padPositions[0].y + 20, self->padPositions[3].x + 10 , self->padSize - 20*2
   };
   Rectangle recGood = {
     self->padPositions[0].x, self->padPositions[0].y, self->padPositions[3].x + 10 , self->padSize
   };
   Rectangle recMiss = {
-    self->padPositions[0].x, self->padPositions[0].y - 30, self->padPositions[3].x + 10 , self->padSize + 30 + 30
+    self->padPositions[0].x, self->padPositions[0].y - 20, self->padPositions[3].x + 10 , self->padSize + 20 + 20
   };
 
   DrawRectangleRec(recPerfect, Fade(GREEN, 1));
