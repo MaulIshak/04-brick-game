@@ -4,6 +4,7 @@
 #include "context.h"
 #include "timer.h"
 #include <stdio.h>
+#include "sfx.h"
 
 void note_draw(NoteManager *self){
   // Cek apakah beatmap sudah diload
@@ -162,13 +163,16 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   if((IsKeyPressed(KEY_DOWN) ||IsKeyPressed(KEY_J)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
     
     if(isPerfectPos){
+      PlayPerfectSfx();
       self->acc = PERFECT; 
       return true;
     }else if(isGoodPos){
+      PlayGoodSfx();
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
     } else if(isMissPos){
+      PlayMissSfx();
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -179,14 +183,17 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   // LEFT ARROW (LEFT)
   if((IsKeyPressed(KEY_LEFT) ||IsKeyPressed(KEY_D)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) && note.direction == NOTE_LEFT){
     if(isPerfectPos){
+      PlayPerfectSfx();
       self->acc = PERFECT; 
       printf("PERFECT\n");
       return true;
     }else if(isGoodPos){
+      PlayGoodSfx();
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
     } else if(isMissPos){
+      PlayMissSfx();
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -198,15 +205,18 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   // UP ARROW (MIDDLE LEFT)
   if((IsKeyPressed(KEY_UP) ||IsKeyPressed(KEY_F)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)) && note.direction == NOTE_UP){
     if(isPerfectPos){
+      PlayPerfectSfx();
       self->acc = PERFECT; 
       printf("PERFECT\n");
-      printf("abcsdsdsd\n\n\n");
+      // printf("abcsdsdsd\n\n\n");
       return true;
     }else if(isGoodPos){
+      PlayGoodSfx();
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
     } else if(isMissPos){
+      PlayMissSfx();
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -217,14 +227,17 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   // RIGHT ARROW (RIGHT)
   if((IsKeyPressed(KEY_RIGHT) ||IsKeyPressed(KEY_K)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) && note.direction == NOTE_RIGHT){
     if(isPerfectPos){
+      PlayPerfectSfx();
       self->acc = PERFECT; 
       printf("PERFECT\n");
       return true;
     }else if(isGoodPos){
+      PlayGoodSfx();
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
     } else if(isMissPos){
+      PlayMissSfx();
       printf("MISS\n");
       self->acc = MISS; 
       return true;

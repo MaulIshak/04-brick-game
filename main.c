@@ -50,6 +50,7 @@ int _main()
   InitWindow(screenWidth, screenHeight, "Tap Tap Gila");
   SetWindowIcon(icon);
   InitAudioDevice();
+  InitSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
