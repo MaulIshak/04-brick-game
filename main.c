@@ -47,7 +47,7 @@ int _main()
   Image icon = LoadImage("resources/texture/game-icon.png");
   SetConfigFlags(FLAG_WINDOW_TOPMOST | FLAG_WINDOW_ALWAYS_RUN);
   
-  InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+  InitWindow(screenWidth, screenHeight, "Tap Tap Gila");
   SetWindowIcon(icon);
   InitAudioDevice();
 
