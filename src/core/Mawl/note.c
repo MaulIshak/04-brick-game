@@ -39,7 +39,7 @@ void note_update(NoteManager *self){
   }
   if(!self->musicTimer.is_started){
     // self->gp->gameTime = 0;
-    timer_start(&self->musicTimer, 3 + ms_to_s(noteoffset));
+    timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
   }
   if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
     // for (int i = 0; i < self->beatmap.len; i++) {
@@ -63,6 +63,7 @@ void note_update(NoteManager *self){
         self->musicTimer.is_started = false;
         self->isNewGame = false;
         self->gp->timer.is_started = false;
+        self->gp->gameTime = 0;
         // self->gp->gameTimeOffset = 2000;
         _resetNoteManager(self); // Ensure all note-related states are reset
         return;
@@ -70,7 +71,7 @@ void note_update(NoteManager *self){
     }  
     // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
     if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
-      if(!self->isNewGame)self->gp->gameTimeOffset = 0;
+      // if(!self->isNewGame)self->gp->gameTimeOffset = 0;
       printf("%.2f\n\n", self->gp->gameTime);
       self->beatmap = GetSelectedMusicBeatmap(self->ctx);
       for (int i = 0; i < self->beatmap.len; i++)
@@ -179,16 +180,16 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   if((IsKeyPressed(KEY_DOWN) ||IsKeyPressed(KEY_J)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
     
     if(isPerfectPos){
-      PlayPerfectSfx();
+      // PlayPerfectSfx();
       self->acc = PERFECT; 
       return true;
     }else if(isGoodPos){
-      PlayGoodSfx();
+      // PlayGoodSfx();
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
     } else if(isMissPos){
-      PlayMissSfx();
+      // PlayMissSfx();
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -199,17 +200,17 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   // LEFT ARROW (LEFT)
   if((IsKeyPressed(KEY_LEFT) ||IsKeyPressed(KEY_D)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) && note.direction == NOTE_LEFT){
     if(isPerfectPos){
-      PlayPerfectSfx();
+      // PlayPerfectSfx();
       self->acc = PERFECT; 
       printf("PERFECT\n");
       return true;
     }else if(isGoodPos){
-      PlayGoodSfx();
+      // PlayGoodSfx();
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
     } else if(isMissPos){
-      PlayMissSfx();
+      // PlayMissSfx();
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -221,18 +222,18 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   // UP ARROW (MIDDLE LEFT)
   if((IsKeyPressed(KEY_UP) ||IsKeyPressed(KEY_F)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)) && note.direction == NOTE_UP){
     if(isPerfectPos){
-      PlayPerfectSfx();
+      // PlayPerfectSfx();
       self->acc = PERFECT; 
       printf("PERFECT\n");
       // printf("abcsdsdsd\n\n\n");
       return true;
     }else if(isGoodPos){
-      PlayGoodSfx();
+      // PlayGoodSfx();
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
     } else if(isMissPos){
-      PlayMissSfx();
+      // PlayMissSfx();
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -243,17 +244,17 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   // RIGHT ARROW (RIGHT)
   if((IsKeyPressed(KEY_RIGHT) ||IsKeyPressed(KEY_K)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) && note.direction == NOTE_RIGHT){
     if(isPerfectPos){
-      PlayPerfectSfx();
+      // PlayPerfectSfx();
       self->acc = PERFECT; 
       printf("PERFECT\n");
       return true;
     }else if(isGoodPos){
-      PlayGoodSfx();
+      // PlayGoodSfx();
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
     } else if(isMissPos){
-      PlayMissSfx();
+      // PlayMissSfx();
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -381,6 +382,7 @@ void _resetNoteManager(NoteManager *self) {
   self->acc = PERFECT;
   self->timer.is_started = false;
   self->musicTimer.is_started = false;
+  self->gp->gameTime = 0;
   for (int i = 0; i < self->beatmap.len; i++) {
     self->note[i].position.y = -999;
     self->note[i].isHit = 0;
