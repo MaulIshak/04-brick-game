@@ -36,6 +36,7 @@ typedef struct Gameplay{
   // Progress Bar
   ProgressBar progressBar;
   double padSize;
+  double alpha;
 }Gameplay;
 
 

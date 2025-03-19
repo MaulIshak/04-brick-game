@@ -10,6 +10,12 @@
 
 static Color secondary = BLACK;
 static Color primary = BLACK;
+// Texture2D meledak;
+// Vector2 position = { 350.0f, 280.0f };
+// Rectangle frameRec;
+// int currentFrame = 0;
+// int framesCounter = 0;
+// int framesSpeed = 12;  
 
 void gp_draw(Gameplay* self){
     Rectangle rec = {
@@ -22,6 +28,7 @@ void gp_draw(Gameplay* self){
       self->padPositions[0].x, self->padPositions[0].y, self->padSize , self->padSize
     };
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
+    DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.9f));
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
     // DrawRectangleRec(rec3, BLACK);
     // _drawAccZone(self);
@@ -34,16 +41,40 @@ void gp_draw(Gameplay* self){
     }
     
     DrawProgressBar(&self->progressBar);
+    // DrawTexture(meledak, 0, 0, WHITE);
+    // DrawTextureRec(meledak, frameRec, position, WHITE);  // Draw part of the texture
+
     
   }
   void gp_update(Gameplay* self){
+    // Tes sprite animation
+    // framesCounter++;
+
+    // if (framesCounter >= (60/framesSpeed))
+    // {
+    //     framesCounter = 0;
+    //     currentFrame++;
+
+    //     if (currentFrame > 7) currentFrame = 0;
+
+        // frameRec.x = (float)7*(float)meledak.width/8;
+        // }
+        // static float time;
+        // time += GetFrameTime();
+        // if(time > .5f){
+        //   currentFrame++;
+        //   time = 0;
+        //   frameRec.x = (float)currentFrame*(float)meledak.width/7;
+
+        // }
+
     if(!self->timer.is_started){
+      // printf("START GAME TIME!\n");
       self->startGameTime = GetTime();
       timer_start(&(self->timer), 3);
     }
     if(is_timer_end(&(self->timer))){
       _UpdateGameTime(self);
-
     }
     UpdateProgressBar(&self->progressBar, self);
 
@@ -127,6 +158,9 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
 
   InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->width, 30, SECONDARY_COLOR);
   gameplay->padSize = 512*0.16f +5;
+  gameplay->alpha = 0;
+  // meledak = LoadTexture("resources/texture/Meledak-2.png");
+  // frameRec = (Rectangle){ 0.0f, 0.0f, (float)meledak.width/8, (float)meledak.height };
 }
 
 void _LoadNoteTexture(Gameplay*self){
