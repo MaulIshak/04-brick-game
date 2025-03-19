@@ -34,6 +34,8 @@ ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
 
     score.frameTimer = 0;
 
+    score->ctx->score.accuracy = 0.00;
+
     score.fireFrames[0] = LoadTexture("resources/texture/fire1.png");
     score.fireFrames[1] = LoadTexture("resources/texture/fire2.png");
     score.fireFrames[2] = LoadTexture("resources/texture/fire3.png");
@@ -95,7 +97,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
 
     // score->beatmap.len
 
-    score->ctx->score.accuracy = ((((sumPerfect * 1) + (sumGood * 0.5))/score->beatmap.len)*(100/100));
+    score->ctx->score.accuracy += ((((sumPerfect * 1) + (sumGood * 0.5))/score->beatmap.len)*(100/100));
 }
 
 void DrawScore(ScoreManager *score)
