@@ -105,7 +105,7 @@ void DrawScore(ScoreManager *score)
     ProgressBar bar;
     char scoreText[20], accuracyText[20];
     sprintf(scoreText, "%d", score->value);
-    sprintf(accuracyText, "%.2f", score->ctx->score.accuracy);
+    sprintf(accuracyText, "%.2f%%", score->ctx->score.accuracy);
     // DrawRectangle(score->ctx->screen_width - score->width, 0, score->width, 10, BLACK);
     DrawRectangle(score->ctx->screen_width - score->width, bar.height + 70, score->width, score->height, WHITE);
     DrawRectangle(score->ctx->screen_width - score->width, bar.height + score->height + 100, score->width, score->height, WHITE);
@@ -177,6 +177,13 @@ void UpdateScore(ScoreManager *score)
     score->ctx->score.perfect = score->perfect;
     score->ctx->score.good = score->good;
     score->ctx->score.miss = score->miss;
+
+    if (IsSelectedMusicEnd(score->ctx))
+    {
+        score->ctx->score.accuracy = 0.00;
+        score->value = 0;
+    }
+    
 }
 
 bool IsShowScore(ScoreManager *score)
