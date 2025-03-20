@@ -29,7 +29,7 @@ typedef struct FlyingObjects {
 } FlyingObjects;
 
 
-FlyingObjects FlyingObject_Create();
+FlyingObjects FlyingObject_Create(AppContext *ctx);
 void FlyingObject_Update(FlyingObjects *self, AppContext *ctx) ;
 void FlyingObject_Draw(FlyingObjects *self);
 

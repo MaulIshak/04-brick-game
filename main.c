@@ -30,6 +30,7 @@
 #include "selection_menu.h"
 #include "animasi.h"
 #include "sfx.h"
+#include "album_cover.h"
 
 #include "macro.h"
 
@@ -53,9 +54,8 @@ int _main()
   InitSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  // ctx.app_state = APP_BEATMAP_CREATOR;
-  // ctx.app_state = APP_LOADING;
-  ctx.app_state = APP_SELECT;
+  ctx.app_state = APP_BEATMAP_CREATOR;
+  // ctx.app_state = APP_SELECT;
   Loading loading = {
     .ctx = &ctx
   };
@@ -72,7 +72,6 @@ int _main()
   PressToPlay press_to_play = {
     .ctx = &ctx
   };
-
   Drawable press_to_play_draw = PressToPlay_ToScene(&press_to_play);
 
   Background bg = CreateBackground(&ctx);
@@ -97,14 +96,19 @@ int _main()
   InitNote(&note, &ctx, &gameplay, &score_manager);
   Drawable note_draw = Note_toScene(&note);
 
+  AlbumCover cover = {
+    .ctx = &ctx,
+  };
+  Drawable cover_draw = AlbumCover_ToScene(&cover);
+
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw, cover_draw};
 
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   
-  ctx.selected_track = 6;
+  ctx.selected_track = 0;
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif

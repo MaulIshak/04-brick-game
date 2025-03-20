@@ -42,6 +42,8 @@ typedef struct Track {
     int high_score;
     // akurasi dari musik ini
     float accuracy;
+    // cover dari musik
+    Texture2D cover;
 } Track;
 
 // Tracks berisi list dari Track yang tersedia

@@ -102,7 +102,7 @@ void FlyingObject_Draw(FlyingObjects *self) {
         FlyingObject *obj = &self->objs[i];
         switch (obj->type)
         {
-        case OBJECT_TRIANGLE:
+        case OBJECT_TRIANGLE: {
             Vector2 v1,v2,v3;
             float size = 50;
 
@@ -126,6 +126,7 @@ void FlyingObject_Draw(FlyingObjects *self) {
             DrawTriangle(v1, v2, v3, Fade(BLUE, 0.5));
             
             break;
+        }
         case OBJECT_CIRCLE:
             DrawCircleLinesV(obj->pos, 30, BLUE);
             break;
