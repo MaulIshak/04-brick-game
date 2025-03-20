@@ -8,6 +8,7 @@
 
 // static double alpha = 255;
 double noteoffset;
+int prev_track = -1;
 
 void note_draw(NoteManager *self){
   // Rectangle rec = {
@@ -39,7 +40,7 @@ void note_update(NoteManager *self){
   }
   if(!self->musicTimer.is_started){
     // self->gp->gameTime = 0;
-    timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
+    timer_start(&self->musicTimer, 3 + ms_to_s(noteoffset));
   }
   if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
     // for (int i = 0; i < self->beatmap.len; i++) {
@@ -56,6 +57,7 @@ void note_update(NoteManager *self){
   if(self->isTrackPlayed){
      if(IsSelectedMusicEnd(self->ctx) ){
         self->ctx->app_state = END_OF_THE_GAME;
+        prev_track = self->ctx->selected_track;
         self->isTrackPlayed = false;
         self->isBeatmapLoaded = false;
         self->isFirstHit = false;
@@ -71,7 +73,11 @@ void note_update(NoteManager *self){
     }  
     // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
     if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
-      // if(!self->isNewGame)self->gp->gameTimeOffset = 0;
+      if(prev_track == self->ctx->selected_track){
+        self->gp->gameTimeOffset = 0;
+      }else{
+        self->gp->gameTimeOffset = noteoffset;
+      }
       printf("%.2f\n\n", self->gp->gameTime);
       self->beatmap = GetSelectedMusicBeatmap(self->ctx);
       for (int i = 0; i < self->beatmap.len; i++)

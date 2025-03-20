@@ -47,7 +47,7 @@ void gp_draw(Gameplay* self){
     
   }
   void gp_update(Gameplay* self){
-    printf("Time: %f\n", self->gameTime);
+    // printf("Time: %f\n", self->gameTime);
     // Tes sprite animation
     // framesCounter++;
 
