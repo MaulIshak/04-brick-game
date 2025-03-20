@@ -10,9 +10,9 @@ for f in $(find src -name '*.c'); do
     INPUT="$INPUT $f"
 done
 
-rm -r rythm_me/
+rm -r rythm_me/ ./rythm_me.zip
 mkdir rythm_me
 echo "Compiling..."
 time $CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
 cp -r ./resources/ ./rythm_me
-zip -r -9 ./game.zip ./rythm_me
+zip -r -9 ./rythm_me.zip ./rythm_me
