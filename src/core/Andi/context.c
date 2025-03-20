@@ -12,7 +12,7 @@ const char *resources[] = {
     "resources/Pest of The Cosmos",
     "resources/LGR",
     "resources/ToyLand",
-    "resources/BadApple",
+    "resources/Bad Apple",
     "resources/PKKMB 2024",
     "resources/Infinite Cosmodynamics",
     "resources/Outer Space"

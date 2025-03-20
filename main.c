@@ -48,14 +48,14 @@ int _main()
   Image icon = LoadImage("resources/texture/game-icon.png");
   SetConfigFlags(FLAG_WINDOW_TOPMOST | FLAG_WINDOW_ALWAYS_RUN);
   
-  InitWindow(screenWidth, screenHeight, "Tap Tap Gila");
+  InitWindow(screenWidth, screenHeight, "Rythm.me");
   SetWindowIcon(icon);
   InitAudioDevice();
   InitSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  ctx.app_state = APP_BEATMAP_CREATOR;
-  // ctx.app_state = APP_SELECT;
+  // ctx.app_state = APP_BEATMAP_CREATOR;
+  ctx.app_state = APP_SELECT;
   Loading loading = {
     .ctx = &ctx
   };
@@ -108,7 +108,7 @@ int _main()
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   
-  ctx.selected_track = 0;
+  ctx.selected_track = 4;
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif
