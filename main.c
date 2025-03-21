@@ -22,7 +22,6 @@
 #include "raymath.h"
 
 #include "background.h"
-#include "loading.h"
 #include "press_to_play.h"
 #include "beatmap_creator.h"
 #include "eotg.h"
