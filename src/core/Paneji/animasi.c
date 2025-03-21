@@ -20,7 +20,7 @@ void LoadingInitPositions(Loading *self) {
 
 
 void LoadingUpdatePositions(Loading *self) {
-    static int count = 0;  // Gunakan static agar nilai tidak reset setiap frame
+    static int count = 0;
 
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
@@ -51,16 +51,16 @@ void LoadingUpdatePositions(Loading *self) {
         if (self->timer >= 0.5f) {
             self->loadingVisible = !self->loadingVisible;
             count++;
-            self->timer = 0.0f;  // Reset timer setelah perubahan loadingVisible
+            self->timer = 0.0f;  
         }
         if (count == 10) {
-            self->state = READY; // Pindah ke state READY agar berhenti di PressToPlay
+            self->state = READY; 
         }
     } 
     else if (self->state == READY) {
         static PressToPlay pressToPlay = { .isVisible = true };
-        pressToPlay.ctx = self->ctx;  // Hubungkan pressToPlay ke context
-        PressToPlay_Update(&pressToPlay); // Update agar bisa menangkap input Enter
+        pressToPlay.ctx = self->ctx;  
+        PressToPlay_Update(&pressToPlay); 
     }
 }
 
@@ -74,11 +74,12 @@ void LoadingDrawTextures(Loading *self) {
     } 
     else if (self->state == LOADING) {
         if (self->loadingVisible) {
-            DrawText("Loading", SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT /  2 - 40, 40, BLACK);
+            DrawTextEx(self->ctx->font, "Loading", (Vector2){ SCREEN_WIDTH / 2 - 60, SCREEN_HEIGHT / 2 - 40 }, 40, 2, BLACK);
+
         }
     } 
     else if (self->state == READY) {
-        pressToPlay.ctx = self->ctx;  // Pastikan context ada di PressToPlay
+        pressToPlay.ctx = self->ctx;  
         PressToPlay_Draw(&pressToPlay);
     }
 }

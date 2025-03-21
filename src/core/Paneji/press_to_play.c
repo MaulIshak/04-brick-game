@@ -3,14 +3,16 @@
 #include <stdio.h>
 
 void PressToPlay_Draw(PressToPlay *self){
-    // untuk menghilangkan warning, hapus ketika akan digunakan
-  (void)self;
-    DrawText("TEKAN APA SAJA UNTUK MULAI",SCREEN_WIDTH / 2 - 180 ,SCREEN_HEIGHT / 2 + 180, 23, BLACK);
+  DrawTextEx(self->ctx->font, "TEKAN APA SAJA UNTUK MULAI", 
+    (Vector2){ SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 180 }, 
+    35, 2, BLACK);
+
 }
 void PressToPlay_Update(PressToPlay *self){
-    if (IsKeyPressed(KEY_ENTER)) {
-        self->ctx->app_state = APP_SELECT; // Ubah state ke APP_SELECT saat Enter ditekan
+    if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT)) {
+        self->ctx->app_state = APP_SELECT; 
     }
+    
 }
 bool PressToPlay_IsShow(PressToPlay *self){
     if(self->ctx->app_state == APP_PRESS_TO_PLAY) {
