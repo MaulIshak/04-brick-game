@@ -107,7 +107,7 @@ int _main()
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   
-  ctx.selected_track = 4;
+  ctx.selected_track = 1;
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif
@@ -147,7 +147,7 @@ int _main()
         draws[i].scene->Draw(draws[i].self);
       }
     }
-
+    DrawFPS( 20,screenHeight- 40);
     // DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
     EndDrawing();
   }

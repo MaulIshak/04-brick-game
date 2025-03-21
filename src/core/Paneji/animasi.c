@@ -70,7 +70,7 @@ void LoadingDrawTextures(Loading *self) {
     static PressToPlay pressToPlay = { .isVisible = true };
 
     if (self->state == LOGO_FADE_IN || self->state == LOGO_HOLD || self->state == LOGO_FADE_OUT) {
-        DrawTexture(self->logo, SCREEN_WIDTH / 2 - self->logo.width / 2, SCREEN_HEIGHT / 2 - self->logo.height / 2, Fade(WHITE, self->alpha));
+        DrawTextureEx(self->logo, (Vector2){SCREEN_WIDTH / 2 - (self->logo.width / 2) / 2, SCREEN_HEIGHT / 2 - (self->logo.height / 2) / 2} , 0, 0.5, Fade(WHITE, self->alpha));
     } 
     else if (self->state == LOADING) {
         if (self->loadingVisible) {

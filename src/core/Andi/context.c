@@ -103,7 +103,7 @@ AppContext CreateContext(int screen_width , int screen_height ){
     ctx._beatmap.len = 0;
     ctx._beatmap_name = malloc(sizeof(char) * 400);
     memset(ctx._beatmap_name, 0, 400);
-    Font font = LoadFont(font_path);
+    Font font = LoadFontEx(font_path, 30, NULL, 0);
     ctx.font = font;
     return ctx;
 }
