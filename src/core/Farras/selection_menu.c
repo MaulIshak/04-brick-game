@@ -8,31 +8,54 @@
 float textOffsetX = 0;
 int indexMove = 0;
 
-float flashAlpha = 0.0f;  // Transparansi efek kilau
-int lastSelected = -1;     // Menyimpan track yang terakhir dipilih
+float flashAlpha = 0.0f; 
+int lastSelected = -1;
+
+void DrawSmoothGradient(int centerX, int centerY, int maxRadius) {
+  Color colors[] = {
+      (Color){254, 250, 148, 200},
+      (Color){255, 147, 98, 200},
+      (Color){255, 92, 93, 200},
+      (Color){128, 69, 255, 200},
+      (Color){57, 43, 214, 200},
+      (Color){24, 29, 149, 200}
+  };
+  
+  int numSteps = 6;
+  for (int i = 0; i < 5; i++) {
+      for (int j = 0; j < numSteps; j++) {
+          float t = (float)j / numSteps;
+          Color blended = {
+              (unsigned char)((1 - t) * colors[i].r + t * colors[i + 1].r),
+              (unsigned char)((1 - t) * colors[i].g + t * colors[i + 1].g),
+              (unsigned char)((1 - t) * colors[i].b + t * colors[i + 1].b),
+              200
+          };
+          
+          DrawCircleGradient(centerX - i * 100, centerY + i * 200, maxRadius - j * (maxRadius / numSteps), blended, colors[i + 1]);
+      }
+  }
+}
 
 void SelectionMenu_Draw(SelectionMenu *self) {
-    FlyingObject_Draw(&self->flying_objects);
-
 
     int boxWidth = 400;
     float fontsize = 30;
     float textPadding = 10;
     int selected = self->ctx->selected_track;
 
-    // Cek jika ada perubahan item yang dipilih
-    if (selected != lastSelected) {
-        flashAlpha = 1.0f;  // Reset efek kilau
-        lastSelected = selected;
-    }
 
-    ClearBackground(BLACK);
-    DrawCircleGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 200}, (Color){255, 147, 98, 200});
-    DrawCircleGradient(self->ctx->screen_width / 2 - 100, self->ctx->screen_height / 2 + 500, self->ctx->screen_height, (Color){255, 147, 98, 200}, (Color){255, 92, 93, 200});
-    DrawCircleGradient(self->ctx->screen_width / 2 - 200, self->ctx->screen_height / 2 + 600, self->ctx->screen_height, (Color){255, 92, 93, 200}, (Color){128, 69, 255, 200});
-    DrawCircleGradient(self->ctx->screen_width / 2 - 300, self->ctx->screen_height / 2 + 700, self->ctx->screen_height, (Color){128, 69, 255, 200}, (Color){57, 43, 214, 200});
-    DrawCircleGradient(self->ctx->screen_width / 2 - 400, self->ctx->screen_height / 2 + 800, self->ctx->screen_height, (Color){57, 43, 214, 200}, (Color){24, 29, 149, 200});
-    DrawCircle(self->ctx->screen_width / 2 - 500, self->ctx->screen_height / 2 + 900, self->ctx->screen_height, (Color){24, 29, 149, 200});    
+    ClearBackground(WHITE);
+    DrawSmoothGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height / 2);
+
+    FlyingObject_Draw(&self->flying_objects);
+
+    // DrawCircleGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 200}, (Color){255, 147, 98, 200});
+    // DrawCircleGradient(self->ctx->screen_width / 2 - 100, self->ctx->screen_height / 2 + 500, self->ctx->screen_height, (Color){255, 147, 98, 200}, (Color){255, 92, 93, 200});
+    // DrawCircleGradient(self->ctx->screen_width / 2 - 200, self->ctx->screen_height / 2 + 600, self->ctx->screen_height, (Color){255, 92, 93, 200}, (Color){128, 69, 255, 200});
+    // DrawCircleGradient(self->ctx->screen_width / 2 - 300, self->ctx->screen_height / 2 + 700, self->ctx->screen_height, (Color){128, 69, 255, 200}, (Color){57, 43, 214, 200});
+    // DrawCircleGradient(self->ctx->screen_width / 2 - 400, self->ctx->screen_height / 2 + 800, self->ctx->screen_height, (Color){57, 43, 214, 200}, (Color){24, 29, 149, 200});
+    // DrawCircle(self->ctx->screen_width / 2 - 500, self->ctx->screen_height / 2 + 900, self->ctx->screen_height, (Color){24, 29, 149, 200});    
 
     for (int i = 0 + indexMove; i < self->ctx->tracks.len + indexMove; i++) {
         int distance = abs(i - selected);
@@ -40,8 +63,8 @@ void SelectionMenu_Draw(SelectionMenu *self) {
         float scale = (i == selected) ? 1.2f : scaleFactor;
 
         Color textColor = (i == selected) ? GOLD : LIGHTGRAY;
-        Color bgColor = (i == selected) ? DARKGRAY : GRAY;
-        bgColor = Fade(bgColor, 0.8f);
+        Color bgColor = (i == selected) ? RAYWHITE : GRAY;
+        bgColor = (i == selected) ? bgColor : Fade(bgColor, 0.8f);
 
         float r = self->ctx->screen_height / 2;
         float angle = ((i + self->rotationOffset) * (PI * 2)) / MAX_MUSIC_SHOWING;
@@ -51,12 +74,25 @@ void SelectionMenu_Draw(SelectionMenu *self) {
 
         Vector2 textVector = MeasureTextEx(self->ctx->font, self->ctx->tracks.track[i].music_name, fontsize * scale, 2);
 
-        DrawRectangleGradientH(xPosition - textPadding, yPosition - textVector.y + textPadding / 2,
-            boxWidth + textPadding, textVector.y * 2, bgColor, Fade(bgColor, 0.0f));
+        if (i == selected)
+        {
+          DrawRectangleGradientH(xPosition - textPadding, yPosition - textVector.y + textPadding / 2,
+              boxWidth + textPadding, textVector.y * 2, bgColor, Fade(bgColor, 1.0f));
+        } else {
+          DrawRectangleGradientH(xPosition - textPadding, yPosition - textVector.y + textPadding / 2,
+              boxWidth + textPadding, textVector.y * 2, bgColor, Fade(bgColor, 0.0f));
+        }
+        
+
 
         if (i == selected && flashAlpha > 0.0f) {
             DrawRectangle(xPosition - textPadding, yPosition - textVector.y + textPadding / 2,
                 boxWidth + textPadding, textVector.y * 2, Fade(WHITE, flashAlpha));
+        }
+
+        if (selected != lastSelected) {
+            flashAlpha = 1.0f;
+            lastSelected = selected;
         }
 
         if (textVector.x > boxWidth) {
@@ -74,19 +110,28 @@ void SelectionMenu_Draw(SelectionMenu *self) {
             (Vector2){ xPosition, yPosition + (textPadding) / 2 }, (fontsize - 10) * scale, 2, textColor);
     }
 
+
+
     if (flashAlpha > 0.0f) {
         flashAlpha -= 0.03f;  
         if (flashAlpha < 0.0f) flashAlpha = 0.0f;
     }
-
-    
-    DrawTexture(self->background, 0, 0, WHITE);
 }
 
 
 void SelectionMenu_Update(SelectionMenu *self) {
   FlyingObject_Update(&self->flying_objects, self->ctx);
 
+  PressToAction(self);
+
+  self->targetYOffset = -self->ctx->selected_track * 110;
+  self->selectionYOffset += (self->targetYOffset - self->selectionYOffset) * 0.1f;
+
+  self->targetRotationOffset = -self->ctx->selected_track;
+  self->rotationOffset += (self->targetRotationOffset - self->rotationOffset) * 0.1f;
+}
+
+void PressToAction(SelectionMenu *self) {
   static float time = 0;
   static float delay = 0.35f;
   static bool keyHeld = false;
@@ -125,7 +170,7 @@ void SelectionMenu_Update(SelectionMenu *self) {
   
   if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_UP)) {
     textOffsetX = 0;
-
+    
       time += GetFrameTime();
       if (time >= delay) {
           if (!keyHeld || time >= frameThreshold) {
@@ -166,12 +211,6 @@ void SelectionMenu_Update(SelectionMenu *self) {
   if (IsKeyPressed(KEY_ENTER)) {
       self->ctx->app_state = APP_PLAYING;
   }
-
-  self->targetYOffset = -self->ctx->selected_track * 110;
-  self->selectionYOffset += (self->targetYOffset - self->selectionYOffset) * 0.1f;
-
-  self->targetRotationOffset = -self->ctx->selected_track;
-  self->rotationOffset += (self->targetRotationOffset - self->rotationOffset) * 0.1f;
 }
 
 bool SelectionMenu_IsShow(SelectionMenu *self) {
@@ -196,6 +235,4 @@ void InitSelectionMenu(SelectionMenu *self, AppContext *ctx) {
     self->isShow = false;
 
     self->flying_objects = FlyingObject_Create(ctx);
-
-    self->background = LoadTexture("resources/background/backgroundEmpty.png");
 }

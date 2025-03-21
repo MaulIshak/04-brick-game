@@ -24,6 +24,7 @@ typedef struct SelectionMenu {
 } SelectionMenu;
 
 static void AudioProcessEffectLPF(void *buffer, unsigned int frames);
+void PressToAction(SelectionMenu *self);
 
 void SelectionMenu_Draw(SelectionMenu *self);
 void SelectionMenu_Update(SelectionMenu *self);
