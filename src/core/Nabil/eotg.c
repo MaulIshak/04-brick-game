@@ -16,7 +16,6 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     DrawRectangle(50, (self->ctx->screen_height/2) / 2 - 50, self->ctx->screen_width - 100, self->ctx->screen_height/2 + 100, RAYWHITE);
     
     // DRAW GRADE
-    
     float accuracy = ((float)self->ctx->score.point / (float)((self->ctx->score.perfect + self->ctx->score.good + self->ctx->score.miss) * 100)) * 100;
     if (accuracy >= 90) {
         grade = "S";
@@ -34,7 +33,6 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
         grade = "D";
         gradeColor = RED;
     }
-
     DrawTextEx(self->ctx->font, grade, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->ctx->font, grade, 175, 0).x / 2, 160 }, 175, 0, gradeColor);
     sprintf(buff, "%ld", self->ctx->score.point);
     DrawTextEx(self->ctx->font, buff, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->ctx->font, buff, 90, 0).x / 2, 320 }, 90, 0, BLACK);
