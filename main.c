@@ -107,7 +107,7 @@ int _main()
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   
-  ctx.selected_track = 4;
+  ctx.selected_track = 7;
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif
@@ -115,7 +115,7 @@ int _main()
   while (!WindowShouldClose()) {
     UpdateContext(&ctx);
 
-    if (ctx.app_state != APP_PLAYING) {
+    if (ctx.app_state != APP_PLAYING && ctx.app_state != APP_BEATMAP_CREATOR && ctx.app_state != APP_LOADING) {
         if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_A) || IsKeyPressed(KEY_W) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) {
           PlayArrowSfx(KEY_RIGHT);
         }
