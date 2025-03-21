@@ -8,7 +8,6 @@
 #include "raymath.h"
 
 #include "background.h"
-#include "loading.h"
 #include "press_to_play.h"
 #include "beatmap_creator.h"
 #include "eotg.h"
@@ -35,8 +34,8 @@ int main()
   InitAudioDevice();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  // ctx.app_state = APP_BEATMAP_CREATOR;
-  // ctx.app_state = APP_LOADING;
+  ctx.app_state = APP_BEATMAP_CREATOR;
+  ctx.app_state = APP_LOADING;
   Loading loading = {
     .ctx = &ctx
   };

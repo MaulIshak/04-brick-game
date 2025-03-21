@@ -4,10 +4,14 @@
 #include "context.h"
 #ifndef PRESS_TO_PLAY_H
 #define PRESS_TO_PLAY_H
+#define SCREEN_WIDTH 600
+#define SCREEN_HEIGHT 800
 
 typedef struct PressToPlay {
     AppContext *ctx;
+    bool isVisible;
 } PressToPlay;
+
 
 void PressToPlay_Draw(PressToPlay *self);
 void PressToPlay_Update(PressToPlay *self);

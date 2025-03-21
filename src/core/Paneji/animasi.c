@@ -1,8 +1,10 @@
 #include "context.h"
 #include "animasi.h"
+#include "background.h"
+#include "press_to_play.h"
 
 void LoadingLoadTextures(Loading *self) {
-    self->logo = LoadTexture("resources/texture/lambang-contoh.png");  // Pastikan file logo ada
+    self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
 }
 
 void LoadingUnloadTextures(Loading *self) {
@@ -16,8 +18,12 @@ void LoadingInitPositions(Loading *self) {
     self->state = LOGO_FADE_IN;
 }
 
+
 void LoadingUpdatePositions(Loading *self) {
+    static int count = 0;  // Gunakan static agar nilai tidak reset setiap frame
+
     if (self->state == LOGO_FADE_IN) {
+        DisableParticle();
         self->alpha += 0.02f;
         if (self->alpha >= 1.0f) {
             self->alpha = 1.0f;
@@ -40,34 +46,44 @@ void LoadingUpdatePositions(Loading *self) {
         }
     } 
     else if (self->state == LOADING) {
+        EnableParticle();
         self->timer += GetFrameTime();
         if (self->timer >= 0.5f) {
             self->loadingVisible = !self->loadingVisible;
-            self->timer = 0.0f;
+            count++;
+            self->timer = 0.0f;  // Reset timer setelah perubahan loadingVisible
         }
-        if (self->timer >= 3.0f) {
-            self->state = READY;
+        if (count == 10) {
+            self->state = READY; // Pindah ke state READY agar berhenti di PressToPlay
         }
     } 
-    else if (self->state == READY || IsKeyPressed(KEY_ENTER)) {
-        CloseWindow();  
+    else if (self->state == READY) {
+        static PressToPlay pressToPlay = { .isVisible = true };
+        pressToPlay.ctx = self->ctx;  // Hubungkan pressToPlay ke context
+        PressToPlay_Update(&pressToPlay); // Update agar bisa menangkap input Enter
     }
 }
 
+
+
 void LoadingDrawTextures(Loading *self) {
+    static PressToPlay pressToPlay = { .isVisible = true };
 
     if (self->state == LOGO_FADE_IN || self->state == LOGO_HOLD || self->state == LOGO_FADE_OUT) {
         DrawTexture(self->logo, SCREEN_WIDTH / 2 - self->logo.width / 2, SCREEN_HEIGHT / 2 - self->logo.height / 2, Fade(WHITE, self->alpha));
     } 
     else if (self->state == LOADING) {
         if (self->loadingVisible) {
-            DrawText("Loading...", SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2, 20, BLACK);
+            DrawText("Loading", SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT /  2 - 40, 40, BLACK);
         }
     } 
     else if (self->state == READY) {
-        DrawText("Press Any Key to Start", SCREEN_WIDTH / 2 - 120, SCREEN_HEIGHT / 2, 20, YELLOW);
+        pressToPlay.ctx = self->ctx;  // Pastikan context ada di PressToPlay
+        PressToPlay_Draw(&pressToPlay);
     }
 }
+
+
 
 bool LoadingIsShow(Loading *self) {
     return self->ctx->app_state == APP_LOADING;

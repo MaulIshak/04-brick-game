@@ -35,7 +35,13 @@
     "barrier": "c",
     "charconv": "c",
     "memory_resource": "c",
-    "__config": "c"
+    "__config": "c",
+    "selection_menu.h": "c",
+    "sfx.h": "c",
+    "loading.h": "c",
+    "press_to_play.h": "c",
+    "eotg.h": "c",
+    "animasi.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
