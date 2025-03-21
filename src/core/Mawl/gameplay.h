@@ -17,8 +17,11 @@ typedef struct Gameplay{
   int width;
   // Texture untuk diload
   Texture2D textureToLoad[TEXTURE_COUNT];
+  Texture2D activeTextureToLoad[TEXTURE_COUNT];
+  Texture2D passiveTextureToLoad[TEXTURE_COUNT];
   // Path dari texture untuk diload
   char *texturePaths [TEXTURE_COUNT];
+  char *textureActivePaths [TEXTURE_COUNT];
   // Opacity dari setiap pad
   int padOpacity[LINE_COUNT];
   // Positi setiap pad
@@ -33,6 +36,7 @@ typedef struct Gameplay{
   // Progress Bar
   ProgressBar progressBar;
   double padSize;
+  double alpha;
 }Gameplay;
 
 
@@ -46,6 +50,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx);
 // Private procedure
 void _LoadNoteTexture(Gameplay *self);
 void _UpdateGameTime(Gameplay* self);
+void _drawAccZone(Gameplay* self);
 
 impl_scene(Gameplay*, Gameplay_ToScene,gp_draw,gp_update, gp_isShow);
 
