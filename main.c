@@ -53,8 +53,10 @@ int _main()
   InitSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
+  #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_SELECT;
+  // ctx.app_state = APP_SELECT;
+  #endif // GAME_DEBUG
   Loading loading = {
     .ctx = &ctx
   };
@@ -66,6 +68,7 @@ int _main()
   EndOfTheGame eotg = {
     .ctx = &ctx
   };
+  EndOfTheGame_Init(&eotg);
   Drawable eotg_draw = EndOfTheGame_ToScene(&eotg);
   
   PressToPlay press_to_play = {
@@ -95,9 +98,7 @@ int _main()
   InitNote(&note, &ctx, &gameplay, &score_manager);
   Drawable note_draw = Note_toScene(&note);
 
-  AlbumCover cover = {
-    .ctx = &ctx,
-  };
+  AlbumCover cover = AlbumCover_Create(&ctx);
   Drawable cover_draw = AlbumCover_ToScene(&cover);
 
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
@@ -106,8 +107,9 @@ int _main()
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
-  
-  ctx.selected_track = 1;
+  #ifdef GAME_DEBUG
+  ctx.selected_track = 5;
+  #endif //GAME_DEBUG
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif
@@ -156,6 +158,7 @@ int _main()
   CloseAudioDevice();
   CloseWindow();
   UnloadImage(icon);
+  AlbumCover_Destroy(&cover);
 
   return 0;
 }

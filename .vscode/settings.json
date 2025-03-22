@@ -37,7 +37,8 @@
     "memory_resource": "c",
     "__config": "c",
     "xiosbase": "c",
-    "progress_bar.h": "c"
+    "progress_bar.h": "c",
+    "eotg.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

@@ -8,8 +8,10 @@
 
 typedef struct EndOfTheGame {
     AppContext *ctx;
+    Font gradeFont;
 } EndOfTheGame;
 
+void EndOfTheGame_Init(EndOfTheGame *self);
 void EndOfTheGame_Draw(EndOfTheGame *self);
 void EndOfTheGame_Update(EndOfTheGame *self);
 bool EndOfTheGame_IsShow(EndOfTheGame *self);

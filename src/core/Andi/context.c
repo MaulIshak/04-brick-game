@@ -90,7 +90,7 @@ const char* font_path = "resources/font/Jersey15-Regular.ttf";
 AppContext CreateContext(int screen_width , int screen_height ){
     Tracks tracks = InitTracks();
     AppContext ctx = {
-        .app_state = APP_PLAYING,
+        .app_state = APP_LOADING,
         .screen_width = screen_width,
         .screen_height = screen_height,
         .tracks = tracks,

@@ -157,7 +157,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   gameplay->timer = (Timer){false, 0,0};
   gameplay->gameTimeOffset = 2000;
 
-  InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->width, 30, SECONDARY_COLOR);
+  InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->width, 10, SECONDARY_COLOR);
   gameplay->padSize = 512*0.16f +5;
   gameplay->alpha = 0;
   // meledak = LoadTexture("resources/texture/Meledak-2.png");

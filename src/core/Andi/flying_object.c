@@ -14,6 +14,7 @@ FlyingObjects FlyingObject_Create(AppContext *ctx) {
         objs.objs[i].pos.y -= objs.objs[i].target.y / (i + 1);
         objs.objs[i].rotation = (float)GetRandomValue(0, 360);
     }
+    objs.ctx = ctx;
     return objs;
 }
 
@@ -47,13 +48,14 @@ FlyingObject ObjectCreate(int width, int height) {
     obj.target = FlyingObjectRandomTarget(width, height);
     obj.pos = FlyingObjectRandomPos(height);
 
-    int rand = GetRandomValue(0, 10);
+    int rand = GetRandomValue(0, 20);
 
-    if(rand >= 0 && rand < 4) {
+    if(rand >= 0 && rand < 9) {
         obj.type = OBJECT_TRIANGLE;
-    }else if (rand >= 4 && rand < 9) {
+    }else if (rand >= 9 && rand < 18) {
         obj.type = OBJECT_CIRCLE;
-    }else if (rand >= 9) {
+    }
+    else if (rand >= 18) {
         if(GetRandomValue(0,1) == 0) {
             obj.type = OBJECT_AJAW;
         }else {

@@ -44,7 +44,7 @@ Tools, Program and Library:
 - Kiss FFT - Library fast fourier transfrom yang mudah digunakan [source](https://github.com/mborgerding/kissfft)
 
 Font & Texture:  
-TODO!!.
+CD texture: https://www.vecteezy.com/png/9380929-record-disk-clipart-design-illustration   
 
 Musics: 
 - Guardian of Former Seas : DM Dokuro [Youtube](https://youtu.be/hPEQLU-aD3I?si=9heevkGvYLgjFbVB)
@@ -57,3 +57,6 @@ Musics:
 - Outer Space: Muhammad Nabil Mudzaki
   
 # LICENSE
+Semua kode yang "kami" buat berlisensi MIT.
+
+Semua asset yang "kami" buat berlisensi CC-BY.
