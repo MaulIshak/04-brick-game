@@ -91,7 +91,7 @@ void FlyingObject_Update(FlyingObjects *self, AppContext *ctx) {
 
         dir.x /= length;
         dir.y /= length;
-
+ 
         obj->pos.x = obj->pos.x + dir.x * FLYING_OBJECT_SPEED;
         obj->pos.y = obj->pos.y + dir.y * FLYING_OBJECT_SPEED;
     }

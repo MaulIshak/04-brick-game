@@ -122,10 +122,10 @@ void SelectionMenuHelper_Draw(SelectionMenu *self) {
   float screenHeight = self->ctx->screen_height;
 
   buttonDraw(font, (Vector2){screenWidth - 100, screenHeight - 30}, "Arrow Up/Down", 22, 2, WHITE, DARKGRAY, GRAY);
-  buttonDraw(font, (Vector2){screenWidth - 250, screenHeight - 30}, "(Press To Select)", 18, 1, WHITE, BLANK, BLANK);
+  buttonDraw(font, (Vector2){screenWidth - 225, screenHeight - 30}, "(Select)", 18, 1, WHITE, BLANK, BLANK);
 
   buttonDraw(font, (Vector2){screenWidth - 55, screenHeight - 60}, "Enter", 22, 2, ORANGE, YELLOW, GOLD);
-  buttonDraw(font, (Vector2){screenWidth - 155, screenHeight - 60}, "(Press To Play)", 18, 1, WHITE, BLANK, BLANK);
+  buttonDraw(font, (Vector2){screenWidth - 130, screenHeight - 60}, "(Play)", 18, 1, WHITE, BLANK, BLANK);
 }
 
 
@@ -259,6 +259,8 @@ void PressToAction(SelectionMenu *self)
 
   if (IsKeyPressed(KEY_ENTER))
   {
+    StopSelectedTrack(self->ctx);
+    SeekMusicStream(self->ctx->tracks.track[self->ctx->selected_track].music, 0);
     self->ctx->app_state = APP_PLAYING;
   }
 }
