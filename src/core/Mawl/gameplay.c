@@ -80,7 +80,7 @@ void gp_draw(Gameplay* self){
     UpdateProgressBar(&self->progressBar, self);
 
     // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
+    if(IsKeyDown(KEY_J) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->padOpacity[2] = 255;
       // self->textureToLoad[0] = self->activeTextureToLoad[0]
       // printf("Hit time: %f\n", self->gameTime);
@@ -91,7 +91,7 @@ void gp_draw(Gameplay* self){
     }
     
     // LEFT ARROW (LEFT)
-    if(IsKeyDown(KEY_LEFT) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
+    if(IsKeyDown(KEY_D) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
       self->padOpacity[0] = 255;
       self->textureToLoad[0] = self->activeTextureToLoad[0];
     }else{
@@ -101,7 +101,7 @@ void gp_draw(Gameplay* self){
     }
 
     // UP ARROW (MIDDLE RIGHT)
-    if(IsKeyDown(KEY_UP) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    if(IsKeyDown(KEY_F) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->padOpacity[1] = 255;
       self->textureToLoad[1] = self->activeTextureToLoad[1];
     }else{
@@ -111,7 +111,7 @@ void gp_draw(Gameplay* self){
     }
     
     // RIGHT ARROW (RIGHT)
-    if(IsKeyDown(KEY_RIGHT) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
+    if(IsKeyDown(KEY_K) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
       self->padOpacity[3] = 255;
       self->textureToLoad[3] = self->activeTextureToLoad[2];
     }else{

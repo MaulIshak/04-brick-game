@@ -183,7 +183,7 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   bool isGoodPos = notePos >= padY  && notePos <= padY + self->gp->padSize;
   bool isMissPos = notePos >= padY - 20 && notePos <= padY + self->gp->padSize + 20;
   // DOWN ARROW (MIDDLE RIGHT)
-  if((IsKeyPressed(KEY_DOWN) ||IsKeyPressed(KEY_J)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
+  if((IsKeyPressed(KEY_J) ||IsKeyPressed(KEY_J)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
     
     if(isPerfectPos){
       // PlayPerfectSfx();
@@ -204,7 +204,7 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   }
 
   // LEFT ARROW (LEFT)
-  if((IsKeyPressed(KEY_LEFT) ||IsKeyPressed(KEY_D)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) && note.direction == NOTE_LEFT){
+  if((IsKeyPressed(KEY_D) ||IsKeyPressed(KEY_D)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) && note.direction == NOTE_LEFT){
     if(isPerfectPos){
       // PlayPerfectSfx();
       self->acc = PERFECT; 
@@ -226,7 +226,7 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
 
 
   // UP ARROW (MIDDLE LEFT)
-  if((IsKeyPressed(KEY_UP) ||IsKeyPressed(KEY_F)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)) && note.direction == NOTE_UP){
+  if((IsKeyPressed(KEY_F) ||IsKeyPressed(KEY_F)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)) && note.direction == NOTE_UP){
     if(isPerfectPos){
       // PlayPerfectSfx();
       self->acc = PERFECT; 
@@ -248,7 +248,7 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   }
 
   // RIGHT ARROW (RIGHT)
-  if((IsKeyPressed(KEY_RIGHT) ||IsKeyPressed(KEY_K)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) && note.direction == NOTE_RIGHT){
+  if((IsKeyPressed(KEY_K) ||IsKeyPressed(KEY_K)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) && note.direction == NOTE_RIGHT){
     if(isPerfectPos){
       // PlayPerfectSfx();
       self->acc = PERFECT; 
