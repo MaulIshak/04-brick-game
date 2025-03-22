@@ -54,7 +54,7 @@ int _main()
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  // ctx.app_state = APP_SELECT;
+  ctx.app_state = APP_SELECT;
   Loading loading = {
     .ctx = &ctx
   };
@@ -66,6 +66,7 @@ int _main()
   EndOfTheGame eotg = {
     .ctx = &ctx
   };
+  EndOfTheGame_Init(&eotg);
   Drawable eotg_draw = EndOfTheGame_ToScene(&eotg);
   
   PressToPlay press_to_play = {
