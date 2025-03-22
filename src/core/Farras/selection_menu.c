@@ -130,10 +130,12 @@ void SelectionMenuHelper_Draw(SelectionMenu *self) {
 
 
 void PreviewMusic(SelectionMenu *self) {
+  if (self->ctx->app_state != APP_SELECT) return;
+
   static bool isCanPlay = false;
   static float time = 0.0f;
   static float volume = 0.0f;
-  if (IsSelectedMusicEnd(self->ctx)) {
+  if (IsSelectedMusicEnd(self->ctx) ) {
     time += GetFrameTime();
     if (time > 1.5f) {
       isCanPlay = true;
@@ -260,7 +262,7 @@ void PressToAction(SelectionMenu *self)
   if (IsKeyPressed(KEY_ENTER))
   {
     StopSelectedTrack(self->ctx);
-    SeekMusicStream(self->ctx->tracks.track[self->ctx->selected_track].music, 0);
+    SeekMusicStream(self->ctx->tracks.track[self->ctx->selected_track].music, 0.1f);
     self->ctx->app_state = APP_PLAYING;
   }
 }
