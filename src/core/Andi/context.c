@@ -12,9 +12,10 @@ const char *resources[] = {
     "resources/Pest of The Cosmos",
     "resources/LGR",
     "resources/ToyLand",
-    "resources/BadApple",
+    "resources/Bad Apple",
     "resources/PKKMB 2024",
-    "resources/Infinite Cosmodynamics"
+    "resources/Infinite Cosmodynamics",
+    "resources/Outer Space"
 };
 
 Tracks InitTracks() {
@@ -42,8 +43,12 @@ Tracks InitTracks() {
         buff[len - 4] = '\0';
 
         track->music = m;
-        printf("Hello World");
-        
+
+        strcat(buff, ".png");
+        Texture tex = LoadTexture(buff);
+        track->cover = tex;
+        buff[len - 4] = '\0';
+
         strcpy((char *)&track->music_name, (char *)&buff[10]);
         buff[0] = '\0';
         #ifdef DEBUG
@@ -98,7 +103,7 @@ AppContext CreateContext(int screen_width , int screen_height ){
     ctx._beatmap.len = 0;
     ctx._beatmap_name = malloc(sizeof(char) * 400);
     memset(ctx._beatmap_name, 0, 400);
-    Font font = LoadFont(font_path);
+    Font font = LoadFontEx(font_path, 30, NULL, 0);
     ctx.font = font;
     return ctx;
 }
@@ -113,7 +118,7 @@ void UpdateContext(AppContext* ctx) {
 }
 
 void PlaySelectedTrack(AppContext *ctx) {
-    int selected = ctx->selected_track ;
+    int selected = ctx->selected_track;
     assert(selected != -1);
     PlayMusicStream(ctx->tracks.track[selected].music);
     SeekSelectedTrack(ctx, 0.01);

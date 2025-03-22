@@ -35,7 +35,9 @@
     "barrier": "c",
     "charconv": "c",
     "memory_resource": "c",
-    "__config": "c"
+    "__config": "c",
+    "xiosbase": "c",
+    "progress_bar.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

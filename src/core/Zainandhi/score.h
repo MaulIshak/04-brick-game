@@ -1,7 +1,6 @@
 #include "scene.h"
 #include "context.h"
 #include "gameplay.h"
-#include "progress_bar.h"
 #ifndef SCORE_H
 #define SCORE_H
 
@@ -15,12 +14,11 @@ typedef enum Accuracy
 typedef struct ScoreManager
 {
     AppContext *ctx;
-    ProgressBar *bar;
     int value;
     // double accuracy;
     int perfect, good, miss;
     
-    int width;
+    int width, height;
     int perfectCombo;
     bool isBeatmapLoaded;
     Beatmap beatmap;
@@ -30,7 +28,7 @@ typedef struct ScoreManager
     float frameTimer;
 } ScoreManager;
 
-ScoreManager InitScore(AppContext *ctx, ProgressBar *bar);
+ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay);
 
 void LoadingLoadTexturesFire(ScoreManager *score);
 

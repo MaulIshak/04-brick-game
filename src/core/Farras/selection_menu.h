@@ -7,7 +7,6 @@
 #ifndef SELECTION_MENU_H
 #define SELECTION_MENU_H
 #define MAX_MUSIC_SHOWING 30
-#define FRAME_COUNT 9
 typedef struct SelectionMenu {
     AppContext *ctx;
 
@@ -23,12 +22,15 @@ typedef struct SelectionMenu {
     Texture2D background;
 } SelectionMenu;
 
-static void AudioProcessEffectLPF(void *buffer, unsigned int frames);
 void PressToAction(SelectionMenu *self);
+void PreviewMusic(SelectionMenu *self);
+void SelectionMenuItem_Draw(SelectionMenu *self);
+void SelectionMenuHelper_Draw(SelectionMenu *self);
 
 void SelectionMenu_Draw(SelectionMenu *self);
 void SelectionMenu_Update(SelectionMenu *self);
 bool SelectionMenu_IsShow(SelectionMenu *self);
+
 void InitSelectionMenu(SelectionMenu *selection_menu, AppContext *ctx);
 
 impl_scene(SelectionMenu*, SelectionMenu_ToScene, SelectionMenu_Draw, SelectionMenu_Update, SelectionMenu_IsShow)

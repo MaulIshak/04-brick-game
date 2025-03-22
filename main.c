@@ -1,4 +1,18 @@
 // #define TEST_CONTEXT
+// Menghindari conflicting types: https://github.com/raysan5/raylib/issues/1217#issuecomment-893812805
+#define WIN32_LEAN_AND_MEAN
+#if defined(_WIN32)
+#define WIN32
+#endif
+#if defined(_WIN64)
+#define WIN64
+#define _AMD64_
+#undef _X86_
+#else
+#undef _AMD64_
+#define _X86_
+#endif
+#include <minwindef.h>
 
 #include <stdio.h>
 #include "raylib.h"
@@ -8,7 +22,6 @@
 #include "raymath.h"
 
 #include "background.h"
-#include "loading.h"
 #include "press_to_play.h"
 #include "beatmap_creator.h"
 #include "eotg.h"
@@ -16,6 +29,7 @@
 #include "selection_menu.h"
 #include "animasi.h"
 #include "sfx.h"
+#include "album_cover.h"
 
 #include "macro.h"
 
@@ -26,13 +40,17 @@
 #include <stdlib.h>
 
 
-int main()
+int _main()
 {
   const int screenWidth = 600;
   const int screenHeight = 800;
+  Image icon = LoadImage("resources/texture/game-icon.png");
   SetConfigFlags(FLAG_WINDOW_TOPMOST | FLAG_WINDOW_ALWAYS_RUN);
-  InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+  
+  InitWindow(screenWidth, screenHeight, "Rythm.me");
+  SetWindowIcon(icon);
   InitAudioDevice();
+  InitSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
@@ -53,7 +71,6 @@ int main()
   PressToPlay press_to_play = {
     .ctx = &ctx
   };
-
   Drawable press_to_play_draw = PressToPlay_ToScene(&press_to_play);
 
   Background bg = CreateBackground(&ctx);
@@ -71,21 +88,26 @@ int main()
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
 
   ProgressBar bar;
-  ScoreManager score_manager = InitScore(&ctx, &bar);
+  ScoreManager score_manager = InitScore(&ctx, &gameplay);
   Drawable score_draw = Score_ToScene(&score_manager);
   
   NoteManager note;
   InitNote(&note, &ctx, &gameplay, &score_manager);
   Drawable note_draw = Note_toScene(&note);
 
+  AlbumCover cover = {
+    .ctx = &ctx,
+  };
+  Drawable cover_draw = AlbumCover_ToScene(&cover);
+
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw, cover_draw};
 
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   
-  ctx.selected_track = 6;
+  ctx.selected_track = 1;
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif
@@ -93,7 +115,7 @@ int main()
   while (!WindowShouldClose()) {
     UpdateContext(&ctx);
 
-    if (ctx.app_state != APP_PLAYING) {
+    if (ctx.app_state != APP_PLAYING && ctx.app_state != APP_BEATMAP_CREATOR && ctx.app_state != APP_LOADING) {
         if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_A) || IsKeyPressed(KEY_W) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) {
           PlayArrowSfx(KEY_RIGHT);
         }
@@ -125,7 +147,7 @@ int main()
         draws[i].scene->Draw(draws[i].self);
       }
     }
-
+    DrawFPS( 20,screenHeight- 40);
     // DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
     EndDrawing();
   }
@@ -133,6 +155,11 @@ int main()
   UnloadSfx();
   CloseAudioDevice();
   CloseWindow();
+  UnloadImage(icon);
 
   return 0;
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* pCmdLine, int nCmdShow) {
+  return _main();
 }
