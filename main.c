@@ -68,6 +68,7 @@ int _main()
   EndOfTheGame eotg = {
     .ctx = &ctx
   };
+  EndOfTheGame_Init(&eotg);
   Drawable eotg_draw = EndOfTheGame_ToScene(&eotg);
   
   PressToPlay press_to_play = {
