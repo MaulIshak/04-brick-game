@@ -57,3 +57,6 @@ Musics:
 - Outer Space: Muhammad Nabil Mudzaki
   
 # LICENSE
+Semua kode yang "kami" buat berlisensi MIT.
+
+Semua asset yang "kami" buat berlisensi CC-BY.

@@ -54,7 +54,7 @@ int _main()
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_SELECT;
+  // ctx.app_state = APP_SELECT;
   Loading loading = {
     .ctx = &ctx
   };
@@ -95,9 +95,7 @@ int _main()
   InitNote(&note, &ctx, &gameplay, &score_manager);
   Drawable note_draw = Note_toScene(&note);
 
-  AlbumCover cover = {
-    .ctx = &ctx,
-  };
+  AlbumCover cover = AlbumCover_Create(&ctx);
   Drawable cover_draw = AlbumCover_ToScene(&cover);
 
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
@@ -156,6 +154,7 @@ int _main()
   CloseAudioDevice();
   CloseWindow();
   UnloadImage(icon);
+  AlbumCover_Destroy(&cover);
 
   return 0;
 }
