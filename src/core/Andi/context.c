@@ -118,7 +118,7 @@ void UpdateContext(AppContext* ctx) {
 }
 
 void PlaySelectedTrack(AppContext *ctx) {
-    int selected = ctx->selected_track ;
+    int selected = ctx->selected_track;
     assert(selected != -1);
     PlayMusicStream(ctx->tracks.track[selected].music);
     SeekSelectedTrack(ctx, 0.01);

@@ -54,7 +54,7 @@ int _main()
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_LOADING;
+  ctx.app_state = APP_SELECT;
   Loading loading = {
     .ctx = &ctx
   };
@@ -138,7 +138,7 @@ int _main()
 
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    ClearBackground((Color) {207, 239, 252, 255});
 
     for (int i = 0; i < draws_len; i++)
     {
