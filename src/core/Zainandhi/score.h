@@ -14,13 +14,13 @@ typedef enum Accuracy
 typedef struct ScoreManager
 {
     AppContext *ctx;
-    int value;
+    int value, bestScore, comboValue;
     // double accuracy;
     int perfect, good, miss;
     
     int width, height;
     int perfectCombo;
-    bool isBeatmapLoaded;
+    bool isBeatmapLoaded, comboShow;
     Beatmap beatmap;
 
     Texture2D fireFrames[3];
