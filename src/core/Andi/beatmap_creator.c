@@ -78,7 +78,7 @@ void BeatmapCreator_Update(BeatmapCreator* self){
     }
 
     if(self->is_recording_session_end && !self->is_map_written){
-        WriteSelectedMusicBeatmapToFile(&self->bmt, GetSelectedMusicName(self->ctx), 20, 0.4);
+        WriteSelectedMusicBeatmapToFile(&self->bmt, GetSelectedMusicName(self->ctx), 0, 0.0);
         self->is_map_written = true;
     }
 
@@ -94,7 +94,7 @@ void AppendNote(Beatmap* btm, Timer* timer, NoteDirection dir){
     double ms = s_to_ms(time_elapsed(timer));
     Note note = {
         .direction = dir,
-        .hit_at_ms = ms,
+        .hit_at_ms = ms - 100,
         .position = (Vector2){0,0},
     };
     da_append(btm, note);

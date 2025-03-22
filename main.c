@@ -53,8 +53,10 @@ int _main()
   InitSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
+  #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_SELECT;
+  // ctx.app_state = APP_SELECT;
+  #endif // GAME_DEBUG
   Loading loading = {
     .ctx = &ctx
   };
@@ -105,8 +107,9 @@ int _main()
   
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
-  
-  ctx.selected_track = 1;
+  #ifdef GAME_DEBUG
+  ctx.selected_track = 5;
+  #endif //GAME_DEBUG
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
   #endif
