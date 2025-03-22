@@ -26,6 +26,8 @@ typedef struct FlyingObjects {
     FlyingObject objs[FLYING_OBJECT_COUNT];
     Texture2D AjawTexture;
     Texture2D CitlalinTexture;
+    Texture2D CDTexture;
+    AppContext *ctx;
 } FlyingObjects;
 
 

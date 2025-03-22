@@ -6,8 +6,12 @@
 
 typedef struct AlbumCover {
     AppContext *ctx;
+    Texture2D CDTexture;
+    float CDRotation;
 } AlbumCover;
 
+AlbumCover AlbumCover_Create(AppContext *ctx);
+void AlbumCover_Destroy(AlbumCover* self);
 void AlbumCover_Update(AlbumCover* self);
 void AlbumCover_Draw(AlbumCover* self);
 bool AlbumCover_IsShow(AlbumCover* self);

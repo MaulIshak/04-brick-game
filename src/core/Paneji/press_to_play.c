@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 void PressToPlay_Draw(PressToPlay *self){
-  DrawTextEx(self->ctx->font, "TEKAN APA SAJA UNTUK MULAI", 
+  DrawTextEx(self->ctx->font, "TEKAN APA ARROW UP UNTUK MULAI", 
     (Vector2){ SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 180 }, 
     35, 2, BLACK);
 
