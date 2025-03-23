@@ -233,6 +233,7 @@ void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int s
     fclose(f);
 }
 
+// TODO: refresh score di track list setelah di set.
 void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
     int selected = ctx->selected_track;
     Beatmap map = GetSelectedMusicBeatmap(ctx);
