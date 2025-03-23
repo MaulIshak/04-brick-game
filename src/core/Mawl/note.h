@@ -58,25 +58,51 @@ typedef struct {
   bool isFirstHit;
   // Enum akurasi untuk menandakan akurasi note yang dihit
   AccuracyOffset accOff;
+
+  // Array Note untuk ditampilkan
   DrawableNote note [1024];
+
+  // Enum Akurasi akurasi note yang dihit
   Accuracy acc;
   ScoreManager *scoreManager;
   bool isNewGame;
 }NoteManager;
 
 // Public
+// Modul yang dipanggil di main
+
+// Modul untuk menggambar tampilan note
 void note_draw(NoteManager *);
+
+// Modul untuk mengupdate variable variable yang dibutuhkan
 void note_update(NoteManager *);
+
+// Modul untuk menentukan kapan note digambar atau tampil
 bool note_isShow(NoteManager *);
+
+// Modul untuk inisiasi NoteManager
 void InitNote(NoteManager*, AppContext*, Gameplay *, ScoreManager*);
 
 // Private
+// Modul untuk menampilkan Note dari beatmap
 void _drawBeatmapNote(NoteManager*,DrawableNote);
+
+// Modul untuk mengecek apakah note ditekan atau tidak
 bool _isNoteHit(NoteManager*, DrawableNote);
+
+// Modul untuk menampilkan akurasi
 void _drawAccuracy(NoteManager*);
+
+// Modul untuk update posisi note 
 void _updateNotePosition(NoteManager*);
+
+// Modul untuk meng-handle logic note ditekan beserta akurasinya
 void _noteHitHandler(NoteManager*, DrawableNote*);
+
+// Modul untuk extract note dari beatmap
 void _extractNoteFromBeatmap(NoteManager*);
+
+// modul untuk reset NoteManager
 void _resetNoteManager(NoteManager*);
 
 // Implement Interface

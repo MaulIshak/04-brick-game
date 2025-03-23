@@ -131,7 +131,7 @@ void DrawScore(ScoreManager *score)
             -15.0,
             40 * comboScale,
             1,
-            Fade(WHITE, alpha / 255.0f));
+            Fade(BLACK, alpha / 255.0f));
     }
 
     DrawTextEx(score->ctx->font, scoreText, (Vector2){score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 50) / 2), score->ctx->screen_height - 50}, 50, 1, BLACK);

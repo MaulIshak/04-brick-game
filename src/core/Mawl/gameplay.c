@@ -17,8 +17,10 @@ static Color primary = BLACK;
 // int currentFrame = 0;
 // int framesCounter = 0;
 // int framesSpeed = 12;  
+Texture2D bg;
 
 void gp_draw(Gameplay* self){
+  // Variable lokal
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
@@ -29,10 +31,14 @@ void gp_draw(Gameplay* self){
       self->padPositions[0].x, self->padPositions[0].y, self->padSize , self->padSize
     };
     char* control[LINE_COUNT]= {"D", "F", "J", "K"};
-    DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
-    DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.9f));
+
+
+    // Draw
+
+    // DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
+    DrawTexture(bg,0,0,WHITE);   
+    DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.7f));
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
-    // DrawRectangleRec(rec3, BLACK);
     // _drawAccZone(self);
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     for (int i = 0; i < LINE_COUNT; i++)
@@ -49,6 +55,7 @@ void gp_draw(Gameplay* self){
     
   }
   void gp_update(Gameplay* self){
+    // -- Ini kode untuk animasi sprite, tetapi karena tidak berjalan sesuai harapan, jadi tidak digunakan dulu --
     // printf("Time: %f\n", self->gameTime);
     // Tes sprite animation
     // framesCounter++;
@@ -71,6 +78,12 @@ void gp_draw(Gameplay* self){
 
         // }
 
+    // Update Gameplay
+    if(!self->isBackgroundLoaded){
+      bg = _getRandomBg(self);
+      self->isBackgroundLoaded = true;
+    }
+    // Mulai waktu game
     if(!self->timer.is_started){
       // printf("START GAME TIME!\n");
       self->startGameTime = GetTime();
@@ -83,44 +96,32 @@ void gp_draw(Gameplay* self){
 
     // DOWN ARROW (MIDDLE LEFT)
     if(IsKeyDown(KEY_J) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
-      self->padOpacity[2] = 255;
-      // self->textureToLoad[0] = self->activeTextureToLoad[0]
-      // printf("Hit time: %f\n", self->gameTime);
-      
       self->textureToLoad[2] = self->activeTextureToLoad[3];
     }else{
-      // self->padOpacity[2] = 100;
       self->textureToLoad[2] = self->passiveTextureToLoad[3];
     }
     
     // LEFT ARROW (LEFT)
     if(IsKeyDown(KEY_D) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
-      self->padOpacity[0] = 255;
       self->textureToLoad[0] = self->activeTextureToLoad[0];
     }else{
-      // self->padOpacity[0] = 100;
       self->textureToLoad[0] = self->passiveTextureToLoad[0];
       
     }
 
     // UP ARROW (MIDDLE RIGHT)
     if(IsKeyDown(KEY_F) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
-      self->padOpacity[1] = 255;
       self->textureToLoad[1] = self->activeTextureToLoad[1];
     }else{
-      // self->padOpacity[1] = 100;
       self->textureToLoad[1] = self->passiveTextureToLoad[1];
       
     }
     
     // RIGHT ARROW (RIGHT)
     if(IsKeyDown(KEY_K) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
-      self->padOpacity[3] = 255;
       self->textureToLoad[3] = self->activeTextureToLoad[2];
     }else{
       self->textureToLoad[3] = self->passiveTextureToLoad[2];
-      // self->padOpacity[3] = 100;
-      
     }
 
     if(IsKeyPressed(KEY_K) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_F) || IsKeyPressed(KEY_J)){
@@ -167,8 +168,12 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->width, 10, SECONDARY_COLOR);
   gameplay->padSize = 512*0.16f +5;
   gameplay->alpha = 0;
+  gameplay->background[0] = LoadTexture("resources/background/Background-01.png");
+  gameplay->background[1] = LoadTexture("resources/background/Background-02.png");
+  gameplay->background[2] = LoadTexture("resources/background/Background-03.png");
   // meledak = LoadTexture("resources/texture/Meledak-2.png");
   // frameRec = (Rectangle){ 0.0f, 0.0f, (float)meledak.width/8, (float)meledak.height };
+  gameplay->isBackgroundLoaded = false;
 }
 
 void _LoadNoteTexture(Gameplay*self){
@@ -206,4 +211,9 @@ void _drawAccZone(Gameplay* self){
   DrawRectangleRec(recPerfect, Fade(GREEN, 1));
   DrawRectangleRec(recGood, Fade(YELLOW, 0.2f));
   DrawRectangleRec(recMiss, Fade(RED, 0.2f));
+}
+
+Texture2D _getRandomBg(Gameplay* self){
+  int rand = GetRandomValue(0, 2);
+  return self->background[rand];
 }
