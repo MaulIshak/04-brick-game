@@ -40,14 +40,23 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
         grade = "D";
         gradeColor = RED;
     }
-    
     DrawTextEx(self->gradeFont, grade, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, grade, 174, 0).x / 2, 160 }, 174, 0, gradeColor);
-    sprintf(buff, "%ld", self->ctx->score.point);
-    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, buff, 90, 0).x / 2, 320 }, 90, 0, BLACK);
-    sprintf(buff, "%ld", self->ctx->score.accuracy);
-    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, buff, 90, 0).x / 2, 320 }, 90, 0, BLACK);
     
-    // DRAW ACCURACY
+    // DRAW ACCURACY PERCENTAGE
+    sprintf(buff, "%ld", self->ctx->score.point);
+    float pointWidth = MeasureTextEx(self->gradeFont, buff, 70, 0).x;
+    sprintf(buff, "%.2f%%", self->ctx->score.accuracy);
+    float accuracyWidth = MeasureTextEx(self->gradeFont, buff, 70, 0).x;
+    float separatorWidth = MeasureTextEx(self->gradeFont, "|", 70, 0).x;
+    float totalWidth = pointWidth + separatorWidth + accuracyWidth + 20; 
+    
+    sprintf(buff, "%ld", self->ctx->score.point);
+    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2, 320 }, 70, 0, BLACK);
+    DrawTextEx(self->gradeFont, "|", (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2 + pointWidth + 10, 320 }, 70, 0, BLACK);
+    sprintf(buff, "%.2f%%", self->ctx->score.accuracy);
+    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2 + pointWidth + separatorWidth + 20, 320 }, 70, 0, BLACK);
+    
+    // DRAW ACCURACY NOTE
     DrawRectangle(50, (self->ctx->screen_height/2) / 2 + 220, self->ctx->screen_width - 100, self->ctx->screen_height/8 - 5, DARKGRAY);
     sprintf(buff, "%d", self->ctx->score.perfect);
     DrawTextEx(self->gradeFont, "Perfect", (Vector2){ self->ctx->screen_width / 5, 465 }, 32, 0, YELLOW);
@@ -75,9 +84,11 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
 void EndOfTheGame_Update(EndOfTheGame *self){
     if(IsKeyPressed(KEY_D)) {
         self->ctx->app_state = APP_PLAYING;
+        self->ctx->score.accuracy = 0.00;
     }
     if (IsKeyPressed(KEY_K)) {
         self->ctx->app_state = APP_SELECT;
+        self->ctx->score.accuracy = 0.00;
     }
 }
 

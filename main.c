@@ -53,10 +53,10 @@ int _main()
   InitSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  // #ifdef GAME_DEBUG
+  #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_SELECT;
-  // #endif // GAME_DEBUG
+  ctx.app_state = END_OF_THE_GAME;
+  #endif // GAME_DEBUG
   Loading loading = {
     .ctx = &ctx
   };
@@ -118,11 +118,11 @@ int _main()
     UpdateContext(&ctx);
 
     if (ctx.app_state != APP_PLAYING && ctx.app_state != APP_BEATMAP_CREATOR && ctx.app_state != APP_LOADING) {
-        if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_A) || IsKeyPressed(KEY_W) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) {
+        if (IsKeyPressed(KEY_F) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) {
           PlayArrowSfx(KEY_K);
         }
-        if (IsKeyPressed(KEY_K) || IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_S) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) {
-          PlayArrowSfx(KEY_LEFT);
+        if (IsKeyPressed(KEY_J) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) {
+          PlayArrowSfx(KEY_D);
         }
         if (IsKeyPressed(KEY_ENTER)) {
             PlayEnterSfx();

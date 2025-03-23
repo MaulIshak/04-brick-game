@@ -202,7 +202,7 @@ void UpdateScore(ScoreManager *score)
     if (IsSelectedMusicEnd(score->ctx))
     {
         SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
-        score->ctx->score.accuracy = 0.00;
+        // score->ctx->score.accuracy = 0.00;
         score->value = 0;
         score->isBeatmapLoaded = false;
         score->perfect = 0;
