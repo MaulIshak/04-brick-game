@@ -38,6 +38,13 @@ ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
     return score;
 }
 
+void LoadingLoadTexturesFire(ScoreManager *score)
+{
+    fireFrames[0] = LoadTexture("resources/texture/fire1.png");
+    fireFrames[1] = LoadTexture("resources/texture/fire2.png");
+    fireFrames[2] = LoadTexture("resources/texture/fire3.png");
+}
+
 void AddScore(ScoreManager *score, Accuracy acc)
 {
     int perfect = 100;
@@ -98,7 +105,7 @@ void DrawScore(ScoreManager *score)
     int alpha = (int)(255 * (scoreTimer / 1.5f));
     sprintf(scoreText, "%d", score->value);
     sprintf(accuracyText, "%.2f%%", score->ctx->score.accuracy);
-    sprintf(comboText, "Combo!!\n %d", score->comboValue);
+    sprintf(comboText, "Combo!!\n %d", 87);
 
     Vector2 bottomTriangle[3] = {
         {450, score->ctx->screen_width + 150},
@@ -119,12 +126,12 @@ void DrawScore(ScoreManager *score)
         DrawTextPro(
             score->ctx->font,
             comboText,
-            (Vector2){450, 300},
+            (Vector2){460, 300},
             (Vector2){0, 0},
             -15.0,
             40 * comboScale,
             1,
-            Fade(WHITE, alpha / 255.0f));
+            Fade(BLACK, alpha / 255.0f));
     }
 
     DrawTextEx(score->ctx->font, scoreText, (Vector2){score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 50) / 2), score->ctx->screen_height - 50}, 50, 1, BLACK);
@@ -166,10 +173,11 @@ void UpdateScore(ScoreManager *score)
     score->ctx->score.perfect = score->perfect;
     score->ctx->score.good = score->good;
     score->ctx->score.miss = score->miss;
-    /*                                    restart ketika oemain udah main beneran (skor > 1 atau miss > 1) */
     if (IsSelectedMusicEnd(score->ctx) && (score->value > 0 || score->miss > 0))
     {
-        SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
+        if (score->value > score->ctx->tracks.track->high_score){
+            SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
+        }
         score->value = 0;
         score->isBeatmapLoaded = false;
         score->perfect = 0;

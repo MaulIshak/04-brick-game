@@ -26,6 +26,8 @@ typedef struct Loading {
     bool loadingVisible;
     GameState state;
     PressToPlay ptp;
+    Sound intro;
+    Sound load;
 } Loading;
 
 

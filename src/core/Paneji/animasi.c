@@ -6,10 +6,14 @@
 void LoadingLoadTextures(Loading *self) {
     self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
     PressToPlay_LoadTextures(&self->ptp);
+    self->intro = LoadSound("resources/sfx/coc-intro.wav");
+    self->load = LoadSound("resources/sfx/sfx1.wav");
 }
 
 void LoadingUnloadTextures(Loading *self) {
     UnloadTexture(self->logo);
+    UnloadSound(self->intro);
+    UnloadSound(self->load);
 }
 
 void LoadingInitPositions(Loading *self) {
@@ -26,6 +30,11 @@ void LoadingUpdatePositions(Loading *self) {
 
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
+
+        if (!IsSoundPlaying(self->intro)) {
+            PlaySound(self->intro);
+        }
+
         self->alpha += 0.02f;
         if (self->alpha >= 1.0f) {
             self->alpha = 1.0f;
@@ -53,9 +62,10 @@ void LoadingUpdatePositions(Loading *self) {
         if (self->timer >= 0.5f) {
             self->loadingVisible = !self->loadingVisible;
             count++;
+            PlaySound(self->load);
             self->timer = 0.0f;  
         }
-        if (count == 2) {
+        if (count == 7) {
             self->state = READY; 
         }
     } 
