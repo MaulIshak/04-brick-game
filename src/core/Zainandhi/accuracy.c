@@ -6,7 +6,7 @@
 #include "context.h"
 
 ScoreManager InitAcc(AppContext *ctx, Gameplay *gameplay){
-    ScoreManager score;
+    ScoreManager score = {0};
 
     score.isBeatmapLoaded = false;
     
@@ -52,15 +52,15 @@ void DrawAcc(ScoreManager *score){
 
     DrawRectangle(score->ctx->screen_width - score->width + 60, score->ctx->screen_height - 80, score->width - 60, score->height - 20, BLACK);
 
-    sprintf(accuracyText, "%.2f%%", score->ctx->score.accuracy);
+    // sprintf(accuracyText, "%.2f%%", score->ctx->score.accuracy);
 
-    DrawTextEx(score->ctx->font, accuracyText, (Vector2){score->ctx->screen_width - score->width + 30 + (score->width / 2) - (MeasureText(accuracyText, 29) / 2), score->ctx->screen_height - 80}, 29, 1, WHITE);
+    // DrawTextEx(score->ctx->font, accuracyText, (Vector2){score->ctx->screen_width - score->width + 30 + (score->width / 2) - (MeasureText(accuracyText, 29) / 2), score->ctx->screen_height - 80}, 29, 1, WHITE);
 }
 
 void UpdateAcc(ScoreManager *score){
     if (IsSelectedMusicEnd(score->ctx))
     {
-        score->ctx->score.accuracy = 0.00;
+        // score->ctx->score.accuracy = 0.00;
     }
 }
 

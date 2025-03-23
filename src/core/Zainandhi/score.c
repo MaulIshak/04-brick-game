@@ -98,7 +98,7 @@ void DrawScore(ScoreManager *score)
     int alpha = (int)(255 * (scoreTimer / 1.5f));
     sprintf(scoreText, "%d", score->value);
     sprintf(accuracyText, "%.2f%%", score->ctx->score.accuracy);
-    sprintf(comboText, "Combo\n!!\n %d", score->comboValue);
+    sprintf(comboText, "Combo!!\n %d", score->comboValue);
 
     Vector2 bottomTriangle[3] = {
         {450, score->ctx->screen_width + 150},
@@ -119,7 +119,7 @@ void DrawScore(ScoreManager *score)
         DrawTextPro(
             score->ctx->font,
             comboText,
-            (Vector2){0, 300},
+            (Vector2){460, 300},
             (Vector2){0, 0},
             -15.0,
             40 * comboScale,
@@ -141,7 +141,7 @@ void DrawScore(ScoreManager *score)
 
     if (scoreIncrease > 0 && scoreTimer > 0)
     {
-        char scoreIncreaseText[10];
+        char scoreIncreaseText[20];
         sprintf(scoreIncreaseText, "+%d Score!!", scoreIncrease);
 
         DrawText(scoreIncreaseText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreIncreaseText, 20) / 2), score->ctx->screen_height - 120, 22, Fade(WHITE, alpha / 255.0f));
@@ -166,10 +166,11 @@ void UpdateScore(ScoreManager *score)
     score->ctx->score.perfect = score->perfect;
     score->ctx->score.good = score->good;
     score->ctx->score.miss = score->miss;
-
-    if (IsSelectedMusicEnd(score->ctx))
+    if (IsSelectedMusicEnd(score->ctx) && (score->value > 0 || score->miss > 0))
     {
-        SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
+        if (score->value > score->ctx->tracks.track->high_score){
+            SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
+        }
         score->value = 0;
         score->isBeatmapLoaded = false;
         score->perfect = 0;

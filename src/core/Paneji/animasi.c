@@ -5,6 +5,7 @@
 
 void LoadingLoadTextures(Loading *self) {
     self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
+    PressToPlay_LoadTextures(&self->ptp);
 }
 
 void LoadingUnloadTextures(Loading *self) {
@@ -16,6 +17,7 @@ void LoadingInitPositions(Loading *self) {
     self->timer = 0.0f;
     self->loadingVisible = true;
     self->state = LOGO_FADE_IN;
+    
 }
 
 
@@ -57,17 +59,14 @@ void LoadingUpdatePositions(Loading *self) {
             self->state = READY; 
         }
     } 
-    else if (self->state == READY) {
-        static PressToPlay pressToPlay = { .isVisible = true };
-        pressToPlay.ctx = self->ctx;  
-        PressToPlay_Update(&pressToPlay); 
+    else if (self->state == READY) { 
+        PressToPlay_Update(&self->ptp); 
     }
 }
 
 
 
 void LoadingDrawTextures(Loading *self) {
-    static PressToPlay pressToPlay = { .isVisible = true };
 
     if (self->state == LOGO_FADE_IN || self->state == LOGO_HOLD || self->state == LOGO_FADE_OUT) {
         DrawTextureEx(self->logo, (Vector2){SCREEN_WIDTH / 2 - (self->logo.width / 2) / 2, SCREEN_HEIGHT / 2 - (self->logo.height / 2) / 2} , 0, 0.5, Fade(WHITE, self->alpha));
@@ -78,9 +77,8 @@ void LoadingDrawTextures(Loading *self) {
 
         }
     } 
-    else if (self->state == READY) {
-        pressToPlay.ctx = self->ctx;  
-        PressToPlay_Draw(&pressToPlay);
+    else if (self->state == READY) { 
+        PressToPlay_Draw(&self->ptp);
     }
 }
 
