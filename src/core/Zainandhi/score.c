@@ -98,7 +98,7 @@ void DrawScore(ScoreManager *score)
     int alpha = (int)(255 * (scoreTimer / 1.5f));
     sprintf(scoreText, "%d", score->value);
     sprintf(accuracyText, "%.2f%%", score->ctx->score.accuracy);
-    sprintf(comboText, "Combo\n!!\n %d", score->comboValue);
+    sprintf(comboText, "Combo!!\n %d", score->comboValue);
 
     Vector2 bottomTriangle[3] = {
         {450, score->ctx->screen_width + 150},
