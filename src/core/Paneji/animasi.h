@@ -4,6 +4,7 @@
 #include "scene.h"
 #include "context.h"
 #include "raylib.h"
+#include "press_to_play.h"
 
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 800
@@ -24,6 +25,7 @@ typedef struct Loading {
     float timer;
     bool loadingVisible;
     GameState state;
+    PressToPlay ptp;
 } Loading;
 
 

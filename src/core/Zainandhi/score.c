@@ -119,7 +119,7 @@ void DrawScore(ScoreManager *score)
         DrawTextPro(
             score->ctx->font,
             comboText,
-            (Vector2){0, 300},
+            (Vector2){450, 300},
             (Vector2){0, 0},
             -15.0,
             40 * comboScale,
