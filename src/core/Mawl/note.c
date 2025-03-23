@@ -79,10 +79,11 @@ void note_update(NoteManager *self){
         self->gp->gameTimeOffset = noteoffset;
       }
       printf("%.2f\n\n", self->gp->gameTime);
+      // printf("SELECTED\n");
       self->beatmap = GetSelectedMusicBeatmap(self->ctx);
       for (int i = 0; i < self->beatmap.len; i++)
       {
-        self->beatmap.items[i].hit_at_ms += self->gp->gameTimeOffset;
+        // self->beatmap.items[i].hit_at_ms += self->gp->gameTimeOffset;
         self->beatmap.items[i].position.y = -999;
         self->beatmap.items[i].isSpawned = false;
         self->note[i].isHit = false;
@@ -313,7 +314,6 @@ void _updateNotePosition(NoteManager* self){
       // printf(": %f!\n", to_hit - self->timeToHitPad);
       continue;
     }
-    // printf("UPDATE SEKARANG!!!\n");
     if(!self->note[i].isSpawned){
       self->note[i].position.y = self->ctx->screen_height;
       self->note[i].isSpawned = true;
@@ -373,7 +373,7 @@ void _extractNoteFromBeatmap(NoteManager* self){
   for (int i = 0; i < self->beatmap.len && i < 1024; i++)
   {
     self->note[i].direction = self->beatmap.items[i].direction; 
-    self->note[i].hit_at_ms = self->beatmap.items[i].hit_at_ms; 
+    self->note[i].hit_at_ms = self->beatmap.items[i].hit_at_ms + self->gp->gameTimeOffset; 
     self->note[i].position = self->beatmap.items[i].position; 
     self->note[i].isHit = 0;
     self->note[i].isSpawned = false;

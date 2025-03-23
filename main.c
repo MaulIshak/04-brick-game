@@ -45,7 +45,7 @@ int _main()
   const int screenWidth = 600;
   const int screenHeight = 800;
   Image icon = LoadImage("resources/texture/game-icon.png");
-  SetConfigFlags(FLAG_WINDOW_TOPMOST | FLAG_WINDOW_ALWAYS_RUN);
+  SetConfigFlags(FLAG_WINDOW_ALWAYS_RUN);
   
   InitWindow(screenWidth, screenHeight, "Rythm.me");
   SetWindowIcon(icon);
@@ -55,7 +55,7 @@ int _main()
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  // ctx.app_state = APP_SELECT;
+  // ctx.app_state = APP_PLAYING;
   #endif // GAME_DEBUG
   Loading loading = {
     .ctx = &ctx
