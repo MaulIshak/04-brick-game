@@ -36,6 +36,8 @@ void LoadingUnloadTexturesFire(ScoreManager *score);
 
 void AddScore(ScoreManager *score, Accuracy acc);
 
+void AddAcc(ScoreManager *score, Accuracy acc);
+
 void DrawScore(ScoreManager *score);
 
 void UpdateScore(ScoreManager *score);

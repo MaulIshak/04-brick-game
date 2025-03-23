@@ -36,7 +36,9 @@
 #include "context.h"
 #include "gameplay.h"
 
+#include "accuracy.h"
 #include "score.h"
+
 #include <stdlib.h>
 
 
@@ -55,7 +57,11 @@ int _main()
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
+<<<<<<< HEAD
   ctx.app_state =APP_LOADING;
+=======
+  // ctx.app_state = END_OF_THE_GAME;
+>>>>>>> 4abeaab332993bd9059f3b7d0816adc9d9b2141d
   #endif // GAME_DEBUG
   Loading loading = {
     .ctx = &ctx,
@@ -93,9 +99,11 @@ int _main()
   BeatmapCreator creator = CreateBeatmap(&ctx);
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
 
-  ProgressBar bar;
   ScoreManager score_manager = InitScore(&ctx, &gameplay);
   Drawable score_draw = Score_ToScene(&score_manager);
+  
+  ScoreManager acc_manager = InitAcc(&ctx, &gameplay);
+  Drawable acc_draw = Acc_ToScene(&acc_manager);
   
   NoteManager note;
   InitNote(&note, &ctx, &gameplay, &score_manager);
@@ -105,7 +113,7 @@ int _main()
   Drawable cover_draw = AlbumCover_ToScene(&cover);
 
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, note_draw, bg_draw, eotg_draw, cover_draw};
+  Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, acc_draw, note_draw, bg_draw, eotg_draw, cover_draw};
 
   
   int draws_len = ARRAY_LEN(draws);
