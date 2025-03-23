@@ -67,10 +67,10 @@ void BeatmapCreator_Update(BeatmapCreator* self){
         }
     }else if(self->is_recording && !self->is_recording_session_end) {
         if(!IsSelectedMusicEnd(self->ctx)){
-            if(IsKeyPressed(KEY_D) ||  IsKeyPressed(KEY_D)) AppendNote(&self->bmt, &self->timer, NOTE_LEFT);
-            if(IsKeyPressed(KEY_F) || IsKeyPressed(KEY_F)) AppendNote(&self->bmt, &self->timer, NOTE_UP);
-            if(IsKeyPressed(KEY_J) ||  IsKeyPressed(KEY_J)) AppendNote(&self->bmt, &self->timer, NOTE_DOWN);
-            if(IsKeyPressed(KEY_K) ||  IsKeyPressed(KEY_K)) AppendNote(&self->bmt, &self->timer, NOTE_RIGHT);
+            if(IsKeyPressed(KEY_D)) AppendNote(&self->bmt, &self->timer, NOTE_LEFT);
+            if(IsKeyPressed(KEY_F)) AppendNote(&self->bmt, &self->timer, NOTE_UP);
+            if(IsKeyPressed(KEY_J)) AppendNote(&self->bmt, &self->timer, NOTE_DOWN);
+            if(IsKeyPressed(KEY_K)) AppendNote(&self->bmt, &self->timer, NOTE_RIGHT);
         }else {
             StopSelectedTrack(self->ctx);
             self->is_recording_session_end = true;
@@ -87,7 +87,6 @@ void BeatmapCreator_Update(BeatmapCreator* self){
             self->ctx->app_state = APP_PRESS_TO_PLAY;
         }
     }
-
 }
 
 void AppendNote(Beatmap* btm, Timer* timer, NoteDirection dir){
@@ -106,4 +105,3 @@ bool BeatmapCreator_IsShow(BeatmapCreator* self){
     }
     return false;
 }
-
