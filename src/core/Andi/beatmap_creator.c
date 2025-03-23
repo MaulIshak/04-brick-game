@@ -40,16 +40,16 @@ void BeatmapCreator_Draw(BeatmapCreator* self){
         DrawText(text, self->ctx->screen_width / 2 - MeasureText(text, 20) / 2, self->ctx->screen_height / 2, 20, GRAY);
     }
 
-    if(IsKeyDown(KEY_LEFT)){
+    if(IsKeyDown(KEY_D)){
         DrawRectangle(self->ctx->screen_width/ 5 * 1, self->ctx->screen_height / 2 , 40, 40, RED);
     }
-    if(IsKeyDown(KEY_UP)){
+    if(IsKeyDown(KEY_F)){
         DrawRectangle(self->ctx->screen_width/ 5 * 2, self->ctx->screen_height / 2 , 40, 40, RED);
     }
-    if(IsKeyDown(KEY_RIGHT)){
+    if(IsKeyDown(KEY_K)){
         DrawRectangle(self->ctx->screen_width/ 5 * 3, self->ctx->screen_height / 2 , 40, 40, RED);
     }
-    if(IsKeyDown(KEY_DOWN)){
+    if(IsKeyDown(KEY_J)){
         DrawRectangle(self->ctx->screen_width/ 5 * 4, self->ctx->screen_height / 2 , 40, 40, RED);
     }
 }
@@ -67,10 +67,10 @@ void BeatmapCreator_Update(BeatmapCreator* self){
         }
     }else if(self->is_recording && !self->is_recording_session_end) {
         if(!IsSelectedMusicEnd(self->ctx)){
-            if(IsKeyPressed(KEY_LEFT) ||  IsKeyPressed(KEY_D)) AppendNote(&self->bmt, &self->timer, NOTE_LEFT);
-            if(IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_F)) AppendNote(&self->bmt, &self->timer, NOTE_UP);
-            if(IsKeyPressed(KEY_DOWN) ||  IsKeyPressed(KEY_J)) AppendNote(&self->bmt, &self->timer, NOTE_DOWN);
-            if(IsKeyPressed(KEY_RIGHT) ||  IsKeyPressed(KEY_K)) AppendNote(&self->bmt, &self->timer, NOTE_RIGHT);
+            if(IsKeyPressed(KEY_D) ||  IsKeyPressed(KEY_D)) AppendNote(&self->bmt, &self->timer, NOTE_LEFT);
+            if(IsKeyPressed(KEY_F) || IsKeyPressed(KEY_F)) AppendNote(&self->bmt, &self->timer, NOTE_UP);
+            if(IsKeyPressed(KEY_J) ||  IsKeyPressed(KEY_J)) AppendNote(&self->bmt, &self->timer, NOTE_DOWN);
+            if(IsKeyPressed(KEY_K) ||  IsKeyPressed(KEY_K)) AppendNote(&self->bmt, &self->timer, NOTE_RIGHT);
         }else {
             StopSelectedTrack(self->ctx);
             self->is_recording_session_end = true;

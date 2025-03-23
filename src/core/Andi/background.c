@@ -43,8 +43,8 @@ float amp(kiss_fft_cpx z)
 
 Background CreateBackground(AppContext* ctx){
     // TODO: use our own memory instead
-    kiss_fft_cfg fft_cfg = kiss_fft_alloc(FFT_SIZE,0,NULL, NULL);
-    AttachAudioMixedProcessor(Background_MusicCallback);
+    // kiss_fft_cfg fft_cfg = kiss_fft_alloc(FFT_SIZE,0,NULL, NULL);
+    // AttachAudioMixedProcessor(Background_MusicCallback);
     Texture2D transition_texture = LoadTexture("resources/texture/Transition.png");
     ParticleConfig opt = {
         .area = {.x = 0, .y = 0, .width = ctx->screen_width, .height = ctx->screen_height},
@@ -56,7 +56,7 @@ Background CreateBackground(AppContext* ctx){
 
     Background bg = {   
         .ctx = ctx,
-        .config = fft_cfg,
+        // .config = fft_cfg,
         .is_transition_running = false,
         .start_transition_frame = 0,
         .transition_texture = transition_texture,
@@ -77,7 +77,7 @@ void Background_Draw(Background* self){
     int bottom = self->ctx->screen_height;
     float step = 1.06;
     float rad = 0;
-    for(float freq = 1;  freq < FFT_SIZE; freq = (freq * step)) {
+    // for(float freq = 1;  freq < FFT_SIZE; freq = (freq * step)) {
         // int f1 = (int)ceilf(freq);
         // int total = 0;
         // int count = 0;
@@ -92,16 +92,16 @@ void Background_Draw(Background* self){
         //     avg = (float)total / (float)count;
         // }
         // avg *= 3;
-        float hz = (fft_out[(int)freq].r);
+        // float hz = (fft_out[(int)freq].r);
         
-        if(hz > 1) {
-            rad += hz * 0.01;
-        }
+        // if(hz > 1) {
+        //     rad += hz * 0.01;
+        // }
         // char buff[20];
         // sprintf(buff, "%lf", hz);
         // DrawText(buff, 20 * freq, 20, 20, BLUE);
         // DrawRectangle(freq, bottom - avg, 5, avg, Fade(BLACK, 0.125));
-    }
+    // }
     // DrawCircle(self->ctx->screen_width / 2, self->ctx->screen_height / 2, rad, BLUE );
 
 
@@ -128,7 +128,7 @@ void Background_Update(Background* self){
     //     fft_in[i].r = fft_in[i].r*hann;
     // }
 
-    kiss_fft(self->config, fft_in, fft_out);
+    // kiss_fft(self->config, fft_in, fft_out);
     // FlyingObject_Update(&self->objects, self->ctx);
     // for(int i = 0; i < FFT_SIZE; i++) {
         
@@ -139,10 +139,10 @@ void Background_Update(Background* self){
     //     ok = true;
     // }
 
-    if(!self->timer.is_started) {
-        EnableParticle();
-        timer_start(&self->timer, 0);
-    }
+    // if(!self->timer.is_started) {
+    //     EnableParticle();
+    //     timer_start(&self->timer, 0);
+    // }
 
     
 

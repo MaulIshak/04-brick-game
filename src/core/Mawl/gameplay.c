@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "timer.h"
 #include "progress_bar.h"
+#include "sfx.h"
 
 
 static Color secondary = BLACK;
@@ -27,18 +28,19 @@ void gp_draw(Gameplay* self){
     Rectangle rec3 = {
       self->padPositions[0].x, self->padPositions[0].y, self->padSize , self->padSize
     };
+    char* control[LINE_COUNT]= {"D", "F", "J", "K"};
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
     DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.9f));
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
     // DrawRectangleRec(rec3, BLACK);
     // _drawAccZone(self);
-
-
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     for (int i = 0; i < LINE_COUNT; i++)
     {
       DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padOpacity[i] });
+      DrawTextEx(self->ctx->font, control[i], (Vector2){self->padPositions[i].x + self->padSize/2 - 7, self->padPositions[i].y - 30}, 40, 1,WHITE);
     }
+  
     
     DrawProgressBar(&self->progressBar);
     // DrawTexture(meledak, 0, 0, WHITE);
@@ -80,10 +82,11 @@ void gp_draw(Gameplay* self){
     UpdateProgressBar(&self->progressBar, self);
 
     // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
+    if(IsKeyDown(KEY_J) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
       self->padOpacity[2] = 255;
       // self->textureToLoad[0] = self->activeTextureToLoad[0]
       // printf("Hit time: %f\n", self->gameTime);
+      
       self->textureToLoad[2] = self->activeTextureToLoad[3];
     }else{
       // self->padOpacity[2] = 100;
@@ -91,7 +94,7 @@ void gp_draw(Gameplay* self){
     }
     
     // LEFT ARROW (LEFT)
-    if(IsKeyDown(KEY_LEFT) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
+    if(IsKeyDown(KEY_D) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
       self->padOpacity[0] = 255;
       self->textureToLoad[0] = self->activeTextureToLoad[0];
     }else{
@@ -101,7 +104,7 @@ void gp_draw(Gameplay* self){
     }
 
     // UP ARROW (MIDDLE RIGHT)
-    if(IsKeyDown(KEY_UP) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    if(IsKeyDown(KEY_F) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
       self->padOpacity[1] = 255;
       self->textureToLoad[1] = self->activeTextureToLoad[1];
     }else{
@@ -111,13 +114,17 @@ void gp_draw(Gameplay* self){
     }
     
     // RIGHT ARROW (RIGHT)
-    if(IsKeyDown(KEY_RIGHT) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
+    if(IsKeyDown(KEY_K) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
       self->padOpacity[3] = 255;
       self->textureToLoad[3] = self->activeTextureToLoad[2];
     }else{
       self->textureToLoad[3] = self->passiveTextureToLoad[2];
       // self->padOpacity[3] = 100;
       
+    }
+
+    if(IsKeyPressed(KEY_K) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_F) || IsKeyPressed(KEY_J)){
+      PlayMissSfx();
     }
   }
 
@@ -149,7 +156,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   for (int i = 0; i < LINE_COUNT; i++)
   {
     gameplay->padOpacity[i] = 255;
-    gameplay->padPositions[i].x = gameplay->ctx->screen_width/5 * i + gameplay->ctx->screen_width/8;
+    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i+ gameplay->ctx->screen_width/8;
     gameplay->padPositions[i].y = 48;
   }
   gameplay->gameTime = 0;
