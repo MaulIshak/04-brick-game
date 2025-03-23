@@ -119,7 +119,7 @@ void DrawScore(ScoreManager *score)
         DrawTextPro(
             score->ctx->font,
             comboText,
-            (Vector2){450, 300},
+            (Vector2){460, 300},
             (Vector2){0, 0},
             -15.0,
             40 * comboScale,
@@ -166,10 +166,11 @@ void UpdateScore(ScoreManager *score)
     score->ctx->score.perfect = score->perfect;
     score->ctx->score.good = score->good;
     score->ctx->score.miss = score->miss;
-    /*                                    restart ketika oemain udah main beneran (skor > 1 atau miss > 1) */
     if (IsSelectedMusicEnd(score->ctx) && (score->value > 0 || score->miss > 0))
     {
-        SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
+        if (score->value > score->ctx->tracks.track->high_score){
+            SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
+        }
         score->value = 0;
         score->isBeatmapLoaded = false;
         score->perfect = 0;
