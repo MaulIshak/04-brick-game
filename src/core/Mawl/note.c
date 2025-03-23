@@ -312,6 +312,7 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
   bool isMissPos = note->position.y + self->gp->padSize/2 < self->gp->padPositions[0].x - 50;
   if(isMissPos){
     if(!note->isHit){
+      self->gp->alpha = 255;
       note->isHit = true;
       self->isFirstHit = true;
       self->acc = MISS;
@@ -324,9 +325,7 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
 
   if(!note->isHit){
     if(_isNoteHit(self, *note)){
-      if(self->acc == PERFECT){
         self->gp->alpha = 255;
-      }
       note->isHit = true;
       AddScore(self->scoreManager, self->acc);
       // printf("Hit!");
