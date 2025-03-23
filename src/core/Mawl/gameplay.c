@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "timer.h"
 #include "progress_bar.h"
+#include "sfx.h"
 
 
 static Color secondary = BLACK;
@@ -84,6 +85,7 @@ void gp_draw(Gameplay* self){
       self->padOpacity[2] = 255;
       // self->textureToLoad[0] = self->activeTextureToLoad[0]
       // printf("Hit time: %f\n", self->gameTime);
+      
       self->textureToLoad[2] = self->activeTextureToLoad[3];
     }else{
       // self->padOpacity[2] = 100;
@@ -119,6 +121,10 @@ void gp_draw(Gameplay* self){
       // self->padOpacity[3] = 100;
       
     }
+
+    if(IsKeyPressed(KEY_K) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_F) || IsKeyPressed(KEY_J)){
+      PlayMissSfx();
+    }
   }
 
 bool gp_isShow(Gameplay* self){
@@ -149,7 +155,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   for (int i = 0; i < LINE_COUNT; i++)
   {
     gameplay->padOpacity[i] = 255;
-    gameplay->padPositions[i].x = gameplay->ctx->screen_width/5 * i + gameplay->ctx->screen_width/8;
+    gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i+ gameplay->ctx->screen_width/8;
     gameplay->padPositions[i].y = 48;
   }
   gameplay->gameTime = 0;

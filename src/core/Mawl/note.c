@@ -343,6 +343,7 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
       // printf("MISS\n");
       self->isFirstHit = true;
       self->acc = MISS;
+      AddScore(self->scoreManager, self->acc);
     }
   }
   //   // printf("Hit! : %d Time: %f\n", note.direction, self->gp->gameTime - 2000);
