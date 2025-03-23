@@ -8,14 +8,14 @@
 
 
 const char *music_lists[] = {
+    "resources/Outer Space",
+    "resources/PKKMB 2024",
+    "resources/Infinite Cosmodynamics",
     "resources/Guardian of The Former Seas",
     "resources/Pest of The Cosmos",
     "resources/LGR",
     "resources/ToyLand",
     "resources/Bad Apple",
-    "resources/PKKMB 2024",
-    "resources/Infinite Cosmodynamics",
-    "resources/Outer Space"
 };
 
 Tracks InitTracks() {
@@ -85,6 +85,7 @@ void DestroyTracks(Tracks *tracks) {
 void DestroyContext(AppContext *ctx) {
     DestroyTracks(&ctx->tracks);
     free(ctx->_beatmap.items);
+    free(ctx->_beatmap_name);
 }
 const char* font_path = "resources/font/Jersey15-Regular.ttf";
 AppContext CreateContext(int screen_width , int screen_height ){
@@ -232,6 +233,7 @@ void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int s
     fclose(f);
 }
 
+// TODO: refresh score di track list setelah di set.
 void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
     int selected = ctx->selected_track;
     Beatmap map = GetSelectedMusicBeatmap(ctx);
