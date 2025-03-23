@@ -40,7 +40,7 @@ void note_update(NoteManager *self){
   }
   if(!self->musicTimer.is_started){
     // self->gp->gameTime = 0;
-    timer_start(&self->musicTimer, 3 + ms_to_s(noteoffset));
+    timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
   }
   if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
     // for (int i = 0; i < self->beatmap.len; i++) {
@@ -73,11 +73,11 @@ void note_update(NoteManager *self){
     }  
     // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
     if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
-      if(prev_track == self->ctx->selected_track){
-        self->gp->gameTimeOffset = 0;
-      }else{
-        self->gp->gameTimeOffset = noteoffset;
-      }
+      // if(prev_track == self->ctx->selected_track){
+      //   self->gp->gameTimeOffset = 0;
+      // }else{
+      //   self->gp->gameTimeOffset = noteoffset;
+      // }
       printf("%.2f\n\n", self->gp->gameTime);
       // printf("SELECTED\n");
       self->beatmap = GetSelectedMusicBeatmap(self->ctx);
@@ -294,7 +294,7 @@ void _drawAccuracy(NoteManager* self){
 
 
   Vector2 pos =(Vector2) {
-    self->gp->width/2 - MeasureTextEx(self->ctx->font, accuracyText,50,1).x/2,self->gp->padPositions[0].y+150
+    self->gp->width/2 - MeasureTextEx(self->ctx->font, accuracyText,50,1).x/2 - 45,self->gp->padPositions[0].y+150
   };
 
   self->gp->alpha -= GetFrameTime() * 220;
