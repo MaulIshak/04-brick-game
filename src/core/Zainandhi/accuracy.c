@@ -60,7 +60,7 @@ void DrawAcc(ScoreManager *score){
 void UpdateAcc(ScoreManager *score){
     if (IsSelectedMusicEnd(score->ctx))
     {
-        score->ctx->score.accuracy = 0.00;
+        // score->ctx->score.accuracy = 0.00;
     }
 }
 
