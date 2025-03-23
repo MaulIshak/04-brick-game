@@ -8,14 +8,14 @@
 
 
 const char *music_lists[] = {
+    "resources/Outer Space",
+    "resources/PKKMB 2024",
+    "resources/Infinite Cosmodynamics",
     "resources/Guardian of The Former Seas",
     "resources/Pest of The Cosmos",
     "resources/LGR",
     "resources/ToyLand",
     "resources/Bad Apple",
-    "resources/PKKMB 2024",
-    "resources/Infinite Cosmodynamics",
-    "resources/Outer Space"
 };
 
 Tracks InitTracks() {

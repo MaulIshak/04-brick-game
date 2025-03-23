@@ -198,8 +198,8 @@ void UpdateScore(ScoreManager *score)
     score->ctx->score.perfect = score->perfect;
     score->ctx->score.good = score->good;
     score->ctx->score.miss = score->miss;
-
-    if (IsSelectedMusicEnd(score->ctx))
+    /*                                    restart ketika oemain udah main beneran (skor > 1 atau miss > 1) */
+    if (IsSelectedMusicEnd(score->ctx) && (score->value > 0 || score->miss > 0))
     {
         SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
         // score->ctx->score.accuracy = 0.00;
