@@ -6,7 +6,7 @@
 #include "context.h"
 
 ScoreManager InitAcc(AppContext *ctx, Gameplay *gameplay){
-    ScoreManager score;
+    ScoreManager score = {0};
 
     score.isBeatmapLoaded = false;
     
