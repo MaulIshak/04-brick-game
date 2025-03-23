@@ -57,11 +57,7 @@ int _main()
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
-<<<<<<< HEAD
   ctx.app_state =APP_LOADING;
-=======
-  // ctx.app_state = END_OF_THE_GAME;
->>>>>>> 4abeaab332993bd9059f3b7d0816adc9d9b2141d
   #endif // GAME_DEBUG
   Loading loading = {
     .ctx = &ctx,

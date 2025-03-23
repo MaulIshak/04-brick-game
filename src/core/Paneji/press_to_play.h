@@ -11,7 +11,9 @@ typedef struct PressToPlay {
     AppContext *ctx;
     bool isVisible;
     Texture2D logogame;
-    float posY;
+    float posYlogo;
+    float posYtex;
+    Sound batu;
 } PressToPlay;
 
 void PressToPlay_LoadTextures(PressToPlay *self);
