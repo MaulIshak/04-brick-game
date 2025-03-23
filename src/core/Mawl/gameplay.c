@@ -28,18 +28,19 @@ void gp_draw(Gameplay* self){
     Rectangle rec3 = {
       self->padPositions[0].x, self->padPositions[0].y, self->padSize , self->padSize
     };
+    char* control[LINE_COUNT]= {"D", "F", "J", "K"};
     DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
     DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.9f));
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
     // DrawRectangleRec(rec3, BLACK);
     // _drawAccZone(self);
-
-
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     for (int i = 0; i < LINE_COUNT; i++)
     {
       DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padOpacity[i] });
+      DrawTextEx(self->ctx->font, control[i], (Vector2){self->padPositions[i].x + self->padSize/2 - 7, self->padPositions[i].y - 30}, 40, 1,WHITE);
     }
+  
     
     DrawProgressBar(&self->progressBar);
     // DrawTexture(meledak, 0, 0, WHITE);

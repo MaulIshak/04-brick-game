@@ -53,7 +53,7 @@ void LoadingUpdatePositions(Loading *self) {
             count++;
             self->timer = 0.0f;  
         }
-        if (count == 10) {
+        if (count == 2) {
             self->state = READY; 
         }
     } 

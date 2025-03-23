@@ -4,7 +4,7 @@
 
 void PressToPlay_Draw(PressToPlay *self){
   DrawTextEx(self->ctx->font, "TEKAN APA ARROW UP UNTUK MULAI", 
-    (Vector2){ SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 180 }, 
+    (Vector2){ SCREEN_WIDTH / 2 - 234, SCREEN_HEIGHT / 2 + 180 }, 
     35, 2, BLACK);
 
 }
