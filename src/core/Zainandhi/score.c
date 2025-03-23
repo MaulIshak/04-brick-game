@@ -8,7 +8,7 @@
 
 ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
 {
-    ScoreManager score;
+    ScoreManager score = {0};
 
     score.isBeatmapLoaded = false;
 
@@ -110,7 +110,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
 
 void DrawScore(ScoreManager *score)
 {
-    ProgressBar bar;
+    ProgressBar bar = {0};
     char scoreText[20], accuracyText[20], comboText[20];
     static int scoreIncrease = 0;
     static float scoreTimer = 0;
