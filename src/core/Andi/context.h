@@ -117,7 +117,6 @@ void DestroyTracks(Tracks *tracks);
 void DestroyContext(AppContext *ctx);
 
 
-void SelectMusic(AppContext* ctx, int music_index);
 // Update context. digunakan pada saat gameloop
 void UpdateContext(AppContext* ctx);
 // Menjalankan music untuk track yang dipilih
