@@ -141,7 +141,7 @@ void DrawScore(ScoreManager *score)
 
     if (scoreIncrease > 0 && scoreTimer > 0)
     {
-        char scoreIncreaseText[10];
+        char scoreIncreaseText[20];
         sprintf(scoreIncreaseText, "+%d Score!!", scoreIncrease);
 
         DrawText(scoreIncreaseText, score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreIncreaseText, 20) / 2), score->ctx->screen_height - 120, 22, Fade(WHITE, alpha / 255.0f));
