@@ -53,10 +53,10 @@ int _main()
   InitSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  #ifdef GAME_DEBUG
+  // #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  // ctx.app_state = APP_SELECT;
-  #endif // GAME_DEBUG
+  ctx.app_state = APP_SELECT;
+  // #endif // GAME_DEBUG
   Loading loading = {
     .ctx = &ctx
   };

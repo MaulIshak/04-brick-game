@@ -44,6 +44,8 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     DrawTextEx(self->gradeFont, grade, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, grade, 174, 0).x / 2, 160 }, 174, 0, gradeColor);
     sprintf(buff, "%ld", self->ctx->score.point);
     DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, buff, 90, 0).x / 2, 320 }, 90, 0, BLACK);
+    sprintf(buff, "%ld", self->ctx->score.accuracy);
+    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, buff, 90, 0).x / 2, 320 }, 90, 0, BLACK);
     
     // DRAW ACCURACY
     DrawRectangle(50, (self->ctx->screen_height/2) / 2 + 220, self->ctx->screen_width - 100, self->ctx->screen_height/8 - 5, DARKGRAY);
@@ -61,11 +63,11 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     
     // DRAW BUTTON Restart
     DrawRectangle((self->ctx->screen_width/4) / 2, (self->ctx->screen_height/2) + 150, 200, 60, PRIMARY_COLOR);
-    DrawTextEx(self->gradeFont, "<- Restart", (Vector2){ (self->ctx->screen_width/4) / 2 + 100 - MeasureTextEx(self->gradeFont, "<- Restart", 32, 0).x / 2, (self->ctx->screen_height/2) + 165 }, 32, 0, WHITE);
+    DrawTextEx(self->gradeFont, "Restart [D]", (Vector2){ (self->ctx->screen_width/4) / 2 + 100 - MeasureTextEx(self->gradeFont, "Restart [D]", 28, 0).x / 2, (self->ctx->screen_height/2) + 165 }, 28, 0, WHITE);
 
     // DRAW BUTTON Continue
     DrawRectangle(((self->ctx->screen_width/4) / 2 + 6) * 4, (self->ctx->screen_height/2) + 150, 200, 60, SECONDARY_COLOR);
-    DrawTextEx(self->gradeFont, "Continue ->", (Vector2){ ((self->ctx->screen_width/4) / 2 + 6) * 4 + 100 - MeasureTextEx(self->gradeFont, "Continue ->", 32, 0).x / 2, (self->ctx->screen_height/2) + 165 }, 32, 0, WHITE);
+    DrawTextEx(self->gradeFont, "Continue [K]", (Vector2){ ((self->ctx->screen_width/4) / 2 + 6) * 4 + 100 - MeasureTextEx(self->gradeFont, "Continue [K]", 28, 0).x / 2, (self->ctx->screen_height/2) + 165 }, 28, 0, WHITE);
     
     EndBlendMode();
 }
