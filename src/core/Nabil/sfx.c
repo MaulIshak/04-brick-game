@@ -34,9 +34,9 @@ void UnloadSfx() {
 }
 
 void PlayArrowSfx(int key) {
-    if (key == KEY_LEFT || key == KEY_UP || key == KEY_A || key == KEY_W) {
+    if (key == KEY_D || key == KEY_F || key == KEY_A || key == KEY_W) {
         PlaySound(arrowSfx1);
-    } else if (key == KEY_RIGHT || key == KEY_DOWN || key == KEY_D || key == KEY_S) {
+    } else if (key == KEY_K || key == KEY_J || key == KEY_D || key == KEY_S) {
         PlaySound(arrowSfx2);
     }
 }

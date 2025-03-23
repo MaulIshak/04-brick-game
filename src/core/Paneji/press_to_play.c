@@ -9,7 +9,7 @@ void PressToPlay_Draw(PressToPlay *self){
 
 }
 void PressToPlay_Update(PressToPlay *self){
-    if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT)) {
+    if (IsKeyPressed(KEY_F) || IsKeyPressed(KEY_J) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_K)) {
         self->ctx->app_state = APP_SELECT; 
     }
     

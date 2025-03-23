@@ -7,7 +7,7 @@
 #include "array_list.h"
 
 
-const char *resources[] = {
+const char *music_lists[] = {
     "resources/Guardian of The Former Seas",
     "resources/Pest of The Cosmos",
     "resources/LGR",
@@ -25,12 +25,12 @@ Tracks InitTracks() {
         .track = malloc(sizeof(Track) * 10),
     };
 
-    int len = ARRAY_LEN(resources);
+    int len = ARRAY_LEN(music_lists);
     tr.len = len;
     char buff[255] = {0};
     for(int i = 0; i < len; i++) {
         Track *track = &tr.track[i];
-        strcat(buff, resources[i]);
+        strcat(buff, music_lists[i]);
         strcat(buff, ".mp3");
 
         Music m = LoadMusicStream(buff);

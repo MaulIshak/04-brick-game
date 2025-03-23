@@ -45,7 +45,7 @@ int _main()
   const int screenWidth = 600;
   const int screenHeight = 800;
   Image icon = LoadImage("resources/texture/game-icon.png");
-  SetConfigFlags(FLAG_WINDOW_TOPMOST | FLAG_WINDOW_ALWAYS_RUN);
+  SetConfigFlags(FLAG_WINDOW_ALWAYS_RUN);
   
   InitWindow(screenWidth, screenHeight, "Rythm.me");
   SetWindowIcon(icon);
@@ -55,7 +55,7 @@ int _main()
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  // ctx.app_state = APP_SELECT;
+  // ctx.app_state = APP_PLAYING;
   #endif // GAME_DEBUG
   Loading loading = {
     .ctx = &ctx
@@ -108,7 +108,7 @@ int _main()
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   #ifdef GAME_DEBUG
-  ctx.selected_track = 5;
+  ctx.selected_track = 0;
   #endif //GAME_DEBUG
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);
@@ -119,9 +119,9 @@ int _main()
 
     if (ctx.app_state != APP_PLAYING && ctx.app_state != APP_BEATMAP_CREATOR && ctx.app_state != APP_LOADING) {
         if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_A) || IsKeyPressed(KEY_W) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) {
-          PlayArrowSfx(KEY_RIGHT);
+          PlayArrowSfx(KEY_K);
         }
-        if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_S) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) {
+        if (IsKeyPressed(KEY_K) || IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_S) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) {
           PlayArrowSfx(KEY_LEFT);
         }
         if (IsKeyPressed(KEY_ENTER)) {
@@ -149,7 +149,9 @@ int _main()
         draws[i].scene->Draw(draws[i].self);
       }
     }
+    #ifdef GAME_DEBUG
     DrawFPS( 20,screenHeight- 40);
+    #endif //GAME_DEBUG
     // DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
     EndDrawing();
   }

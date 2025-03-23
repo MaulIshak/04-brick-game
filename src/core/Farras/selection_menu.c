@@ -170,7 +170,7 @@ void PressToAction(SelectionMenu *self)
   float delayRecovery = 0.0025f;
   float frameThreshold = 0.1f;
 
-  if (IsKeyPressed(KEY_DOWN))
+  if (IsKeyPressed(KEY_J))
   {
     if (self->ctx->tracks.len > MAX_MUSIC_SHOWING)
     {
@@ -187,7 +187,7 @@ void PressToAction(SelectionMenu *self)
     time = 0;
     StopSelectedTrack(self->ctx);
   }
-  else if (IsKeyPressed(KEY_UP))
+  else if (IsKeyPressed(KEY_F))
   {
     if (self->ctx->tracks.len > MAX_MUSIC_SHOWING)
     {
@@ -205,7 +205,7 @@ void PressToAction(SelectionMenu *self)
     StopSelectedTrack(self->ctx);
   }
 
-  if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_UP))
+  if (IsKeyDown(KEY_J) || IsKeyDown(KEY_F))
   {
     textOffsetX = 0;
 
@@ -214,7 +214,7 @@ void PressToAction(SelectionMenu *self)
     {
       if (!keyHeld || time >= frameThreshold)
       {
-        if (IsKeyDown(KEY_DOWN))
+        if (IsKeyDown(KEY_J))
         {
           if (self->ctx->tracks.len > MAX_MUSIC_SHOWING)
           {
@@ -226,7 +226,7 @@ void PressToAction(SelectionMenu *self)
           }
           self->ctx->selected_track = (self->ctx->selected_track + 1) % self->ctx->tracks.len;
         }
-        else if (IsKeyDown(KEY_UP))
+        else if (IsKeyDown(KEY_F))
         {
 
           if (self->ctx->tracks.len > MAX_MUSIC_SHOWING)

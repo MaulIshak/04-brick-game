@@ -71,10 +71,10 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
 }
 
 void EndOfTheGame_Update(EndOfTheGame *self){
-    if(IsKeyPressed(KEY_LEFT)) {
+    if(IsKeyPressed(KEY_D)) {
         self->ctx->app_state = APP_PLAYING;
     }
-    if (IsKeyPressed(KEY_RIGHT)) {
+    if (IsKeyPressed(KEY_K)) {
         self->ctx->app_state = APP_SELECT;
     }
 }
