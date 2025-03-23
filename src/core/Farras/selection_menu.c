@@ -121,7 +121,7 @@ void SelectionMenuHelper_Draw(SelectionMenu *self) {
   float screenWidth = self->ctx->screen_width;
   float screenHeight = self->ctx->screen_height;
 
-  buttonDraw(font, (Vector2){screenWidth - 100, screenHeight - 30}, "Arrow Up/Down", 22, 2, WHITE, DARKGRAY, GRAY);
+  buttonDraw(font, (Vector2){screenWidth - 100, screenHeight - 30}, "     F/J     ", 22, 2, WHITE, DARKGRAY, GRAY);
   buttonDraw(font, (Vector2){screenWidth - 225, screenHeight - 30}, "(Select)", 18, 1, WHITE, BLANK, BLANK);
 
   buttonDraw(font, (Vector2){screenWidth - 55, screenHeight - 60}, "Enter", 22, 2, ORANGE, YELLOW, GOLD);

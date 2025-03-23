@@ -40,9 +40,9 @@ ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
 
 void LoadingLoadTexturesFire(ScoreManager *score)
 {
-    fireFrames[0] = LoadTexture("resources/texture/fire1.png");
-    fireFrames[1] = LoadTexture("resources/texture/fire2.png");
-    fireFrames[2] = LoadTexture("resources/texture/fire3.png");
+    // fireFrames[0] = LoadTexture("resources/texture/fire1.png");
+    // fireFrames[1] = LoadTexture("resources/texture/fire2.png");
+    // fireFrames[2] = LoadTexture("resources/texture/fire3.png");
 }
 
 void AddScore(ScoreManager *score, Accuracy acc)
@@ -105,7 +105,7 @@ void DrawScore(ScoreManager *score)
     int alpha = (int)(255 * (scoreTimer / 1.5f));
     sprintf(scoreText, "%d", score->value);
     sprintf(accuracyText, "%.2f%%", score->ctx->score.accuracy);
-    sprintf(comboText, "Combo!!\n %d", 87);
+    sprintf(comboText, "Combo!!\n %d", score->comboValue);
 
     Vector2 bottomTriangle[3] = {
         {450, score->ctx->screen_width + 150},
