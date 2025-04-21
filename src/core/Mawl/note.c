@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "sfx.h"
 
+char text[1024];
 
 void note_draw(NoteManager *self){
   // Mulai gambar akurasi hanya jika note pertama sampai
@@ -22,6 +23,13 @@ void note_draw(NoteManager *self){
           _drawBeatmapNote(self, self->note[i]);
           // printf("Kegambar!\n");
       }
+    }
+    if(self->gp->life <= 0 && self->ctx->app_state == APP_PLAYING){
+      self->ctx->app_state = END_OF_THE_GAME;
+      StopSelectedTrack(self->ctx);
+      _resetNoteManager(self);
+      // DrawText("FAIL", GetScreenWidth()/2 - MeasureText("FAIL", 100)/2, GetScreenHeight()/2, 100, BLACK);
+      self->gp->life = 100;
     }
 
 }
@@ -55,7 +63,6 @@ void note_update(NoteManager *self){
         self->isFirstHit = false;
         self->timer.is_started = false;
         self->musicTimer.is_started = false;
-        self->isNewGame = false;
         self->gp->timer.is_started = false;
         self->gp->gameTime = 0;
         self->gp->isBackgroundLoaded = false;
@@ -117,7 +124,7 @@ void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp, ScoreManager *sc
   };
   self->scoreManager = scoreManager;
   self->isBeatmapLoaded = false;
-  self->isNewGame = true;
+  self->missCombo = 0;
   // noteoffset = self->gp->gameTimeOffset;
 }
 
@@ -317,6 +324,7 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
       self->isFirstHit = true;
       self->acc = MISS;
       AddScore(self->scoreManager, self->acc);
+      UpdateLife(self->gp, self->acc);
     }
   }
   if(note->isHit){
@@ -325,9 +333,10 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
 
   if(!note->isHit){
     if(_isNoteHit(self, *note)){
-        self->gp->alpha = 255;
+      self->gp->alpha = 255;
       note->isHit = true;
       AddScore(self->scoreManager, self->acc);
+      UpdateLife(self->gp, self->acc);
       // printf("Hit!");
       if(!self->isFirstHit){
         self->isFirstHit = true;

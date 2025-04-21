@@ -10,6 +10,14 @@
 #include "timer.h"
 #include "progress_bar.h"
 
+
+typedef struct LifeBar{
+  Rectangle outlineRec;
+  Rectangle lifeRec; 
+  float width;
+  float height;
+} LifeBar;
+
 typedef struct Gameplay{
   // Context aplikasi
   AppContext *ctx;
@@ -42,10 +50,20 @@ typedef struct Gameplay{
   double padSize;
   // Alpha untuk flash effect dan akurasi
   double alpha;
-
+  
   // Boolean agar tahu apakah background sudah di load
   bool isBackgroundLoaded;
+  
+  //Health untuk gameplay
+  float life;
+  
+  // Maks Health
+  float maxLife;
+  // Life Bar
+  LifeBar lifeBar;
 }Gameplay;
+
+#include "score.h"
 
 // Draw layar gameplay
 void gp_draw(Gameplay* self);
@@ -59,6 +77,8 @@ bool gp_isShow(Gameplay* self);
 // Inisialisasi gameplay, termasuk load texture
 void InitGameplay(Gameplay *gameplay, AppContext *ctx);
 
+void UpdateLife(Gameplay* self,  Accuracy acc);
+
 // Private procedure
 // Modul untuk load texture
 void _LoadNoteTexture(Gameplay *self);
@@ -71,6 +91,9 @@ void _drawAccZone(Gameplay* self);
 
 // Dapatkan Random Background dari 3 background yang ada
 Texture2D _getRandomBg(Gameplay* self);
+
+void _drawLifeBar(Gameplay* self);
+void _updateLifeBar(Gameplay* self);
 
 impl_scene(Gameplay*, Gameplay_ToScene,gp_draw,gp_update, gp_isShow);
 

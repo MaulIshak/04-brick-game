@@ -64,8 +64,10 @@ typedef struct {
 
   // Enum Akurasi akurasi note yang dihit
   Accuracy acc;
+
   ScoreManager *scoreManager;
-  bool isNewGame;
+
+  int  missCombo;
 }NoteManager;
 
 // Public
