@@ -7,6 +7,7 @@
 #include "timer.h"
 #include "progress_bar.h"
 #include "sfx.h"
+#include "score.h"
 
 
 static Color secondary = BLACK;
@@ -46,15 +47,20 @@ void gp_draw(Gameplay* self){
       DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padOpacity[i] });
       DrawTextEx(self->ctx->font, control[i], (Vector2){self->padPositions[i].x + self->padSize/2 - 7, self->padPositions[i].y - 30}, 40, 1,WHITE);
     }
+
   
-    
+    // Progress Bar
     DrawProgressBar(&self->progressBar);
+
+    // Life Bar
+    _drawLifeBar(self);
     // DrawTexture(meledak, 0, 0, WHITE);
     // DrawTextureRec(meledak, frameRec, position, WHITE);  // Draw part of the texture
 
     
   }
   void gp_update(Gameplay* self){
+    _updateLifeBar(self);
     // -- Ini kode untuk animasi sprite, tetapi karena tidak berjalan sesuai harapan, jadi tidak digunakan dulu --
     // printf("Time: %f\n", self->gameTime);
     // Tes sprite animation
@@ -127,6 +133,11 @@ void gp_draw(Gameplay* self){
     if(IsKeyPressed(KEY_K) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_F) || IsKeyPressed(KEY_J)){
       PlayMissSfx();
     }
+
+    if(self->life >= 100){
+      self->life = 100;
+    }
+
   }
 
 bool gp_isShow(Gameplay* self){
@@ -171,6 +182,13 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   gameplay->background[0] = LoadTexture("resources/background/Background-01.png");
   gameplay->background[1] = LoadTexture("resources/background/Background-02.png");
   gameplay->background[2] = LoadTexture("resources/background/Background-03.png");
+  gameplay->maxLife = 100;
+  gameplay->life = gameplay->maxLife;
+  gameplay->lifeBar.height = 20;
+  gameplay->lifeBar.width = 80;
+
+  gameplay->lifeBar.outlineRec = (Rectangle){.height=gameplay->lifeBar.height, .width= gameplay->lifeBar.width, .x=GetScreenWidth()-GetScreenWidth()/6, .y=GetScreenHeight()/4};
+  gameplay->lifeBar.lifeRec = (Rectangle){.height=gameplay->lifeBar.height, .width= gameplay->lifeBar.width, .x=GetScreenWidth()-GetScreenWidth()/6, .y=GetScreenHeight()/4};
   // meledak = LoadTexture("resources/texture/Meledak-2.png");
   // frameRec = (Rectangle){ 0.0f, 0.0f, (float)meledak.width/8, (float)meledak.height };
   gameplay->isBackgroundLoaded = false;
@@ -216,4 +234,23 @@ void _drawAccZone(Gameplay* self){
 Texture2D _getRandomBg(Gameplay* self){
   int rand = GetRandomValue(0, 2);
   return self->background[rand];
+}
+
+
+void _drawLifeBar(Gameplay* self){
+  DrawText("Life",self->lifeBar.outlineRec.x, self->lifeBar.outlineRec.y - 30, 30, BLACK);
+  DrawRectangleRec(self->lifeBar.outlineRec, BLACK);
+  DrawRectangleRec(self->lifeBar.lifeRec, GREEN);
+}
+
+void _updateLifeBar(Gameplay* self){
+  self->lifeBar.lifeRec.width = (self->life/self->maxLife) * self->lifeBar.width;
+}
+
+void UpdateLife(Gameplay *self, Accuracy acc){
+  if(acc == MISS){
+    self->life -= 10;
+  }else if(acc == PERFECT){
+    self->life += 5;
+  }
 }
