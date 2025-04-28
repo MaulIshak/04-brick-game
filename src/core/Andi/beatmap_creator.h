@@ -15,9 +15,10 @@ typedef struct BeatmapCreator {
     Beatmap bmt;
     bool is_recording_session_end;
     bool is_map_written;
+    Timer up_timer, down_timer, left_timer, right_timer;
 } BeatmapCreator;
 
-void AppendNote(Beatmap* btm, Timer* timer, NoteDirection dir);
+void AppendNote(Beatmap* btm, Timer* timer, NoteDirection dir, Timer *duration_timer);
 
 BeatmapCreator CreateBeatmap(AppContext* ctx);
 void BeatmapCreator_Draw(BeatmapCreator* self);
