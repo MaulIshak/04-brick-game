@@ -61,6 +61,7 @@ typedef struct Gameplay{
   float maxLife;
   // Life Bar
   LifeBar lifeBar;
+  bool isPlaying;
 }Gameplay;
 
 #include "score.h"
@@ -94,6 +95,7 @@ Texture2D _getRandomBg(Gameplay* self);
 
 void _drawLifeBar(Gameplay* self);
 void _updateLifeBar(Gameplay* self);
+void _inputHandler(Gameplay* self);
 
 impl_scene(Gameplay*, Gameplay_ToScene,gp_draw,gp_update, gp_isShow);
 

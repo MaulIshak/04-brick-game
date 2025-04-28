@@ -45,15 +45,18 @@ void note_update(NoteManager *self){
   }
   if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
     // for (int i = 0; i < self->beatmap.len; i++) {
-    //   self->note[i].isHit = 0;
-    // }
-    printf("Music start time: %f\n", self->gp->gameTime);
-    PlaySelectedTrack(self->ctx);
-    
-    self->isTrackPlayed = true;
+      //   self->note[i].isHit = 0;
+      // }
+      printf("Music start time: %f\n", self->gp->gameTime);
+      PlaySelectedTrack(self->ctx);
+      self->isTrackPlayed = true;
+      self->gp->isPlaying = true;
+    }
+  if(IsKeyPressed(KEY_ENTER)){
+      self->gp->isPlaying = !self->gp->isPlaying;
   }
-  if(IsKeyPressed(KEY_SPACE)){
-    SeekSelectedTrack(self->ctx, 29);
+  if(!self->gp->isPlaying){
+    return;
   }
   if(self->isTrackPlayed){
      if(IsSelectedMusicEnd(self->ctx) ){
@@ -82,6 +85,7 @@ void note_update(NoteManager *self){
         _extractNoteFromBeatmap(self);
       }
         self->isBeatmapLoaded = true;
+        
     }
     
 
@@ -89,7 +93,7 @@ void note_update(NoteManager *self){
       _updateNotePosition(self);
     }
 
-  
+
 }
 
 bool note_isShow(NoteManager *self){
@@ -358,6 +362,9 @@ void _extractNoteFromBeatmap(NoteManager* self){
 }
 
 void _resetNoteManager(NoteManager *self) {
+  self->gp->timer.is_started = false;
+  self->gp->gameTime = 0;
+  self->gp->isBackgroundLoaded = false;
   self->isBeatmapLoaded = false;
   self->isTrackPlayed = false;
   self->isFirstHit = false;
@@ -371,4 +378,3 @@ void _resetNoteManager(NoteManager *self) {
     self->note[i].isSpawned = false;
   }
 }
-
