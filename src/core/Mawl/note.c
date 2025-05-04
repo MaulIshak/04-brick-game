@@ -5,6 +5,8 @@
 #include "timer.h"
 #include <stdio.h>
 #include "sfx.h"
+#include "linked_list.h"
+#include <math.h>
 
 char text[1024];
 
@@ -16,12 +18,9 @@ void note_draw(NoteManager *self){
   // Cek apakah beatmap sudah diload
   if(self->isBeatmapLoaded){
       for(int i = 0; i < self->beatmap.len; i++) {
-        if(self->note[i].position.y < 0) {
-            continue;
-        }
-          // printf("Pos Y = %.2f isHit: %d\n",self->note[i].position.y, self->note[i].isHit);
-          _drawBeatmapNote(self, self->note[i]);
-          // printf("Kegambar!\n");
+        _drawNoteTrail(self, self->note[i]);
+        if(self->note[i].position.y < 0) continue;
+        _drawBeatmapNote(self, self->note[i]);
       }
     }
     if(self->gp->life <= 0 && self->ctx->app_state == APP_PLAYING){
@@ -45,15 +44,18 @@ void note_update(NoteManager *self){
   }
   if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
     // for (int i = 0; i < self->beatmap.len; i++) {
-    //   self->note[i].isHit = 0;
-    // }
-    printf("Music start time: %f\n", self->gp->gameTime);
-    PlaySelectedTrack(self->ctx);
-    
-    self->isTrackPlayed = true;
+      //   self->note[i].isHit = 0;
+      // }
+      printf("Music start time: %f\n", self->gp->gameTime);
+      PlaySelectedTrack(self->ctx);
+      self->isTrackPlayed = true;
+      self->gp->isPlaying = true;
+    }
+  if(IsKeyPressed(KEY_ENTER)){
+      self->gp->isPlaying = !self->gp->isPlaying;
   }
-  if(IsKeyPressed(KEY_SPACE)){
-    SeekSelectedTrack(self->ctx, 29);
+  if(!self->gp->isPlaying){
+    return;
   }
   if(self->isTrackPlayed){
      if(IsSelectedMusicEnd(self->ctx) ){
@@ -82,6 +84,7 @@ void note_update(NoteManager *self){
         _extractNoteFromBeatmap(self);
       }
         self->isBeatmapLoaded = true;
+        
     }
     
 
@@ -89,7 +92,7 @@ void note_update(NoteManager *self){
       _updateNotePosition(self);
     }
 
-  
+
 }
 
 bool note_isShow(NoteManager *self){
@@ -156,6 +159,7 @@ void _drawBeatmapNote(NoteManager* self, DrawableNote note){
     DrawTextureEx(textureToDraw, position,0,.16,WHITE);
   }
 
+  Shader shader;
   
 }
 
@@ -353,11 +357,15 @@ void _extractNoteFromBeatmap(NoteManager* self){
     self->note[i].position = self->beatmap.items[i].position; 
     self->note[i].isHit = 0;
     self->note[i].isSpawned = false;
+    self->note[i].duration_in_ms = self->beatmap.items[i].duration_in_ms;
   }
   
 }
 
 void _resetNoteManager(NoteManager *self) {
+  self->gp->timer.is_started = false;
+  self->gp->gameTime = 0;
+  self->gp->isBackgroundLoaded = false;
   self->isBeatmapLoaded = false;
   self->isTrackPlayed = false;
   self->isFirstHit = false;
@@ -372,3 +380,63 @@ void _resetNoteManager(NoteManager *self) {
   }
 }
 
+void _drawNoteTrail(NoteManager* self, DrawableNote note){
+  Vector2 position = note.position;
+  Color trailColor1;
+  Color trailColor2;
+  switch (note.direction)
+  {
+  case NOTE_LEFT:
+      position.x = self->gp->padPositions[0].x;
+      trailColor1 = (Color){
+        0xA6, 0x38, 0xEF, 0xFF
+      };
+      trailColor2 = (Color){
+        0x22, 0x72, 0xC7, 0xFF
+      };
+      break;
+  case NOTE_RIGHT:
+      position.x = self->gp->padPositions[3].x;
+      trailColor1 = (Color){
+        0xFD, 0xF1, 0x71, 0xFF
+      };
+      trailColor2 = (Color){
+        0xF9, 0x84, 0xB9, 0xFF
+      };
+      break;
+  case NOTE_UP:
+      position.x = self->gp->padPositions[1].x;
+      trailColor1 = (Color){
+        0xF8, 0x53, 0x51, 0xFF
+      };
+      trailColor2 = (Color){
+        0x63, 0x21, 0x79, 0xFF
+      };
+      break;
+  case NOTE_DOWN:
+      position.x = self->gp->padPositions[2].x;
+      trailColor1 = (Color){
+        0x4B, 0xF7, 0xFE, 0xFF
+      };
+      trailColor2 = (Color){
+        0xAE, 0xAD, 0x3B, 0xFF
+      };
+      break;
+  }
+
+  if (note.duration_in_ms > 0) {
+    float holdLength = (note.duration_in_ms / 1000.0f) * ( (self->ctx->screen_height - 45) / self->timeToHitPad );
+
+    Rectangle holdBody = {
+        position.x + self->gp->padSize/2 -self->gp->padSize/4 ,
+        position.y + self->gp->padSize/2, // sedikit di bawah head
+        self->gp->padSize/2, // lebar body
+        holdLength // panjang body ke bawah
+    };
+
+    // DrawRectangleRec(holdBody, BLACK); // Warna abu2 transparan utk body
+    BeginScissorMode(holdBody.x, self->gp->padPositions[0].y + self->gp->padSize/2, holdBody.width, GetScreenHeight());
+    DrawRectangleGradientV(holdBody.x, holdBody.y, holdBody.width, holdBody.height, trailColor1, trailColor2);
+    EndScissorMode();
+  }
+}

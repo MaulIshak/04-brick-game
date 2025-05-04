@@ -61,29 +61,6 @@ void gp_draw(Gameplay* self){
   }
   void gp_update(Gameplay* self){
     _updateLifeBar(self);
-    // -- Ini kode untuk animasi sprite, tetapi karena tidak berjalan sesuai harapan, jadi tidak digunakan dulu --
-    // printf("Time: %f\n", self->gameTime);
-    // Tes sprite animation
-    // framesCounter++;
-
-    // if (framesCounter >= (60/framesSpeed))
-    // {
-    //     framesCounter = 0;
-    //     currentFrame++;
-
-    //     if (currentFrame > 7) currentFrame = 0;
-
-        // frameRec.x = (float)7*(float)meledak.width/8;
-        // }
-        // static float time;
-        // time += GetFrameTime();
-        // if(time > .5f){
-        //   currentFrame++;
-        //   time = 0;
-        //   frameRec.x = (float)currentFrame*(float)meledak.width/7;
-
-        // }
-
     // Update Gameplay
     if(!self->isBackgroundLoaded){
       bg = _getRandomBg(self);
@@ -91,49 +68,16 @@ void gp_draw(Gameplay* self){
     }
     // Mulai waktu game
     if(!self->timer.is_started){
-      // printf("START GAME TIME!\n");
       self->startGameTime = GetTime();
       timer_start(&(self->timer), 3);
     }
     if(is_timer_end(&(self->timer))){
       _UpdateGameTime(self);
     }
+    if(!self->isPlaying) return;
     UpdateProgressBar(&self->progressBar, self);
 
-    // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_J) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
-      self->textureToLoad[2] = self->activeTextureToLoad[3];
-    }else{
-      self->textureToLoad[2] = self->passiveTextureToLoad[3];
-    }
-    
-    // LEFT ARROW (LEFT)
-    if(IsKeyDown(KEY_D) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
-      self->textureToLoad[0] = self->activeTextureToLoad[0];
-    }else{
-      self->textureToLoad[0] = self->passiveTextureToLoad[0];
-      
-    }
-
-    // UP ARROW (MIDDLE RIGHT)
-    if(IsKeyDown(KEY_F) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
-      self->textureToLoad[1] = self->activeTextureToLoad[1];
-    }else{
-      self->textureToLoad[1] = self->passiveTextureToLoad[1];
-      
-    }
-    
-    // RIGHT ARROW (RIGHT)
-    if(IsKeyDown(KEY_K) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
-      self->textureToLoad[3] = self->activeTextureToLoad[2];
-    }else{
-      self->textureToLoad[3] = self->passiveTextureToLoad[2];
-    }
-
-    if(IsKeyPressed(KEY_K) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_F) || IsKeyPressed(KEY_J)){
-      PlayMissSfx();
-    }
-
+    _inputHandler(self);
     if(self->life >= 100){
       self->life = 100;
     }
@@ -192,6 +136,7 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   // meledak = LoadTexture("resources/texture/Meledak-2.png");
   // frameRec = (Rectangle){ 0.0f, 0.0f, (float)meledak.width/8, (float)meledak.height };
   gameplay->isBackgroundLoaded = false;
+  gameplay->isPlaying = false;
 }
 
 void _LoadNoteTexture(Gameplay*self){
@@ -252,5 +197,37 @@ void UpdateLife(Gameplay *self, Accuracy acc){
     self->life -= 10;
   }else if(acc == PERFECT){
     self->life += 5;
+  }
+}
+
+void _inputHandler(Gameplay* self){
+  // DOWN ARROW (MIDDLE LEFT)
+  if(IsKeyDown(KEY_J) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
+    self->textureToLoad[2] = self->activeTextureToLoad[3];
+  }else{
+    self->textureToLoad[2] = self->passiveTextureToLoad[3];
+  }
+  
+  // LEFT ARROW (LEFT)
+  if(IsKeyDown(KEY_D) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
+    self->textureToLoad[0] = self->activeTextureToLoad[0];
+  }else{
+    self->textureToLoad[0] = self->passiveTextureToLoad[0];
+    
+  }
+
+  // UP ARROW (MIDDLE RIGHT)
+  if(IsKeyDown(KEY_F) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    self->textureToLoad[1] = self->activeTextureToLoad[1];
+  }else{
+    self->textureToLoad[1] = self->passiveTextureToLoad[1];
+    
+  }
+  
+  // RIGHT ARROW (RIGHT)
+  if(IsKeyDown(KEY_K) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
+    self->textureToLoad[3] = self->activeTextureToLoad[2];
+  }else{
+    self->textureToLoad[3] = self->passiveTextureToLoad[2];
   }
 }

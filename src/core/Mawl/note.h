@@ -28,9 +28,13 @@ typedef struct{
 typedef struct{
     NoteDirection direction;
     double hit_at_ms;
+    double duration_in_ms;
     Vector2 position;
     bool isSpawned;
     bool isHit;
+    bool isHolding; 
+    bool isHoldSuccess;
+
 }DrawableNote;
 
 
@@ -106,6 +110,9 @@ void _extractNoteFromBeatmap(NoteManager*);
 
 // modul untuk reset NoteManager
 void _resetNoteManager(NoteManager*);
+
+// modul untuk menggambar trail dari note hold
+void _drawNoteTrail(NoteManager*, DrawableNote);
 
 // Implement Interface
 impl_scene(NoteManager*, Note_toScene, note_draw, note_update, note_isShow);
