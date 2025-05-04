@@ -44,7 +44,9 @@
     "assert.h": "c",
     "array_list.h": "c",
     "accuracy.h": "c",
-    "ios": "c"
+    "ios": "c",
+    "__tree": "c",
+    "sqlite3.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

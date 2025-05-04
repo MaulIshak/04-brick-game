@@ -1,7 +1,7 @@
 #pragma once
 #include <raylib.h>
 #include <stdlib.h>
-
+#include "sqlite3.h"
 #ifndef CONTEXT_H
 #define CONTEXT_H
 typedef void* opaque;
@@ -39,6 +39,7 @@ typedef struct Beatmap {
 
 // Track adalah abstraksi dari musik, yang berisi music itu sendiri, nama dari musik dan high skor dari musik.
 typedef struct Track {
+    int music_id;
     // referensi ke music yang dibutuhkan raylib
     Music music;
     // nama dari musik
@@ -49,6 +50,7 @@ typedef struct Track {
     float accuracy;
     // cover dari musik
     Texture2D cover;
+    char* file_path;
 } Track;
 
 // Tracks berisi list dari Track yang tersedia
@@ -111,6 +113,10 @@ typedef struct AppContext {
     Beatmap _beatmap;
     // Private Field: buffer untuk cek jika load beatmap yang sama 2x gak load lagi (lambat soalnya)
     char* _beatmap_name;
+    // databse tempat menaruh beatmap
+    sqlite3 *beatmap_db;
+    // databse tempat menaruh skor  
+    sqlite3 *score_db;
 } AppContext;
 
 AppContext CreateContext(int, int);

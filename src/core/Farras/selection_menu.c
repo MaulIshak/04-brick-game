@@ -91,10 +91,10 @@ void SelectionMenuItem_Draw(SelectionMenu *self)
     }
 
     BeginScissorMode(xPosition, yPosition - textVector.y + textPadding / 2, boxWidth, textVector.y + textPadding);
-    DrawTextEx(self->ctx->font, GetSelectedTrack(self->ctx).music_name, (Vector2){xPosition - (textVector.x > boxWidth ? textOffsetX : 0), yPosition - textVector.y + textPadding}, fontsize * scale, 2, textColor);
+    DrawTextEx(self->ctx->font, GetTrack(self->ctx->tracks, i).music_name, (Vector2){xPosition - (textVector.x > boxWidth ? textOffsetX : 0), yPosition - textVector.y + textPadding}, fontsize * scale, 2, textColor);
     EndScissorMode();
 
-    DrawTextEx(self->ctx->font, TextFormat("Best Score: %d", GetSelectedTrack(self->ctx).high_score),
+    DrawTextEx(self->ctx->font, TextFormat("Best Score: %d", GetTrack(self->ctx->tracks, i).high_score),
                (Vector2){xPosition, yPosition + (textPadding) / 2}, (fontsize - 10) * scale, 2, textColor);
   }
 

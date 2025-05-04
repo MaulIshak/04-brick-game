@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <stdio.h>
 #include "array_list.h"
+#include "sqlite3.h"
+#include "query.h"
 
 #include "linked-list.h"
 
@@ -73,6 +75,16 @@ Tracks InitTracks() {
     return tr;
 }
 
+Tracks InitTracksFromDB(sqlite3 *beatmap_db, sqlite3 *score_db) {
+    Tracks tracks = {0};
+    
+    select_music(beatmap_db, &tracks);
+    printf("MUSIC LOADED....\n");
+    populate_score(score_db, &tracks);
+    printf("SCORE POPULATED....\n");
+    return tracks;
+}
+
 void GetScoreAndAccuracy(const char* file_name, int *scoreOut, float *accuracyOut){
     FILE *f = fopen(file_name, "r");
     char buff[2048];
@@ -104,6 +116,12 @@ void DestroyContext(AppContext *ctx) {
 }
 const char* font_path = "resources/font/Jersey15-Regular.ttf";
 AppContext CreateContext(int screen_width , int screen_height ){
+    sqlite3 *beatmap_db;
+    sqlite3 *score_db;
+    // sqlite3_open("beatmap.db", &beatmap_db);
+    // sqlite3_open("score.db", &score_db);
+    // create_music_score_table(score_db);
+    // Tracks tracks = InitTracksFromDB(beatmap_db, score_db);
     Tracks tracks = InitTracks();
     AppContext ctx = {
         .app_state = APP_LOADING,
@@ -113,6 +131,8 @@ AppContext CreateContext(int screen_width , int screen_height ){
         .selected_track = 1,
         .is_music_playing = false,
         .score = {0},
+        .beatmap_db = beatmap_db,
+        .score_db = score_db,
     };
     ctx._beatmap.items = malloc(sizeof(Note) * 10);
     ctx._beatmap.cap = 10;
@@ -121,6 +141,7 @@ AppContext CreateContext(int screen_width , int screen_height ){
     memset(ctx._beatmap_name, 0, 400);
     Font font = LoadFontEx(font_path, 30, NULL, 0);
     ctx.font = font;
+    printf("Context created...\n");
     return ctx;
 }
 
@@ -237,7 +258,7 @@ char *GetSelectedMusicName(AppContext* ctx) {
     size_t selected = ctx->selected_track;
     assert(ctx->selected_track != -1);
     Track track = GetTrack(ctx->tracks, selected);
-    return track.music_name;
+    return &(track.music_name[0]);
 }
 
 void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int score, float accuracy){
