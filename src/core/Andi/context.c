@@ -5,9 +5,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include "array_list.h"
-typedef void* opaque;
-#define LINKED_LIST_TYPE opaque
-#define LINKED_LIST_IMPLEMENTATION
+
 #include "linked-list.h"
 
 const char *music_lists[] = {
@@ -21,25 +19,30 @@ const char *music_lists[] = {
     "resources/Bad Apple",
 };
 
-void foo() {
-    
-    NodeAddress node;
-    
-    node_create(&node);
+Track GetTrack(Tracks tracks, int index) {
+    NodeInfoType add = node_at(tracks.track, index);
+    Track* as_track = (Track*)add;
+    return *as_track;
+}
+
+Track GetSelectedTrack(AppContext* ctx) {
+    return GetTrack(ctx->tracks, ctx->selected_track );
 }
 
 Tracks InitTracks() {
+    NodeAddress add = NULL;
     Tracks tr = {
         .cap = 10,
         .len = 2,
-        .track = malloc(sizeof(Track) * 10),
+        .track = NULL,
     };
 
     int len = ARRAY_LEN(music_lists);
     tr.len = len;
     char buff[255] = {0};
     for(int i = 0; i < len; i++) {
-        Track *track = &tr.track[i];
+        Track *track = malloc(sizeof(Track));
+        
         strcat(buff, music_lists[i]);
         strcat(buff, ".mp3");
 
@@ -61,6 +64,7 @@ Tracks InitTracks() {
 
         strcpy((char *)&track->music_name, (char *)&buff[10]);
         buff[0] = '\0';
+        node_append(&tr.track, (opaque)track);
         #ifdef DEBUG
         printf("Loaded %s | Score %d | Accuracy %f \n", track->music_name, track->high_score, track->accuracy);
         #endif
@@ -87,7 +91,8 @@ void GetScoreAndAccuracy(const char* file_name, int *scoreOut, float *accuracyOu
 
 void DestroyTracks(Tracks *tracks) {
     for(int i = 0; i < tracks->len; i++) {
-        UnloadMusicStream(tracks->track[i].music);
+        Track track = GetTrack(*tracks, i);
+        UnloadMusicStream(track.music);
     }
     free(tracks->track);
 }
@@ -123,29 +128,31 @@ void UpdateContext(AppContext* ctx) {
     int selected = ctx->selected_track;
     if(ctx->is_music_playing) {
         assert(selected != -1);
-        
-        UpdateMusicStream(ctx->tracks.track[selected].music);
+        Track track = GetTrack(ctx->tracks, selected);
+        UpdateMusicStream(track.music);
     }
 }
 
 void PlaySelectedTrack(AppContext *ctx) {
     int selected = ctx->selected_track;
     assert(selected != -1);
-    PlayMusicStream(ctx->tracks.track[selected].music);
+    Track track = GetTrack(ctx->tracks, selected);
+    PlayMusicStream(track.music);
     SeekSelectedTrack(ctx, 0.01);
     ctx->is_music_playing = true;
     #ifdef DEBUG
-    printf("PlaySelectedTrack: Playing %s\n",  ctx->tracks.track[selected].music_name);
+    printf("PlaySelectedTrack: Playing %s\n",  track.music_name);
     #endif
 }
 
 void StopSelectedTrack(AppContext *ctx) {
     int selected = ctx->selected_track;
     assert(selected != -1);
-    StopMusicStream(ctx->tracks.track[selected].music);
+    Track track = GetTrack(ctx->tracks, selected);
+    StopMusicStream(track.music);
     ctx->is_music_playing = false;
     #ifdef DEBUG
-    printf("StopSelectedTrack: Stopping %s\n",  ctx->tracks.track[selected].music_name);
+    printf("StopSelectedTrack: Stopping %s\n",  track.music_name);
     #endif
 }
 // TODO: memoize this function
@@ -211,24 +218,26 @@ Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
 void SeekSelectedTrack(AppContext* ctx, float second) {
     size_t selected = ctx->selected_track;
     assert(ctx->selected_track != -1);
-
-    SeekMusicStream(ctx->tracks.track[selected].music, second);
+    Track track = GetTrack(ctx->tracks, selected);
+    SeekMusicStream(track.music, second);
     #ifdef DEBUG
-    printf("Seeking %s To %f seconds\n",  ctx->tracks.track[selected].music_name, second);
+    printf("Seeking %s To %f seconds\n",  track.music_name, second);
     #endif
 }
 
 bool IsSelectedMusicEnd(AppContext* ctx) {
     size_t selected = ctx->selected_track;
     assert(ctx->selected_track != -1);
-    float time_played = GetMusicTimePlayed(ctx->tracks.track[selected].music);
+    Track track = GetTrack(ctx->tracks, selected);
+    float time_played = GetMusicTimePlayed(track.music);
     return time_played == 0 ;
 }
 
 char *GetSelectedMusicName(AppContext* ctx) {
     size_t selected = ctx->selected_track;
     assert(ctx->selected_track != -1);
-    return ctx->tracks.track[selected].music_name;
+    Track track = GetTrack(ctx->tracks, selected);
+    return track.music_name;
 }
 
 void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int score, float accuracy){
@@ -254,16 +263,19 @@ void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int s
 void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
     int selected = ctx->selected_track;
     Beatmap map = GetSelectedMusicBeatmap(ctx);
-    WriteSelectedMusicBeatmapToFile(&map, ctx->tracks.track[selected].music_name, score, acc);
+    Track track = GetTrack(ctx->tracks, selected);
+    WriteSelectedMusicBeatmapToFile(&map, track.music_name, score, acc);
 }
 
 float GetSelectedMusicLength(AppContext* ctx){
     int selected = ctx->selected_track;
-    Music music = ctx->tracks.track[selected].music;
+    Track track = GetTrack(ctx->tracks, selected);
+    Music music = track.music;
     return GetMusicTimeLength(music); 
 }
 float GetSelectedMusicTimePlayed(AppContext* ctx){
     int selected = ctx->selected_track;
-    Music music = ctx->tracks.track[selected].music;
+    Track track = GetTrack(ctx->tracks, selected);
+    Music music = track.music;
     return GetMusicTimePlayed(music);
 }

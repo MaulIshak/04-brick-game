@@ -38,7 +38,13 @@
     "__config": "c",
     "xiosbase": "c",
     "progress_bar.h": "c",
-    "eotg.h": "c"
+    "eotg.h": "c",
+    "linked-list.h": "c",
+    "query.h": "c",
+    "assert.h": "c",
+    "array_list.h": "c",
+    "accuracy.h": "c",
+    "ios": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

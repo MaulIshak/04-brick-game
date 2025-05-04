@@ -4,6 +4,10 @@
 
 #ifndef CONTEXT_H
 #define CONTEXT_H
+typedef void* opaque;
+#define LINKED_LIST_TYPE opaque
+#include "linked-list.h"
+
 
 typedef enum NoteDirection {
     NOTE_LEFT,
@@ -50,7 +54,7 @@ typedef struct Track {
 // Tracks berisi list dari Track yang tersedia
 typedef struct Tracks {
     int len, cap;
-    Track *track;
+    NodeAddress track;
 } Tracks;
 
 // Score adlaah skor yang telah didapatkan. biasanya ini digunakan dalam State Playing dan State result
@@ -117,6 +121,10 @@ void DestroyTracks(Tracks *tracks);
 // prosedur cleanup. tidak digunakan dalam scene, tapi di akhir aplikasi
 void DestroyContext(AppContext *ctx);
 
+// 
+Track GetTrack(Tracks tracks, int index) ;
+// 
+Track GetSelectedTrack(AppContext* ctx);
 
 // Update context. digunakan pada saat gameloop
 void UpdateContext(AppContext* ctx);

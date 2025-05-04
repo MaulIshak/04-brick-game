@@ -20,6 +20,8 @@
 // Library untuk raymath
 // #define RAYMATH_IMPLEMENTATION
 #include "raymath.h"
+#define LINKED_LIST_IMPLEMENTATION
+#include "linked-list.h"
 
 #include "background.h"
 #include "press_to_play.h"
@@ -42,6 +44,8 @@
 #include <stdlib.h>
 
 
+
+
 int _main()
 {
   const int screenWidth = 600;
@@ -57,7 +61,7 @@ int _main()
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
-  ctx.app_state = APP_LOADING;
+  // ctx.app_state = APP_LOADING;
   // ctx.app_state = END_OF_THE_GAME;
   #endif // GAME_DEBUG
   Loading loading = {
@@ -116,7 +120,7 @@ int _main()
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   #ifdef GAME_DEBUG
-  ctx.selected_track = 5;
+  ctx.selected_track = 7;
   #endif //GAME_DEBUG
   #ifdef TEST_CONTEXT 
     PlaySelectedTrack(&ctx);

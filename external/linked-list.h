@@ -58,9 +58,10 @@ int main() {
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #ifndef LINKED_LIST_TYPE
-#define LINKED_LIST_TYPE int
+#define LINKED_LIST_TYPE void*
 #endif
 
 typedef LINKED_LIST_TYPE NodeInfoType;
@@ -100,6 +101,8 @@ NodeInfoType node_remove_first(NodeAddress* head);
 NodeInfoType node_remove_last(NodeAddress* head);
 // remove node on index
 NodeInfoType node_remove_at(NodeAddress* head, int at);
+// get at index
+NodeInfoType node_at(NodeAddress head, int index );
 // reverse node
 void node_reverse(NodeAddress* head);
 // count node
@@ -117,15 +120,6 @@ NodeAddress node_iter_next(NodeIterator *iter);
 // check if the iterator end
 bool node_iter_is_end(NodeIterator iter);
 
-// integer operation
-#ifndef LINKED_LIST_NO_INT_OPERATION
-// get total on every sum node
-int node_sum(NodeAddress head);
-// get maximum on every node
-int node_max(NodeAddress head);
-// get average for node
-float node_avg(NodeAddress head);
-#endif // LINKED_LIST_NO_INT_OPERATION
 
 #ifdef LINKED_LIST_IMPLEMENTATION
 
@@ -160,7 +154,7 @@ void node_append(NodeAddress* head, NodeInfoType value){
 
     node_init(&new_node, value);
 
-    if (head == NULL) {
+    if (*head == NULL) {
         *head = new_node;
     }else {
         NodeAddress cur = *head;
@@ -409,6 +403,21 @@ bool node_iter_is_end(NodeIterator iter) {
         return true;
     }
     return false;
+}
+
+NodeInfoType node_at(NodeAddress head, int index ) {
+    NodeAddress cur = head;
+    int i = 0;
+    while(cur != NULL && i != index) {
+        i++;
+        cur = cur->next;
+    }
+
+    if(cur == NULL) {
+        assert("Out of bound :angr:" && false);
+    }
+
+    return cur->info;
 }
 
 #endif // LINKED_LIST_IMPLEMENTATION

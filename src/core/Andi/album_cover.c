@@ -28,7 +28,7 @@ void AlbumCover_Draw(AlbumCover* self){
         album_pos.x - PADDING, 20 - PADDING, WIDTH + (PADDING * 2), WIDTH + (PADDING * 2) 
     };
     // DrawRectangleRec(album_rec, RED);
-    Texture2D cover = self->ctx->tracks.track[self->ctx->selected_track].cover;
+    Texture2D cover = GetSelectedTrack(self->ctx).cover;
     Vector2 CDOrigin = {(self->CDTexture.width * CD_SCALE) / 2, (self->CDTexture.height * CD_SCALE) / 2 };
 
     Rectangle CDLocSrc = {0,0, self->CDTexture.width, self->CDTexture.height};

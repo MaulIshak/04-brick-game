@@ -66,7 +66,7 @@ void SelectionMenuItem_Draw(SelectionMenu *self)
     float yPosition = self->ctx->screen_height / 2 + r * sin(angle);
     float xPosition = self->ctx->screen_width / 2 - self->ctx->screen_width + r * cos(angle);
 
-    Vector2 textVector = MeasureTextEx(self->ctx->font, self->ctx->tracks.track[i].music_name, fontsize * scale, 2);
+    Vector2 textVector = MeasureTextEx(self->ctx->font, GetSelectedTrack(self->ctx).music_name, fontsize * scale, 2);
 
     if (i == selected) {
       DrawRectangleGradientH(xPosition - textPadding, yPosition - textVector.y + textPadding / 2, boxWidth + textPadding, textVector.y * 2, bgColor, Fade(bgColor, 1.0f));
@@ -91,10 +91,10 @@ void SelectionMenuItem_Draw(SelectionMenu *self)
     }
 
     BeginScissorMode(xPosition, yPosition - textVector.y + textPadding / 2, boxWidth, textVector.y + textPadding);
-    DrawTextEx(self->ctx->font, self->ctx->tracks.track[i].music_name, (Vector2){xPosition - (textVector.x > boxWidth ? textOffsetX : 0), yPosition - textVector.y + textPadding}, fontsize * scale, 2, textColor);
+    DrawTextEx(self->ctx->font, GetSelectedTrack(self->ctx).music_name, (Vector2){xPosition - (textVector.x > boxWidth ? textOffsetX : 0), yPosition - textVector.y + textPadding}, fontsize * scale, 2, textColor);
     EndScissorMode();
 
-    DrawTextEx(self->ctx->font, TextFormat("Best Score: %d", self->ctx->tracks.track[i].high_score),
+    DrawTextEx(self->ctx->font, TextFormat("Best Score: %d", GetSelectedTrack(self->ctx).high_score),
                (Vector2){xPosition, yPosition + (textPadding) / 2}, (fontsize - 10) * scale, 2, textColor);
   }
 
@@ -148,13 +148,13 @@ void PreviewMusic(SelectionMenu *self) {
     isCanPlay = false;
     volume = 0.0f;
     PlaySelectedTrack(self->ctx);
-    SeekMusicStream(self->ctx->tracks.track[self->ctx->selected_track].music, 10);
+    SeekMusicStream(GetSelectedTrack(self->ctx).music, 10);
   }
 
   if (self->ctx->is_music_playing && volume < 1.0f)
   {
     volume += 0.01f;
-    SetMusicVolume(self->ctx->tracks.track[self->ctx->selected_track].music, volume);
+    SetMusicVolume(GetSelectedTrack(self->ctx).music, volume);
   }
 }
 
@@ -262,7 +262,8 @@ void PressToAction(SelectionMenu *self)
   if (IsKeyPressed(KEY_ENTER))
   {
     StopSelectedTrack(self->ctx);
-    SeekMusicStream(self->ctx->tracks.track[self->ctx->selected_track].music, 0.1f);
+    
+    SeekMusicStream(GetSelectedTrack(self->ctx).music, 0.1f);
     self->ctx->app_state = APP_PLAYING;
   }
 }
