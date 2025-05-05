@@ -65,6 +65,7 @@ typedef struct {
 
   // Array Note untuk ditampilkan
   DrawableNote note [1024];
+  NodeAddress noteHead;
 
   // Enum Akurasi akurasi note yang dihit
   Accuracy acc;
