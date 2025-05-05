@@ -5,6 +5,7 @@
 #include "timer.h"
 #include <stdio.h>
 #include "sfx.h"
+#include "linked_list.h"
 #include <math.h>
 
 char text[1024];
@@ -18,12 +19,8 @@ void note_draw(NoteManager *self){
   if(self->isBeatmapLoaded){
       for(int i = 0; i < self->beatmap.len; i++) {
         _drawNoteTrail(self, self->note[i]);
-        if(self->note[i].position.y < 0) {
-            continue;
-        }
+        if(self->note[i].position.y < 0) continue;
         _drawBeatmapNote(self, self->note[i]);
-          // printf("Pos Y = %.2f isHit: %d\n",self->note[i].position.y, self->note[i].isHit);
-          // printf("Kegambar!\n");
       }
     }
     if(self->gp->life <= 0 && self->ctx->app_state == APP_PLAYING){
