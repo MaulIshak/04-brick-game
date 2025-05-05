@@ -7,6 +7,7 @@
 #include "timer.h"
 #include "progress_bar.h"
 #include "sfx.h"
+#include "score.h"
 
 
 static Color secondary = BLACK;
@@ -17,8 +18,10 @@ static Color primary = BLACK;
 // int currentFrame = 0;
 // int framesCounter = 0;
 // int framesSpeed = 12;  
+Texture2D bg;
 
 void gp_draw(Gameplay* self){
+  // Variable lokal
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
@@ -29,10 +32,14 @@ void gp_draw(Gameplay* self){
       self->padPositions[0].x, self->padPositions[0].y, self->padSize , self->padSize
     };
     char* control[LINE_COUNT]= {"D", "F", "J", "K"};
-    DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
-    DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.9f));
+
+
+    // Draw
+
+    // DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
+    DrawTexture(bg,0,0,WHITE);   
+    DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.7f));
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
-    // DrawRectangleRec(rec3, BLACK);
     // _drawAccZone(self);
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     for (int i = 0; i < LINE_COUNT; i++)
@@ -40,92 +47,41 @@ void gp_draw(Gameplay* self){
       DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padOpacity[i] });
       DrawTextEx(self->ctx->font, control[i], (Vector2){self->padPositions[i].x + self->padSize/2 - 7, self->padPositions[i].y - 30}, 40, 1,WHITE);
     }
+
   
-    
+    // Progress Bar
     DrawProgressBar(&self->progressBar);
+
+    // Life Bar
+    _drawLifeBar(self);
     // DrawTexture(meledak, 0, 0, WHITE);
     // DrawTextureRec(meledak, frameRec, position, WHITE);  // Draw part of the texture
 
     
   }
   void gp_update(Gameplay* self){
-    // printf("Time: %f\n", self->gameTime);
-    // Tes sprite animation
-    // framesCounter++;
-
-    // if (framesCounter >= (60/framesSpeed))
-    // {
-    //     framesCounter = 0;
-    //     currentFrame++;
-
-    //     if (currentFrame > 7) currentFrame = 0;
-
-        // frameRec.x = (float)7*(float)meledak.width/8;
-        // }
-        // static float time;
-        // time += GetFrameTime();
-        // if(time > .5f){
-        //   currentFrame++;
-        //   time = 0;
-        //   frameRec.x = (float)currentFrame*(float)meledak.width/7;
-
-        // }
-
+    _updateLifeBar(self);
+    // Update Gameplay
+    if(!self->isBackgroundLoaded){
+      bg = _getRandomBg(self);
+      self->isBackgroundLoaded = true;
+    }
+    // Mulai waktu game
     if(!self->timer.is_started){
-      // printf("START GAME TIME!\n");
       self->startGameTime = GetTime();
       timer_start(&(self->timer), 3);
     }
     if(is_timer_end(&(self->timer))){
       _UpdateGameTime(self);
     }
+    if(!self->isPlaying) return;
     UpdateProgressBar(&self->progressBar, self);
 
-    // DOWN ARROW (MIDDLE LEFT)
-    if(IsKeyDown(KEY_J) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
-      self->padOpacity[2] = 255;
-      // self->textureToLoad[0] = self->activeTextureToLoad[0]
-      // printf("Hit time: %f\n", self->gameTime);
-      
-      self->textureToLoad[2] = self->activeTextureToLoad[3];
-    }else{
-      // self->padOpacity[2] = 100;
-      self->textureToLoad[2] = self->passiveTextureToLoad[3];
-    }
-    
-    // LEFT ARROW (LEFT)
-    if(IsKeyDown(KEY_D) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
-      self->padOpacity[0] = 255;
-      self->textureToLoad[0] = self->activeTextureToLoad[0];
-    }else{
-      // self->padOpacity[0] = 100;
-      self->textureToLoad[0] = self->passiveTextureToLoad[0];
-      
+    _inputHandler(self);
+    if(self->life >= 100){
+      self->life = 100;
     }
 
-    // UP ARROW (MIDDLE RIGHT)
-    if(IsKeyDown(KEY_F) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
-      self->padOpacity[1] = 255;
-      self->textureToLoad[1] = self->activeTextureToLoad[1];
-    }else{
-      // self->padOpacity[1] = 100;
-      self->textureToLoad[1] = self->passiveTextureToLoad[1];
-      
-    }
-    
-    // RIGHT ARROW (RIGHT)
-    if(IsKeyDown(KEY_K) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
-      self->padOpacity[3] = 255;
-      self->textureToLoad[3] = self->activeTextureToLoad[2];
-    }else{
-      self->textureToLoad[3] = self->passiveTextureToLoad[2];
-      // self->padOpacity[3] = 100;
-      
-    }
-
-    if(IsKeyPressed(KEY_K) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_F) || IsKeyPressed(KEY_J)){
-      PlayMissSfx();
-    }
   }
 
 bool gp_isShow(Gameplay* self){
@@ -167,8 +123,20 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   InitProgressBar(&gameplay->progressBar, 0, 0, gameplay->width, 10, SECONDARY_COLOR);
   gameplay->padSize = 512*0.16f +5;
   gameplay->alpha = 0;
+  gameplay->background[0] = LoadTexture("resources/background/Background-01.png");
+  gameplay->background[1] = LoadTexture("resources/background/Background-02.png");
+  gameplay->background[2] = LoadTexture("resources/background/Background-03.png");
+  gameplay->maxLife = 100;
+  gameplay->life = gameplay->maxLife;
+  gameplay->lifeBar.height = 20;
+  gameplay->lifeBar.width = 80;
+
+  gameplay->lifeBar.outlineRec = (Rectangle){.height=gameplay->lifeBar.height, .width= gameplay->lifeBar.width, .x=GetScreenWidth()-GetScreenWidth()/6, .y=GetScreenHeight()/4};
+  gameplay->lifeBar.lifeRec = (Rectangle){.height=gameplay->lifeBar.height, .width= gameplay->lifeBar.width, .x=GetScreenWidth()-GetScreenWidth()/6, .y=GetScreenHeight()/4};
   // meledak = LoadTexture("resources/texture/Meledak-2.png");
   // frameRec = (Rectangle){ 0.0f, 0.0f, (float)meledak.width/8, (float)meledak.height };
+  gameplay->isBackgroundLoaded = false;
+  gameplay->isPlaying = false;
 }
 
 void _LoadNoteTexture(Gameplay*self){
@@ -206,4 +174,60 @@ void _drawAccZone(Gameplay* self){
   DrawRectangleRec(recPerfect, Fade(GREEN, 1));
   DrawRectangleRec(recGood, Fade(YELLOW, 0.2f));
   DrawRectangleRec(recMiss, Fade(RED, 0.2f));
+}
+
+Texture2D _getRandomBg(Gameplay* self){
+  int rand = GetRandomValue(0, 2);
+  return self->background[rand];
+}
+
+
+void _drawLifeBar(Gameplay* self){
+  DrawText("Life",self->lifeBar.outlineRec.x, self->lifeBar.outlineRec.y - 30, 30, BLACK);
+  DrawRectangleRec(self->lifeBar.outlineRec, BLACK);
+  DrawRectangleRec(self->lifeBar.lifeRec, GREEN);
+}
+
+void _updateLifeBar(Gameplay* self){
+  self->lifeBar.lifeRec.width = (self->life/self->maxLife) * self->lifeBar.width;
+}
+
+void UpdateLife(Gameplay *self, Accuracy acc){
+  if(acc == MISS){
+    self->life -= 10;
+  }else if(acc == PERFECT){
+    self->life += 5;
+  }
+}
+
+void _inputHandler(Gameplay* self){
+  // DOWN ARROW (MIDDLE LEFT)
+  if(IsKeyDown(KEY_J) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
+    self->textureToLoad[2] = self->activeTextureToLoad[3];
+  }else{
+    self->textureToLoad[2] = self->passiveTextureToLoad[3];
+  }
+  
+  // LEFT ARROW (LEFT)
+  if(IsKeyDown(KEY_D) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
+    self->textureToLoad[0] = self->activeTextureToLoad[0];
+  }else{
+    self->textureToLoad[0] = self->passiveTextureToLoad[0];
+    
+  }
+
+  // UP ARROW (MIDDLE RIGHT)
+  if(IsKeyDown(KEY_F) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
+    self->textureToLoad[1] = self->activeTextureToLoad[1];
+  }else{
+    self->textureToLoad[1] = self->passiveTextureToLoad[1];
+    
+  }
+  
+  // RIGHT ARROW (RIGHT)
+  if(IsKeyDown(KEY_K) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
+    self->textureToLoad[3] = self->activeTextureToLoad[2];
+  }else{
+    self->textureToLoad[3] = self->passiveTextureToLoad[2];
+  }
 }

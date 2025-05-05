@@ -5,18 +5,28 @@
 #include <assert.h>
 #include <stdio.h>
 #include "array_list.h"
-
+typedef void* opaque;
+#define LINKED_LIST_TYPE opaque
+#define LINKED_LIST_IMPLEMENTATION
+#include "linked-list.h"
 
 const char *music_lists[] = {
+    "resources/Outer Space",
+    "resources/PKKMB 2024",
+    "resources/Infinite Cosmodynamics",
     "resources/Guardian of The Former Seas",
     "resources/Pest of The Cosmos",
     "resources/LGR",
     "resources/ToyLand",
     "resources/Bad Apple",
-    "resources/PKKMB 2024",
-    "resources/Infinite Cosmodynamics",
-    "resources/Outer Space"
 };
+
+void foo() {
+    
+    NodeAddress node;
+    
+    node_create(&node);
+}
 
 Tracks InitTracks() {
     Tracks tr = {
@@ -85,6 +95,7 @@ void DestroyTracks(Tracks *tracks) {
 void DestroyContext(AppContext *ctx) {
     DestroyTracks(&ctx->tracks);
     free(ctx->_beatmap.items);
+    free(ctx->_beatmap_name);
 }
 const char* font_path = "resources/font/Jersey15-Regular.ttf";
 AppContext CreateContext(int screen_width , int screen_height ){
@@ -164,16 +175,22 @@ Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
         int i = 0;
         char *c = &buff[i];
         char *num_text = strtok(c, " ");
-        char *ms_text = strtok(NULL, "\r\n");
+        printf("%s", num_text);
+        char *ms_text = strtok(NULL, " ");
+        printf("%s", ms_text);
+        char *duration_text = strtok(NULL, "\r\n");
+        printf("%s", duration_text);
         if(ms_text == NULL) {
             break;
         }
         int dir = atoi(num_text);
         int ms = atoi(ms_text);
+        int duration = atoi(duration_text);
         Note not = {
             .direction = dir,
             .hit_at_ms = ms,
             .position = (Vector2){0,0},
+            .duration_in_ms = duration,
         };
 
         da_append(&ctx->_beatmap, not);
@@ -182,7 +199,7 @@ Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
     printf("GetSelectedMusicBeatmap: Readed %d notes\n", ctx->_beatmap.len);
     printf("----------------------------------\n");
     for(int i = 0; i < ctx->_beatmap.len; i++) {
-        printf("\tDIRECTION %d MS %f\n", ctx->_beatmap.items[i].direction, ctx->_beatmap.items[i].hit_at_ms);
+        printf("\tDIRECTION %d MS %f DURATION %f\n", ctx->_beatmap.items[i].direction, ctx->_beatmap.items[i].hit_at_ms, ctx->_beatmap.items[i].duration_in_ms);
     }
     printf("----------------------------------\n");
     #endif
@@ -227,11 +244,13 @@ void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int s
     for(int i = 0; i < btm->len; i++) {
         int dir = (int)btm->items[i].direction;
         int hit_at = (int)btm->items[i].hit_at_ms;
-        fprintf(f, "%d %d\n", dir, hit_at);
+        int duration = (int)btm->items[i].duration_in_ms;
+        fprintf(f, "%d %d %d\n", dir, hit_at, duration);
     }
     fclose(f);
 }
 
+// TODO: refresh score di track list setelah di set.
 void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
     int selected = ctx->selected_track;
     Beatmap map = GetSelectedMusicBeatmap(ctx);

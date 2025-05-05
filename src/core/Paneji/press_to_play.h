@@ -10,9 +10,16 @@
 typedef struct PressToPlay {
     AppContext *ctx;
     bool isVisible;
+    bool MusicPlayed;
+    Texture2D logogame;
+    float posYlogo;
+    float posYtex;
+    Sound batu;
+    Sound musikptp;
 } PressToPlay;
 
-
+void PressToPlay_LoadTextures(PressToPlay *self);
+void PressToPlay_UnloadTextures(PressToPlay *self);
 void PressToPlay_Draw(PressToPlay *self);
 void PressToPlay_Update(PressToPlay *self);
 bool PressToPlay_IsShow(PressToPlay *self);

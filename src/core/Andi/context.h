@@ -22,6 +22,7 @@ typedef struct Note {
     Vector2 position;
     // apakah note sudah didraw
     bool isSpawned;
+    double duration_in_ms;
 } Note;
 
 // Beatmap adalah map yang akan digunakan pada saat gameplay. isinya terdiri dari array of notes
@@ -117,7 +118,6 @@ void DestroyTracks(Tracks *tracks);
 void DestroyContext(AppContext *ctx);
 
 
-void SelectMusic(AppContext* ctx, int music_index);
 // Update context. digunakan pada saat gameloop
 void UpdateContext(AppContext* ctx);
 // Menjalankan music untuk track yang dipilih

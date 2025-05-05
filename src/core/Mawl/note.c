@@ -5,16 +5,11 @@
 #include "timer.h"
 #include <stdio.h>
 #include "sfx.h"
+#include <math.h>
 
-// static double alpha = 255;
-double noteoffset;
-int prev_track = -1;
+char text[1024];
 
 void note_draw(NoteManager *self){
-  // Rectangle rec = {
-  //   0,0,self->gp->width, self->ctx->screen_height
-  // };
-  // DrawRectangleRec(rec, Fade(WHITE, sealpha/255));
   // Mulai gambar akurasi hanya jika note pertama sampai
   if(self->isFirstHit){
     _drawAccuracy(self);
@@ -22,13 +17,21 @@ void note_draw(NoteManager *self){
   // Cek apakah beatmap sudah diload
   if(self->isBeatmapLoaded){
       for(int i = 0; i < self->beatmap.len; i++) {
+        _drawNoteTrail(self, self->note[i]);
         if(self->note[i].position.y < 0) {
             continue;
         }
+        _drawBeatmapNote(self, self->note[i]);
           // printf("Pos Y = %.2f isHit: %d\n",self->note[i].position.y, self->note[i].isHit);
-          _drawBeatmapNote(self, self->note[i]);
           // printf("Kegambar!\n");
       }
+    }
+    if(self->gp->life <= 0 && self->ctx->app_state == APP_PLAYING){
+      self->ctx->app_state = END_OF_THE_GAME;
+      StopSelectedTrack(self->ctx);
+      _resetNoteManager(self);
+      // DrawText("FAIL", GetScreenWidth()/2 - MeasureText("FAIL", 100)/2, GetScreenHeight()/2, 100, BLACK);
+      self->gp->life = 100;
     }
 
 }
@@ -40,56 +43,51 @@ void note_update(NoteManager *self){
   }
   if(!self->musicTimer.is_started){
     // self->gp->gameTime = 0;
-    timer_start(&self->musicTimer, 3 + ms_to_s(noteoffset));
+    timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
   }
   if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
     // for (int i = 0; i < self->beatmap.len; i++) {
-    //   self->note[i].isHit = 0;
-    // }
-    printf("Music start time: %f\n", self->gp->gameTime);
-    PlaySelectedTrack(self->ctx);
-    
-    self->isTrackPlayed = true;
+      //   self->note[i].isHit = 0;
+      // }
+      printf("Music start time: %f\n", self->gp->gameTime);
+      PlaySelectedTrack(self->ctx);
+      self->isTrackPlayed = true;
+      self->gp->isPlaying = true;
+    }
+  if(IsKeyPressed(KEY_ENTER)){
+      self->gp->isPlaying = !self->gp->isPlaying;
   }
-  if(IsKeyPressed(KEY_SPACE)){
-    SeekSelectedTrack(self->ctx, 29);
+  if(!self->gp->isPlaying){
+    return;
   }
   if(self->isTrackPlayed){
      if(IsSelectedMusicEnd(self->ctx) ){
         self->ctx->app_state = END_OF_THE_GAME;
-        prev_track = self->ctx->selected_track;
         self->isTrackPlayed = false;
         self->isBeatmapLoaded = false;
         self->isFirstHit = false;
         self->timer.is_started = false;
         self->musicTimer.is_started = false;
-        self->isNewGame = false;
         self->gp->timer.is_started = false;
         self->gp->gameTime = 0;
-        // self->gp->gameTimeOffset = 2000;
+        self->gp->isBackgroundLoaded = false;
         _resetNoteManager(self); // Ensure all note-related states are reset
         return;
       }
     }  
     // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
     if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
-      if(prev_track == self->ctx->selected_track){
-        self->gp->gameTimeOffset = 0;
-      }else{
-        self->gp->gameTimeOffset = noteoffset;
-      }
       printf("%.2f\n\n", self->gp->gameTime);
-      // printf("SELECTED\n");
       self->beatmap = GetSelectedMusicBeatmap(self->ctx);
       for (int i = 0; i < self->beatmap.len; i++)
       {
-        // self->beatmap.items[i].hit_at_ms += self->gp->gameTimeOffset;
         self->beatmap.items[i].position.y = -999;
         self->beatmap.items[i].isSpawned = false;
         self->note[i].isHit = false;
         _extractNoteFromBeatmap(self);
       }
         self->isBeatmapLoaded = true;
+        
     }
     
 
@@ -97,7 +95,7 @@ void note_update(NoteManager *self){
       _updateNotePosition(self);
     }
 
-  
+
 }
 
 bool note_isShow(NoteManager *self){
@@ -132,8 +130,8 @@ void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp, ScoreManager *sc
   };
   self->scoreManager = scoreManager;
   self->isBeatmapLoaded = false;
-  self->isNewGame = true;
-  noteoffset = self->gp->gameTimeOffset;
+  self->missCombo = 0;
+  // noteoffset = self->gp->gameTimeOffset;
 }
 
 void _drawBeatmapNote(NoteManager* self, DrawableNote note){
@@ -164,6 +162,7 @@ void _drawBeatmapNote(NoteManager* self, DrawableNote note){
     DrawTextureEx(textureToDraw, position,0,.16,WHITE);
   }
 
+  Shader shader;
   
 }
 
@@ -171,14 +170,13 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   double ps = self->gp->padSize;
   double notePos = note.position.y + ps/2;
   double padY = self->gp->padPositions[0].y;
-  // Akurasi berdasarkan waktu
-  bool isPerfect = self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset;
-  bool isGood =self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset;
-  bool isMiss =self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset;
-
-  (void) isPerfect;
-  (void) isGood;
-  (void) isMiss;
+  // Akurasi berdasarkan waktu (Untuk saat ini tidak digunakan)
+  // bool isPerfect = self->gp->gameTime >= note.hit_at_ms-self->accOff.perfectUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.perfectLowerOffset;
+  // bool isGood =self->gp->gameTime >= note.hit_at_ms-self->accOff.goodUpperOffset && self->gp->gameTime <= note.hit_at_ms + self->accOff.goodLowerOffset;
+  // bool isMiss =self->gp->gameTime >= note.hit_at_ms-self->accOff.missUpperOffset && self->gp->gameTime <= note.hit_at_ms +self->accOff.missLowerOffset;
+  // (void) isPerfect;
+  // (void) isGood;
+  // (void) isMiss;
   // Akurasi berdasarkan posisi
   bool isPerfectPos = notePos >= padY + 20 && notePos <= padY + self->gp->padSize - 20;
   bool isGoodPos = notePos >= padY  && notePos <= padY + self->gp->padSize;
@@ -251,17 +249,14 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   // RIGHT ARROW (RIGHT)
   if((IsKeyPressed(KEY_K) ||IsKeyPressed(KEY_K)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) && note.direction == NOTE_RIGHT){
     if(isPerfectPos){
-      // PlayPerfectSfx();
       self->acc = PERFECT; 
       printf("PERFECT\n");
       return true;
     }else if(isGoodPos){
-      // PlayGoodSfx();
       printf("GOOD\n");
       self->acc = GOOD; 
       return true;
     } else if(isMissPos){
-      // PlayMissSfx();
       printf("MISS\n");
       self->acc = MISS; 
       return true;
@@ -291,14 +286,11 @@ void _drawAccuracy(NoteManager* self){
     color = RED;
     break;
   }
-
-
   Vector2 pos =(Vector2) {
-    self->gp->width/2 - MeasureTextEx(self->ctx->font, accuracyText,50,1).x/2,self->gp->padPositions[0].y+150
+    self->gp->width/2 - MeasureTextEx(self->ctx->font, accuracyText,50,1).x/2 - 40,self->gp->padPositions[0].y+150
   };
 
   self->gp->alpha -= GetFrameTime() * 220;
-  // DrawTextEx(self->ctx->font, accuracyText, pos, 100, 1, Fade(WHITE, self->gp->alpha/255));
   DrawTextEx(self->ctx->font, accuracyText, pos, 50, 1, Fade(color, self->gp->alpha/255));
 }
 
@@ -309,21 +301,19 @@ void _updateNotePosition(NoteManager* self){
   {
     double elapsed = time_elapsed(&(self->timer));
     double to_hit = ms_to_s(self->note[i].hit_at_ms);
+
+    // Jika belum waktunya muncul, maka lanjutkan iterasi (skip)
     if(!(elapsed > to_hit - self->timeToHitPad)){
-      // printf("elapsed: %f!\t", elapsed);
-      // printf(": %f!\n", to_hit - self->timeToHitPad);
       continue;
     }
+
+    // Jika sudah waktunya untuk muncul dan not belum muncul, maka munculkan note;
     if(!self->note[i].isSpawned){
       self->note[i].position.y = self->ctx->screen_height;
       self->note[i].isSpawned = true;
     }
     float note_k = ( (self->ctx->screen_height - 45)/self->timeToHitPad) * dt ; 
     self->note[i].position.y -= note_k;
-    if(self->note[i].position.y>0){
-
-    }
-
     _noteHitHandler(self, &(self->note[i]));
 
     }
@@ -336,23 +326,14 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
   bool isMissPos = note->position.y + self->gp->padSize/2 < self->gp->padPositions[0].x - 50;
   if(isMissPos){
     if(!note->isHit){
-      // printf("Time: %f\n", self->gp->gameTime);
-      // printf("Note Hit at Ms : %f\n", note->hit_at_ms);
       self->gp->alpha = 255;
-      note->isHit = true; // BUGNYA DISINI!
-      // printf("MISS\n");
+      note->isHit = true;
       self->isFirstHit = true;
       self->acc = MISS;
       AddScore(self->scoreManager, self->acc);
+      UpdateLife(self->gp, self->acc);
     }
   }
-  //   // printf("Hit! : %d Time: %f\n", note.direction, self->gp->gameTime - 2000);
-  //   self->acc = MISS;
-  //   if(!self->isFirstHit){
-  //     note.position.x= -999;
-  //     self->isFirstHit = true;
-  //   }
-  // }
   if(note->isHit){
     note->position.x= -999;
   }
@@ -362,6 +343,7 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
       self->gp->alpha = 255;
       note->isHit = true;
       AddScore(self->scoreManager, self->acc);
+      UpdateLife(self->gp, self->acc);
       // printf("Hit!");
       if(!self->isFirstHit){
         self->isFirstHit = true;
@@ -378,11 +360,15 @@ void _extractNoteFromBeatmap(NoteManager* self){
     self->note[i].position = self->beatmap.items[i].position; 
     self->note[i].isHit = 0;
     self->note[i].isSpawned = false;
+    self->note[i].duration_in_ms = self->beatmap.items[i].duration_in_ms;
   }
   
 }
 
 void _resetNoteManager(NoteManager *self) {
+  self->gp->timer.is_started = false;
+  self->gp->gameTime = 0;
+  self->gp->isBackgroundLoaded = false;
   self->isBeatmapLoaded = false;
   self->isTrackPlayed = false;
   self->isFirstHit = false;
@@ -397,3 +383,63 @@ void _resetNoteManager(NoteManager *self) {
   }
 }
 
+void _drawNoteTrail(NoteManager* self, DrawableNote note){
+  Vector2 position = note.position;
+  Color trailColor1;
+  Color trailColor2;
+  switch (note.direction)
+  {
+  case NOTE_LEFT:
+      position.x = self->gp->padPositions[0].x;
+      trailColor1 = (Color){
+        0xA6, 0x38, 0xEF, 0xFF
+      };
+      trailColor2 = (Color){
+        0x22, 0x72, 0xC7, 0xFF
+      };
+      break;
+  case NOTE_RIGHT:
+      position.x = self->gp->padPositions[3].x;
+      trailColor1 = (Color){
+        0xFD, 0xF1, 0x71, 0xFF
+      };
+      trailColor2 = (Color){
+        0xF9, 0x84, 0xB9, 0xFF
+      };
+      break;
+  case NOTE_UP:
+      position.x = self->gp->padPositions[1].x;
+      trailColor1 = (Color){
+        0xF8, 0x53, 0x51, 0xFF
+      };
+      trailColor2 = (Color){
+        0x63, 0x21, 0x79, 0xFF
+      };
+      break;
+  case NOTE_DOWN:
+      position.x = self->gp->padPositions[2].x;
+      trailColor1 = (Color){
+        0x4B, 0xF7, 0xFE, 0xFF
+      };
+      trailColor2 = (Color){
+        0xAE, 0xAD, 0x3B, 0xFF
+      };
+      break;
+  }
+
+  if (note.duration_in_ms > 0) {
+    float holdLength = (note.duration_in_ms / 1000.0f) * ( (self->ctx->screen_height - 45) / self->timeToHitPad );
+
+    Rectangle holdBody = {
+        position.x + self->gp->padSize/2 -self->gp->padSize/4 ,
+        position.y + self->gp->padSize/2, // sedikit di bawah head
+        self->gp->padSize/2, // lebar body
+        holdLength // panjang body ke bawah
+    };
+
+    // DrawRectangleRec(holdBody, BLACK); // Warna abu2 transparan utk body
+    BeginScissorMode(holdBody.x, self->gp->padPositions[0].y + self->gp->padSize/2, holdBody.width, GetScreenHeight());
+    DrawRectangleGradientV(holdBody.x, holdBody.y, holdBody.width, holdBody.height, trailColor1, trailColor2);
+    EndScissorMode();
+  }
+}
