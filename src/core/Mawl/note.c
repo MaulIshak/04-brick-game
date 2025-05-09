@@ -8,7 +8,6 @@
 #include "linked_list.h"
 #include <math.h>
 
-char text[1024];
 
 void note_draw(NoteManager *self){
   // Mulai gambar akurasi hanya jika note pertama sampai
@@ -21,7 +20,7 @@ void note_draw(NoteManager *self){
     while (cur != NULL)
     {
       DrawableNote* note = (DrawableNote*)(cur->info);
-      if(!(note->position.y < 0.01)){
+      if(!(note->position.y <= 0)){
         _drawNoteTrail(self, *note);
         _drawBeatmapNote(self, *note);
       }
@@ -86,8 +85,8 @@ void note_update(NoteManager *self){
         self->beatmap.items[i].position.y = -999;
         self->beatmap.items[i].isSpawned = false;
         // self->note[i].isHit = false;
-        _extractNoteFromBeatmap(self);
       }
+      _extractNoteFromBeatmap(self);
         self->isBeatmapLoaded = true;
         
     }
@@ -335,9 +334,9 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
       UpdateLife(self->gp, self->acc);
     }
   }
-  if(note->isHit){
-    note->position.x= -999;
-  }
+  // if(note->isHit){
+  //   note->position.x= -999;
+  // }
 
   if(!note->isHit){
     if(_isNoteHit(self, *note)){
@@ -366,7 +365,6 @@ void _extractNoteFromBeatmap(NoteManager* self){
     noteToInsert->duration_in_ms = self->beatmap.items[i].duration_in_ms;
     node_append(&(self->noteHead), (void*)noteToInsert);
   }
-  
 }
 
 void _resetNoteManager(NoteManager *self) {
@@ -436,7 +434,7 @@ void _drawNoteTrail(NoteManager* self, DrawableNote note){
   }
 
   if (note.duration_in_ms > 0) {
-    float holdLength = (note.duration_in_ms / 1000.0f) * ( (self->ctx->screen_height - 45) / self->timeToHitPad );
+    float holdLength = ms_to_s(note.duration_in_ms) * ( (self->ctx->screen_height - 45)/self->timeToHitPad );
 
     Rectangle holdBody = {
         position.x + self->gp->padSize/2 -self->gp->padSize/4 ,
