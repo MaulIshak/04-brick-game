@@ -17,15 +17,15 @@ void note_draw(NoteManager *self){
   // Cek apakah beatmap sudah diload
   if(self->isBeatmapLoaded){
     NodeAddress cur = self->noteHead;
-    while (cur != NULL)
-    {
-      DrawableNote* note = (DrawableNote*)(cur->info);
-      if(!(note->position.y <= 0)){
-        _drawNoteTrail(self, *note);
-        _drawBeatmapNote(self, *note);
+      while (cur != NULL)
+      {
+        DrawableNote* note = (DrawableNote*)(cur->info);
+        if(!(note->position.y <= 0)){
+          _drawNoteTrail(self, *note);
+          _drawBeatmapNote(self, *note);
+        }
+        cur = cur->next;
       }
-      cur = cur->next;
-    }
     }
     if(self->gp->life <= 0 && self->ctx->app_state == APP_PLAYING){
       self->ctx->app_state = END_OF_THE_GAME;
@@ -47,9 +47,6 @@ void note_update(NoteManager *self){
     timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
   }
   if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
-    // for (int i = 0; i < self->beatmap.len; i++) {
-      //   self->note[i].isHit = 0;
-      // }
       printf("Music start time: %f\n", self->gp->gameTime);
       PlaySelectedTrack(self->ctx);
       self->isTrackPlayed = true;
@@ -298,7 +295,7 @@ void _updateNotePosition(NoteManager* self){
   NodeAddress curr = self->noteHead;
   // Dapatkan frametime
   float dt = GetFrameTime();
-  for (int i = 0; i <  self->beatmap.len && curr != NULL; i++)
+  while(curr != NULL)
   {
     double elapsed = time_elapsed(&(self->timer));
     DrawableNote *note = (DrawableNote*)(curr->info);
