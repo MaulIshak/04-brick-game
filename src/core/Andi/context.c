@@ -20,11 +20,16 @@ const char *music_lists[] = {
     "resources/ToyLand",
     "resources/Bad Apple",
 };
-
+// For bakcward compability
 Track GetTrack(Tracks tracks, int index) {
     NodeInfoType add = node_at(tracks.track, index);
     Track* as_track = (Track*)add;
     return *as_track;
+}
+
+Track *GetTrackRef(Tracks tracks, int index) {
+    NodeInfoType add = node_at(tracks.track, index);
+    return (Track*)add;
 }
 
 Track GetSelectedTrack(AppContext* ctx) {
@@ -105,6 +110,7 @@ void DestroyTracks(Tracks *tracks) {
     for(int i = 0; i < tracks->len; i++) {
         Track track = GetTrack(*tracks, i);
         UnloadMusicStream(track.music);
+        free(track.file_path);
     }
     free(tracks->track);
 }
@@ -118,11 +124,11 @@ const char* font_path = "resources/font/Jersey15-Regular.ttf";
 AppContext CreateContext(int screen_width , int screen_height ){
     sqlite3 *beatmap_db;
     sqlite3 *score_db;
-    // sqlite3_open("beatmap.db", &beatmap_db);
-    // sqlite3_open("score.db", &score_db);
-    // create_music_score_table(score_db);
-    // Tracks tracks = InitTracksFromDB(beatmap_db, score_db);
-    Tracks tracks = InitTracks();
+    sqlite3_open("beatmap.db", &beatmap_db);
+    sqlite3_open("score.db", &score_db);
+    create_music_score_table(score_db);
+    Tracks tracks = InitTracksFromDB(beatmap_db, score_db);
+    // Tracks tracks = InitTracks();
     AppContext ctx = {
         .app_state = APP_LOADING,
         .screen_width = screen_width,
@@ -257,8 +263,8 @@ bool IsSelectedMusicEnd(AppContext* ctx) {
 char *GetSelectedMusicName(AppContext* ctx) {
     size_t selected = ctx->selected_track;
     assert(ctx->selected_track != -1);
-    Track track = GetTrack(ctx->tracks, selected);
-    return &(track.music_name[0]);
+    Track *track = GetTrackRef(ctx->tracks, selected);
+    return track->music_name;
 }
 
 void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int score, float accuracy){
@@ -283,9 +289,9 @@ void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int s
 // TODO: refresh score di track list setelah di set.
 void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
     int selected = ctx->selected_track;
-    Beatmap map = GetSelectedMusicBeatmap(ctx);
+    // Beatmap map = GetSelectedMusicBeatmap(ctx);
+    // WriteSelectedMusicBeatmapToFile(&map, track.music_name, score, acc);
     Track track = GetTrack(ctx->tracks, selected);
-    WriteSelectedMusicBeatmapToFile(&map, track.music_name, score, acc);
 }
 
 float GetSelectedMusicLength(AppContext* ctx){

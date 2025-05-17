@@ -9,7 +9,7 @@
 char *music_table_query = "CREATE TABLE IF NOT EXISTS music (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, file TEXT);";
 char *beatmap_table_query = "CREATE TABLE IF NOT EXISTS music_beatmap (id INTEGER PRIMARY KEY AUTOINCREMENT, music_id INTEGER, command INT, duration FLOAT, hit_at_ms FLOAT);";
 
-char* music_score_table_query = "CREATE TABLE IF NOT EXISTS score (music_id INTEGER, score INT, accuracy INT);"; 
+char* music_score_table_query = "CREATE TABLE IF NOT EXISTS score (music_id INTEGER PRIMARY KEY, score INT, accuracy INT);"; 
 
 char* select_beatmap_query = "SELECT * FROM music";
 char* select_score_query = "SELECT * FROM score";
@@ -80,13 +80,14 @@ void insert_beatmap_table(sqlite3 *db, int music_id, int direction, int hit_at_m
 int select_music_scanner(void* userdata, int argc ,char** argv ,char** colName) {
     Tracks *tracks = (Tracks*)userdata;
     Track *track;
+    track = malloc(sizeof(Track));
+    memset(track, 0, sizeof(Track));
     for(int i = 0; i < argc; i++) {
         
         char* value = argv[i];
         char* name = colName[i];
 
         if(strcmp("id", name) == 0) {
-            track = malloc(sizeof(track));
             track->music_id = atoi(value);
             tracks->len += 1;
             tracks->cap += 1;
@@ -98,19 +99,20 @@ int select_music_scanner(void* userdata, int argc ,char** argv ,char** colName) 
 
         if(strcmp("file", name) == 0) {
             printf("%s\n", value);
-            // track->music = LoadMusicStream(value);
+            track->music = LoadMusicStream(value);
+            track->music.looping = false;
             track->file_path = strdup(value);
-            // int len = strlen(value);
-            // value[len] = '\0';
-            // value[len - 3] = 'p';
-            // value[len - 2] = 'n';
-            // value[len - 1] = 'g';
-            // track->cover = LoadTexture(value);
-            node_append(&tracks->track, (opaque)track);
+            int len = strlen(value);
+            value[len] = '\0';
+            value[len - 3] = 'p';
+            value[len - 2] = 'n';
+            value[len - 1] = 'g';
+            track->cover = LoadTexture(value);
         }
-
+        
     }
-
+    
+    node_append(&tracks->track, (opaque)track);
     return 0;
 }
 
@@ -137,12 +139,12 @@ int select_score_scanner(void* userdata, int argc ,char** argv ,char** colName) 
 
         if(strcmp(name, "score") == 0) {
             assert(track != NULL);
-            track->high_score = atoi(value); 
+            track->high_score = (int)atoi(value); 
         }
 
         if(strcmp(name, "accuracy") == 0) {
             assert(track != NULL);
-            track->accuracy = (float)atof(value);
+            track->accuracy = (double)atof(value);
         }
     }
     return 0;
@@ -155,4 +157,11 @@ void select_music(sqlite3 *db, Tracks *track){
 
 void populate_score(sqlite3 *db, Tracks *track) {
     select_query(db, select_score_query, select_score_scanner, track);
+}
+
+void update_score(sqlite3 *db, int music_id, int score, float acc) {
+    char buff[4096];
+    sprintf(buff, "INSERT INTO score(music_id, score, accuracy) VALUES(%d, %d, %f) ON CONFLICT(music_id) DO UPDATE SET score = excluded.score, accuracy = excluded.accuracy;", music_id, score, acc ) ;
+    exec_query(db, buff);
+    return;
 }

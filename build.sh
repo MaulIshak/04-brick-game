@@ -15,15 +15,18 @@ done
 
 # Remove previous files
 rm -f compile_commands.json
-
-Run the compiler to generate compile_json_1
-if ! $CC -MJ compile_commands.json $FLAGS $OUT $I_PATH $INPUT $LIBS; then
+COMMANDS_TMP=$RANDOM.json
+sleep 2
+# Run the compiler to generate compile_json_1
+if ! $CC -MJ $COMMANDS_TMP $FLAGS $OUT $I_PATH $INPUT $LIBS; then
     echo "Compiler failed to generate compile_commands data. For whatever reason -_-."
 fi
 sleep 2
 
-sed -i '1s/^/[\n/' compile_commands.json
+echo "[" >> compile_commands.json
+cat $COMMANDS_TMP >> compile_commands.json
 echo "{}]" >> compile_commands.json
+rm -f $COMMANDS_TMP
 
 echo $CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
 

@@ -5,7 +5,7 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 typedef void* opaque;
-#define LINKED_LIST_TYPE opaque
+// #define LINKED_LIST_TYPE opaque
 #include "linked-list.h"
 
 
