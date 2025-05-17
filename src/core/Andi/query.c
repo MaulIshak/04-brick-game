@@ -5,6 +5,7 @@
 #include "linked-list.h"
 #include <assert.h>
 #include <string.h>
+#include "array_list.h"
 
 char *music_table_query = "CREATE TABLE IF NOT EXISTS music (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, file TEXT);";
 char *beatmap_table_query = "CREATE TABLE IF NOT EXISTS music_beatmap (id INTEGER PRIMARY KEY AUTOINCREMENT, music_id INTEGER, command INT, duration FLOAT, hit_at_ms FLOAT);";
@@ -133,8 +134,10 @@ int select_score_scanner(void* userdata, int argc ,char** argv ,char** colName) 
 
         if(strcmp(name, "music_id") == 0) {
             int music_id = atoi(value);
+            Track track_cmp = {0};
+            track_cmp.music_id = music_id;
+            track = (Track *)node_find(tracks->track, (opaque)&track_cmp, music_id_comparator)->info;
             track->music_id = music_id;
-            track = (Track *)node_find(tracks->track, (opaque)track, music_id_comparator)->info;
         }
 
         if(strcmp(name, "score") == 0) {
@@ -150,6 +153,30 @@ int select_score_scanner(void* userdata, int argc ,char** argv ,char** colName) 
     return 0;
 }
 
+int select_beatmap_scanner(void* userdata, int argc ,char** argv ,char** colName) {
+    Beatmap *beatmap = (Beatmap *)userdata;
+    Note note = {0};
+    for(int i = 0; i < argc; i++) {
+        char* value = argv[i];
+        char* name = colName[i];
+        // command INT, duration FLOAT, hit_at_ms FLOAT
+        if(strcmp(name, "command") == 0) {
+            note.direction = atoi(value);
+        }
+
+        if(strcmp(name, "duration") == 0) {
+            note.duration_in_ms = atof(value);
+        } 
+
+        if(strcmp(name, "hit_at_ms") == 0) {
+            note.hit_at_ms = atof(value);
+        }
+    }
+
+    da_append(beatmap, note);
+    return 0;
+}
+
 
 void select_music(sqlite3 *db, Tracks *track){
     select_query(db, select_beatmap_query, select_music_scanner, track);
@@ -157,6 +184,13 @@ void select_music(sqlite3 *db, Tracks *track){
 
 void populate_score(sqlite3 *db, Tracks *track) {
     select_query(db, select_score_query, select_score_scanner, track);
+}
+
+void get_beatmap(sqlite3 *db, int music_id, Beatmap *beatmap) {
+    char buff[4096];
+    sprintf(buff, "SELECT * FROM music_beatmap WHERE music_id = %d", music_id);
+    select_query(db, buff, select_beatmap_scanner, beatmap);
+    return;
 }
 
 void update_score(sqlite3 *db, int music_id, int score, float acc) {

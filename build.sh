@@ -38,5 +38,9 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Compile completed successfully."
-echo "Running the binary..."
-out/main.exe
+if [ $1 = "compile" ]; then 
+    echo "compiled..."
+else 
+    echo "Running the binary..."
+    out/main.exe
+fi

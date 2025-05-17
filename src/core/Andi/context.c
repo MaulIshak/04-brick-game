@@ -144,6 +144,7 @@ AppContext CreateContext(int screen_width , int screen_height ){
     ctx._beatmap.cap = 10;
     ctx._beatmap.len = 0;
     ctx._beatmap_name = malloc(sizeof(char) * 400);
+    ctx._beatmap_music_id = -1;
     memset(ctx._beatmap_name, 0, 400);
     Font font = LoadFontEx(font_path, 30, NULL, 0);
     ctx.font = font;
@@ -182,8 +183,25 @@ void StopSelectedTrack(AppContext *ctx) {
     printf("StopSelectedTrack: Stopping %s\n",  track.music_name);
     #endif
 }
-// TODO: memoize this function
+
+Beatmap GetSelectedMusicBeatmapDB(AppContext* ctx) {
+    Track track = GetSelectedTrack(ctx);
+    if(ctx->_beatmap_music_id != track.music_id) {
+        ctx->_beatmap.len = 0;
+        ctx->_beatmap_music_id = track.music_id;
+        get_beatmap(ctx->beatmap_db, track.music_id, &ctx->_beatmap);
+        printf("GetSelectedMusicBeatmap: Readed %d notes\n", ctx->_beatmap.len);
+        
+    }else {
+        printf("GetSelectedMusicBeatmapDB: CACHE HIT");
+        printf("GetSelectedMusicBeatmap: Readed %d notes\n", ctx->_beatmap.len);
+    }
+    return ctx->_beatmap;
+}
+
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
+    return GetSelectedMusicBeatmapDB(ctx);
+
     char *music_name = GetSelectedMusicName(ctx);
     if (strcmp(ctx->_beatmap_name, music_name ) == 0) {
         printf("GetSelectedMusicBeatmap: CACHE HIT");
@@ -286,12 +304,11 @@ void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int s
     fclose(f);
 }
 
-// TODO: refresh score di track list setelah di set.
 void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
     int selected = ctx->selected_track;
-    // Beatmap map = GetSelectedMusicBeatmap(ctx);
-    // WriteSelectedMusicBeatmapToFile(&map, track.music_name, score, acc);
     Track track = GetTrack(ctx->tracks, selected);
+    update_score(ctx->score_db, track.music_id ,score, (float)acc);
+    populate_score(ctx->score_db, &ctx->tracks);
 }
 
 float GetSelectedMusicLength(AppContext* ctx){

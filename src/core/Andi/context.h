@@ -112,7 +112,10 @@ typedef struct AppContext {
     // Private Field: buffer untuk `GetSelectedMusicBeatmap()`
     Beatmap _beatmap;
     // Private Field: buffer untuk cek jika load beatmap yang sama 2x gak load lagi (lambat soalnya)
+    // Deprecated
     char* _beatmap_name;
+    // Private Field: int untuk cek jika load beatmap yang sama 2x gak load lagi (lambat soalnya)
+    int _beatmap_music_id;
     // databse tempat menaruh beatmap
     sqlite3 *beatmap_db;
     // databse tempat menaruh skor  
