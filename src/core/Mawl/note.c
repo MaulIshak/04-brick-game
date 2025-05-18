@@ -349,72 +349,72 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
     static bool isStillHeld = false;
     // printf("start time: %f\nduration: %f\nendtime: %f\n" , startTime, note->duration_in_ms, endTime);
 
-    // Cek apakah sudah MISS karena lewat waktu dan belum holding
-    if(currentTime > endTime && !note->isHoldSuccess && !note->isHit){
+    
+    // Jika belum mulai hold
+    if(!note->isHolding && !note->isHit){
+      if(_isNoteHit(self, *note)){  // sama seperti tap, tapi hanya untuk trigger awal
+        note->isHolding = true;
+        self->acc = PERFECT; // asumsi awal
+        self->gp->alpha = 255;
+        self->isFirstHit = true;
+        printf("current time: %f\n start time: %f\n", currentTime, startTime);
+      }
+    }
+
+    // Jika sedang hold
+    if(note->isHolding && !note->isHit){
+      // Cek apakah tombol masih ditekan sesuai arah
+      switch(note->direction){
+        case NOTE_LEFT:
+        isStillHeld = IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_D);
+        break;
+        case NOTE_DOWN:
+        isStillHeld = IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J);
+        break;
+        case NOTE_UP:
+        isStillHeld = IsKeyDown(KEY_UP) || IsKeyDown(KEY_F);
+        break;
+        case NOTE_RIGHT:
+        isStillHeld = IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_K);
+        break;
+      }
+      
+      // Jika tombol dilepas sebelum waktunya
+      if(!isStillHeld && currentTime < endTime){
+        printf("YAH LEPAS!\n");
         note->isHit = true;
         self->acc = MISS;
         AddScore(self->scoreManager, self->acc);
         UpdateLife(self->gp, self->acc);
         self->gp->alpha = 255;
-        self->isFirstHit = true;
-        printf("EndTime: %f\nCurrentTime: %f\n", endTime, currentTime);
-        printf("YAH LEWAT!\n");
-        note->isTrailVisible = false;
         return;
-    }
+      }
+      printf("isStillHeld: %d\n", isStillHeld);
 
-    // Jika belum mulai hold
-    if(!note->isHolding && !note->isHit){
-        if(_isNoteHit(self, *note)){  // sama seperti tap, tapi hanya untuk trigger awal
-            note->isHolding = true;
-            self->acc = PERFECT; // asumsi awal
-            self->gp->alpha = 255;
-            self->isFirstHit = true;
-            printf("current time: %f\n start time: %f\n", currentTime, startTime);
-        }
-    }
-
-    // Jika sedang hold
-    if(note->isHolding && !note->isHit){
-        // Cek apakah tombol masih ditekan sesuai arah
-        switch(note->direction){
-            case NOTE_LEFT:
-                isStillHeld = IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_D);
-                break;
-            case NOTE_DOWN:
-                isStillHeld = IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J);
-                break;
-            case NOTE_UP:
-                isStillHeld = IsKeyDown(KEY_UP) || IsKeyDown(KEY_F);
-                break;
-            case NOTE_RIGHT:
-                isStillHeld = IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_K);
-                break;
-        }
-
-        // Jika tombol dilepas sebelum waktunya
-        if(!isStillHeld && currentTime < endTime){
-            printf("YAH LEPAS!\n");
-            note->isHit = true;
-            self->acc = MISS;
-            AddScore(self->scoreManager, self->acc);
-            UpdateLife(self->gp, self->acc);
-            self->gp->alpha = 255;
-            return;
-        }
-        printf("isStillHeld: %d\n", isStillHeld);
-
-        // Jika hold selesai dengan sukses
-        if(isStillHeld && currentTime >= endTime){
-            printf("GACOR KANG!\n");
-            note->isHit = true;
-            note->isHoldSuccess = true;
-            self->acc = PERFECT;
-            AddScore(self->scoreManager, self->acc);
-            UpdateLife(self->gp, self->acc);
-            note->isTrailVisible = false;
-            self->gp->alpha = 255;
-        }
+      // Jika hold selesai dengan sukses
+      if(isStillHeld && currentTime >= endTime){
+        printf("GACOR KANG!\n");
+        note->isHit = true;
+        note->isHoldSuccess = true;
+        self->acc = PERFECT;
+        AddScore(self->scoreManager, self->acc);
+        UpdateLife(self->gp, self->acc);
+        note->isTrailVisible = false;
+        self->gp->alpha = 255;
+      }
+      // Cek apakah sudah MISS karena lewat waktu dan belum holding
+      if(currentTime > endTime && !note->isHoldSuccess && !note->isHit){
+          note->isHit = true;
+          self->acc = MISS;
+          AddScore(self->scoreManager, self->acc);
+          UpdateLife(self->gp, self->acc);
+          self->gp->alpha = 255;
+          self->isFirstHit = true;
+          printf("EndTime: %f\nCurrentTime: %f\n", endTime, currentTime);
+          printf("YAH LEWAT!\n");
+          note->isTrailVisible = false;
+          return;
+      }
     }
 }
 

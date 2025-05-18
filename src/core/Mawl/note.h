@@ -51,8 +51,7 @@ typedef struct {
   bool isTrackPlayed;
   // Penanda apakah note pertama sudah hit/miss atau belum
   bool isFirstHit;
-  // Array Note untuk ditampilkan
-  DrawableNote note [1024];
+  // Note untuk ditampilkan
   NodeAddress noteHead;
 
   // Enum Akurasi akurasi note yang dihit
