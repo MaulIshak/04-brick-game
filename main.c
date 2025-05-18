@@ -56,7 +56,9 @@ int _main()
   InitWindow(screenWidth, screenHeight, "Rythm.me");
   SetWindowIcon(icon);
   InitAudioDevice();
-  InitSfx();
+  // InitSfx();
+  // InitArraySfx();
+  InitLinkedListSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
   #ifdef GAME_DEBUG

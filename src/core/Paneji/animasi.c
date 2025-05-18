@@ -2,12 +2,13 @@
 #include "animasi.h"
 #include "background.h"
 #include "press_to_play.h"
+#include "sfx.h"
 
 void LoadingLoadTextures(Loading *self) {
     self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
     PressToPlay_LoadTextures(&self->ptp);
-    self->intro = LoadSound("resources/sfx/coc-intro.wav");
-    self->load = LoadSound("resources/sfx/sfx1.wav");
+    self->intro = LoadSound("resources/sfx/1.coc-intro.wav"); // <-- Kemunginan bisa dihapus
+    self->load = LoadSound("resources/sfx/7.sfx1.wav"); // <-- Kemunginan bisa dihapus
 }
 
 void LoadingUnloadTextures(Loading *self) {
@@ -31,9 +32,13 @@ void LoadingUpdatePositions(Loading *self) {
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
 
-        if (!IsSoundPlaying(self->intro)) {
-            PlaySound(self->intro);
+        if(!IsSoundPlaying(introSfx)){ // <-- Update ambil dari sfx
+            PlayIntroSfx();
         }
+
+        // if (!IsSoundPlaying(self->intro)) {
+        //     PlaySound(self->intro);
+        // }
 
         self->alpha += 0.02f;
         if (self->alpha >= 1.0f) {
@@ -48,21 +53,20 @@ void LoadingUpdatePositions(Loading *self) {
             self->state = LOGO_FADE_OUT;
         }
     } 
-    else if (self->state == LOGO_FADE_OUT) {
-        self->alpha -= 0.02f;
-        if (self->alpha <= 0.0f) {
-            self->alpha = 0.0f;
-            self->state = LOADING;
-            self->timer = 0.0f;
-        }
-    } 
+else if (self->state == LOGO_FADE_OUT) {
+    self->alpha -= 0.02f;
+    if (self->alpha <= 0.0f) {
+        self->alpha = 0.0f;
+        self->state = READY;  
+    }
+}
     else if (self->state == LOADING) {
         EnableParticle();
         self->timer += GetFrameTime();
         if (self->timer >= 0.5f) {
             self->loadingVisible = !self->loadingVisible;
             count++;
-            PlaySound(self->load);
+            PlayArrowSfx(KEY_D); // <-- Update ambil dari sfx
             self->timer = 0.0f;  
         }
         if (count == 7) {
@@ -81,13 +85,13 @@ void LoadingDrawTextures(Loading *self) {
     if (self->state == LOGO_FADE_IN || self->state == LOGO_HOLD || self->state == LOGO_FADE_OUT) {
         DrawTextureEx(self->logo, (Vector2){SCREEN_WIDTH / 2 - (self->logo.width / 2) / 2, SCREEN_HEIGHT / 2 - (self->logo.height / 2) / 2} , 0, 0.5, Fade(WHITE, self->alpha));
     } 
-    else if (self->state == LOADING) {
-        if (self->loadingVisible) {
-            DrawTextEx(self->ctx->font, "Loading", (Vector2){ SCREEN_WIDTH / 2 - 60, SCREEN_HEIGHT / 2 - 40 }, 40, 2, BLACK);
+    // else if (self->state == LOADING) {
+    //     if (self->loadingVisible) {
+    //         DrawTextEx(self->ctx->font, "Loading", (Vector2){ SCREEN_WIDTH / 2 - 60, SCREEN_HEIGHT / 2 - 40 }, 40, 2, BLACK);
 
-        }
-    } 
-    else if (self->state == READY) { 
+    //     }
+     
+    if (self->state == READY) { 
         PressToPlay_Draw(&self->ptp);
     }
 }
