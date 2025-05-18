@@ -31,7 +31,7 @@ int main() {
     char *msg;
     int err;
     NodeAddress cur;
-    AppContext ctx = CreateContext(0,0);
+    AppContext ctx = CreateForMigrate(0,0);
 
     
     remove("beatmap.db");
@@ -51,7 +51,7 @@ int main() {
         strcat(buff, ".mp3");
         insert_music_table(db, track.music_name, buff);
         
-        Beatmap map = GetSelectedMusicBeatmap(&ctx);
+        Beatmap map = GetSelectedMusicBeatmapForDB(&ctx);
 
         for(int j = 0; j < map.len; j++) {
             insert_beatmap_table(db, i + 1, map.items[j].direction, map.items[j].hit_at_ms, map.items[j].duration_in_ms);

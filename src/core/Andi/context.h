@@ -123,8 +123,11 @@ typedef struct AppContext {
 } AppContext;
 
 AppContext CreateContext(int, int);
+AppContext CreateForMigrate(int screen_width , int screen_height );
 // Mengambil beatmap dari music saat ini.
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx);
+// Hanya untuk populate Database. Gunakan modul GetSelectedMusicBeatmap
+Beatmap GetSelectedMusicBeatmapForDB(AppContext* ctx);
 // prosedur cleanup. tidak digunakan dalam scene, tapi di akhir aplikasi
 void DestroyTracks(Tracks *tracks);
 // prosedur cleanup. tidak digunakan dalam scene, tapi di akhir aplikasi

@@ -1,4 +1,5 @@
 #include "sqlite3.h"
+#include "context.h"
 #include "stdio.h"
 #include <stdlib.h>
 #include "context.h"
