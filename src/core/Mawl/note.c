@@ -342,7 +342,7 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
     }
   }
 }
-  void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
+void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
     double currentTime = self->gp->gameTime + self->gp->gameTimeOffset;
     double startTime = note->hit_at_ms + self->gp->gameTimeOffset;
     double endTime = startTime + note->duration_in_ms;
@@ -512,11 +512,7 @@ void _drawNoteTrail(NoteManager* self, DrawableNote note){
   }
 
   if (note.duration_in_ms > 0) {
-    // float spawnY = (float)self->ctx->screen_height;
-    // float padY = self->gp->padPositions[0].y;
-    // float distance = spawnY - padY;
-    // float pixelsPerSecond = distance / self->timeToHitPad;
-    float holdLength = (self->ctx->screen_height+self->gp->padSize/(self->timeToHitPad)) * ms_to_s(note.duration_in_ms) * 0.5;
+    float holdLength = (self->ctx->screen_height-(self->gp->padPositions[0].y + ((self->gp->padSize)/2))/(self->timeToHitPad)) * ms_to_s(note.duration_in_ms) *0.7;
 
     Rectangle holdBody = {
         position.x + self->gp->padSize/2 -self->gp->padSize/4 ,
