@@ -175,7 +175,7 @@ void UpdateScore(ScoreManager *score)
     score->ctx->score.miss = score->miss;
     if (IsSelectedMusicEnd(score->ctx) && (score->value > 0 || score->miss > 0))
     {
-        if (score->value > score->ctx->tracks.track->high_score){
+        if (score->value > GetSelectedTrack(score->ctx).high_score){
             SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
         }
         score->value = 0;

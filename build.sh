@@ -1,6 +1,6 @@
 #!/bin/sh
 CC="bin/zig/zig-windows-x86_64-0.13.0/zig.exe cc"
-INPUT="main.c external/raylib/lib/libraylib.a ./external/sqlite/sqlite3.c external/kiss_fft/kiss_fft.c"
+INPUT="main.c external/raylib/lib/libraylib.a ./out/sqlite.o external/kiss_fft/kiss_fft.c"
 FLAGS="-g -ggdb -Wno-unused-function -Wno-unused-parameter -Wno-unused-variable -Wno-unused-but-set-variable -fsanitize=undefined -fsanitize-trap=undefined"
 I_PATH="-D GAME_DEBUG=1 -I ./src -I./external/kiss_fft -I./external -I./external/sqlite -I ./external/raylib/include -I ./src/interfaces/ -I ./src/ds/ -I ./src/core/ -I ./src/macros -I ./src/core/Andi/ -I ./src/core/Farras/ -I ./src/core/Mawl/ -I ./src/core/Nabil/ -I ./src/core/Paneji/ -I ./src/core/Zainandhi/"
 LIBS="-lopengl32 -lgdi32 -lwinmm"
@@ -15,15 +15,18 @@ done
 
 # Remove previous files
 rm -f compile_commands.json
-
-Run the compiler to generate compile_json_1
-if ! $CC -MJ compile_commands.json $FLAGS $OUT $I_PATH $INPUT $LIBS; then
+COMMANDS_TMP=$RANDOM.json
+sleep 2
+# Run the compiler to generate compile_json_1
+if ! $CC -MJ $COMMANDS_TMP $FLAGS $OUT $I_PATH $INPUT $LIBS; then
     echo "Compiler failed to generate compile_commands data. For whatever reason -_-."
 fi
 sleep 2
 
-sed -i '1s/^/[\n/' compile_commands.json
+echo "[" >> compile_commands.json
+cat $COMMANDS_TMP >> compile_commands.json
 echo "{}]" >> compile_commands.json
+rm -f $COMMANDS_TMP
 
 echo $CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
 
@@ -35,5 +38,9 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Compile completed successfully."
-echo "Running the binary..."
-out/main.exe
+if [ $1 = "compile" ]; then 
+    echo "compiled..."
+else 
+    echo "Running the binary..."
+    out/main.exe
+fi

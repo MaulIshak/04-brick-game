@@ -53,14 +53,13 @@ void LoadingUpdatePositions(Loading *self) {
             self->state = LOGO_FADE_OUT;
         }
     } 
-    else if (self->state == LOGO_FADE_OUT) {
-        self->alpha -= 0.02f;
-        if (self->alpha <= 0.0f) {
-            self->alpha = 0.0f;
-            self->state = LOADING;
-            self->timer = 0.0f;
-        }
-    } 
+else if (self->state == LOGO_FADE_OUT) {
+    self->alpha -= 0.02f;
+    if (self->alpha <= 0.0f) {
+        self->alpha = 0.0f;
+        self->state = READY;  
+    }
+}
     else if (self->state == LOADING) {
         EnableParticle();
         self->timer += GetFrameTime();
@@ -86,13 +85,13 @@ void LoadingDrawTextures(Loading *self) {
     if (self->state == LOGO_FADE_IN || self->state == LOGO_HOLD || self->state == LOGO_FADE_OUT) {
         DrawTextureEx(self->logo, (Vector2){SCREEN_WIDTH / 2 - (self->logo.width / 2) / 2, SCREEN_HEIGHT / 2 - (self->logo.height / 2) / 2} , 0, 0.5, Fade(WHITE, self->alpha));
     } 
-    else if (self->state == LOADING) {
-        if (self->loadingVisible) {
-            DrawTextEx(self->ctx->font, "Loading", (Vector2){ SCREEN_WIDTH / 2 - 60, SCREEN_HEIGHT / 2 - 40 }, 40, 2, BLACK);
+    // else if (self->state == LOADING) {
+    //     if (self->loadingVisible) {
+    //         DrawTextEx(self->ctx->font, "Loading", (Vector2){ SCREEN_WIDTH / 2 - 60, SCREEN_HEIGHT / 2 - 40 }, 40, 2, BLACK);
 
-        }
-    } 
-    else if (self->state == READY) { 
+    //     }
+     
+    if (self->state == READY) { 
         PressToPlay_Draw(&self->ptp);
     }
 }

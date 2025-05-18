@@ -39,12 +39,14 @@
     "xiosbase": "c",
     "progress_bar.h": "c",
     "eotg.h": "c",
-    "press_to_play.h": "c",
-    "format": "c",
-    "random": "c",
-    "__hash_table": "c",
-    "forward_list": "c",
-    "list": "c"
+    "linked-list.h": "c",
+    "query.h": "c",
+    "assert.h": "c",
+    "array_list.h": "c",
+    "accuracy.h": "c",
+    "ios": "c",
+    "__tree": "c",
+    "sqlite3.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
