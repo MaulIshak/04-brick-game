@@ -2,12 +2,13 @@
 #include "animasi.h"
 #include "background.h"
 #include "press_to_play.h"
+#include "sfx.h"
 
 void LoadingLoadTextures(Loading *self) {
     self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
     PressToPlay_LoadTextures(&self->ptp);
-    self->intro = LoadSound("resources/sfx/coc-intro.wav");
-    self->load = LoadSound("resources/sfx/sfx1.wav");
+    self->intro = LoadSound("resources/sfx/1.coc-intro.wav"); // <-- Kemunginan bisa dihapus
+    self->load = LoadSound("resources/sfx/7.sfx1.wav"); // <-- Kemunginan bisa dihapus
 }
 
 void LoadingUnloadTextures(Loading *self) {
@@ -31,9 +32,13 @@ void LoadingUpdatePositions(Loading *self) {
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
 
-        if (!IsSoundPlaying(self->intro)) {
-            PlaySound(self->intro);
+        if(!IsSoundPlaying(introSfx)){ // <-- Update ambil dari sfx
+            PlayIntroSfx();
         }
+
+        // if (!IsSoundPlaying(self->intro)) {
+        //     PlaySound(self->intro);
+        // }
 
         self->alpha += 0.02f;
         if (self->alpha >= 1.0f) {
@@ -62,7 +67,7 @@ void LoadingUpdatePositions(Loading *self) {
         if (self->timer >= 0.5f) {
             self->loadingVisible = !self->loadingVisible;
             count++;
-            PlaySound(self->load);
+            PlayArrowSfx(KEY_D); // <-- Update ambil dari sfx
             self->timer = 0.0f;  
         }
         if (count == 7) {

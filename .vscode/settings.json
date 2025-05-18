@@ -38,7 +38,13 @@
     "__config": "c",
     "xiosbase": "c",
     "progress_bar.h": "c",
-    "eotg.h": "c"
+    "eotg.h": "c",
+    "press_to_play.h": "c",
+    "format": "c",
+    "random": "c",
+    "__hash_table": "c",
+    "forward_list": "c",
+    "list": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

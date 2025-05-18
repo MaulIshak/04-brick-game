@@ -4,7 +4,6 @@
 #include "context.h"
 #include "timer.h"
 #include <stdio.h>
-#include "sfx.h"
 #include <math.h>
 
 char text[1024];

@@ -1,11 +1,12 @@
     #include "press_to_play.h"
     #include "context.h"
     #include <stdio.h>
+    #include "sfx.h"
 
     void PressToPlay_LoadTextures(PressToPlay *self){
         self->logogame = LoadTexture("resources/texture/logo-game.png");
         self->posYlogo = -self->logogame.height * 0.4f;
-        self->batu = LoadSound("resources/sfx/efek-logo-turun.wav");
+        self->batu = LoadSound("resources/sfx/2.logo-sfx.wav");
     }
 
     void PressToPlay_UnloadTextures(PressToPlay *self){
@@ -13,29 +14,28 @@
         UnloadSound(self->batu);
     }
 
-
-
     void PressToPlay_Update(PressToPlay *self) {
         float targetY = SCREEN_HEIGHT * 0.3f - (self->logogame.height * 0.4f) / 3;
 
         if (self->posYlogo < targetY) {
             self->posYlogo += 1;
 
-
-            if (!IsSoundPlaying(self->batu)) {
-                PlaySound(self->batu);
+            if (!IsSoundPlaying(logoSfx)) { // <-- Update baru sfx
+                PlayLogoSfx();
             }
+
+            // if (!IsSoundPlaying(self->batu)) {
+            //     PlaySound(self->batu);
+            // }
+
         } else {
-            
-            StopSound(self->batu);
+            StopLogoSfx();
             if (!self->MusicPlayed) {
                 PlaySelectedTrack(self->ctx);
                 self->MusicPlayed = true; // Tandai bahwa musik sudah dimainkan
             }
 
         }
-
-        
 
         if (IsKeyPressed(KEY_F) || IsKeyPressed(KEY_J) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_K)) {
             self->ctx->app_state = APP_SELECT;
