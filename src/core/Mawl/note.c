@@ -81,7 +81,7 @@ void note_update(NoteManager *self){
     }
     
     if(is_timer_end(&self->timer)){
-      printf("UPDATE SEKARANGGGGGGGGG!!!!\nwaktu: %f\n", self->gp->gameTime);
+      // printf("UPDATE SEKARANGGGGGGGGG!!!!\nwaktu: %f\n", self->gp->gameTime);
       _updateNotePosition(self);
     }
 
