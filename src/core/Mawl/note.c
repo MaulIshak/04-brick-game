@@ -402,19 +402,19 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
         note->isTrailVisible = false;
         self->gp->alpha = 255;
       }
-      // Cek apakah sudah MISS karena lewat waktu dan belum holding
-      if(currentTime > endTime && !note->isHoldSuccess && !note->isHit){
-          note->isHit = true;
-          self->acc = MISS;
-          AddScore(self->scoreManager, self->acc);
-          UpdateLife(self->gp, self->acc);
-          self->gp->alpha = 255;
-          self->isFirstHit = true;
-          printf("EndTime: %f\nCurrentTime: %f\n", endTime, currentTime);
-          printf("YAH LEWAT!\n");
-          note->isTrailVisible = false;
-          return;
-      }
+    }
+    // Cek apakah sudah MISS karena lewat waktu dan belum holding
+    if(currentTime > endTime && !note->isHoldSuccess && !note->isHit){
+        note->isHit = true;
+        self->acc = MISS;
+        AddScore(self->scoreManager, self->acc);
+        UpdateLife(self->gp, self->acc);
+        self->gp->alpha = 255;
+        self->isFirstHit = true;
+        printf("EndTime: %f\nCurrentTime: %f\n", endTime, currentTime);
+        printf("YAH LEWAT!\n");
+        note->isTrailVisible = false;
+        return;
     }
 }
 
