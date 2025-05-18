@@ -17,15 +17,6 @@
 // } Accuracy;
 
 typedef struct{
-  int perfectUpperOffset;
-  int perfectLowerOffset;
-  int goodUpperOffset;
-  int goodLowerOffset;
-  int missUpperOffset;
-  int missLowerOffset;
-} AccuracyOffset;
-
-typedef struct{
     NoteDirection direction;
     double hit_at_ms;
     double duration_in_ms;
@@ -34,7 +25,7 @@ typedef struct{
     bool isHit;
     bool isHolding; 
     bool isHoldSuccess;
-
+    bool isTrailVisible;
 }DrawableNote;
 
 
@@ -60,11 +51,7 @@ typedef struct {
   bool isTrackPlayed;
   // Penanda apakah note pertama sudah hit/miss atau belum
   bool isFirstHit;
-  // Enum akurasi untuk menandakan akurasi note yang dihit
-  AccuracyOffset accOff;
-
-  // Array Note untuk ditampilkan
-  DrawableNote note [1024];
+  // Note untuk ditampilkan
   NodeAddress noteHead;
 
   // Enum Akurasi akurasi note yang dihit
@@ -114,6 +101,8 @@ void _resetNoteManager(NoteManager*);
 
 // modul untuk menggambar trail dari note hold
 void _drawNoteTrail(NoteManager*, DrawableNote);
+
+void _noteHoldHitHandler(NoteManager*, DrawableNote*);
 
 // Implement Interface
 impl_scene(NoteManager*, Note_toScene, note_draw, note_update, note_isShow);

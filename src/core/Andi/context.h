@@ -1,11 +1,11 @@
 #pragma once
 #include <raylib.h>
 #include <stdlib.h>
-
+#include "sqlite3.h"
 #ifndef CONTEXT_H
 #define CONTEXT_H
 typedef void* opaque;
-#define LINKED_LIST_TYPE opaque
+// #define LINKED_LIST_TYPE opaque
 #include "linked-list.h"
 
 
@@ -39,6 +39,7 @@ typedef struct Beatmap {
 
 // Track adalah abstraksi dari musik, yang berisi music itu sendiri, nama dari musik dan high skor dari musik.
 typedef struct Track {
+    int music_id;
     // referensi ke music yang dibutuhkan raylib
     Music music;
     // nama dari musik
@@ -49,6 +50,7 @@ typedef struct Track {
     float accuracy;
     // cover dari musik
     Texture2D cover;
+    char* file_path;
 } Track;
 
 // Tracks berisi list dari Track yang tersedia
@@ -110,12 +112,22 @@ typedef struct AppContext {
     // Private Field: buffer untuk `GetSelectedMusicBeatmap()`
     Beatmap _beatmap;
     // Private Field: buffer untuk cek jika load beatmap yang sama 2x gak load lagi (lambat soalnya)
+    // Deprecated
     char* _beatmap_name;
+    // Private Field: int untuk cek jika load beatmap yang sama 2x gak load lagi (lambat soalnya)
+    int _beatmap_music_id;
+    // databse tempat menaruh beatmap
+    sqlite3 *beatmap_db;
+    // databse tempat menaruh skor  
+    sqlite3 *score_db;
 } AppContext;
 
 AppContext CreateContext(int, int);
+AppContext CreateForMigrate(int screen_width , int screen_height );
 // Mengambil beatmap dari music saat ini.
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx);
+// Hanya untuk populate Database. Gunakan modul GetSelectedMusicBeatmap
+Beatmap GetSelectedMusicBeatmapForDB(AppContext* ctx);
 // prosedur cleanup. tidak digunakan dalam scene, tapi di akhir aplikasi
 void DestroyTracks(Tracks *tracks);
 // prosedur cleanup. tidak digunakan dalam scene, tapi di akhir aplikasi

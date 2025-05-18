@@ -17,15 +17,15 @@ void note_draw(NoteManager *self){
   // Cek apakah beatmap sudah diload
   if(self->isBeatmapLoaded){
     NodeAddress cur = self->noteHead;
-    while (cur != NULL)
-    {
-      DrawableNote* note = (DrawableNote*)(cur->info);
-      if(!(note->position.y <= 0)){
-        _drawNoteTrail(self, *note);
-        _drawBeatmapNote(self, *note);
+      while (cur != NULL)
+      {
+        DrawableNote* note = (DrawableNote*)(cur->info);
+        if(note->isTrailVisible) _drawNoteTrail(self, *note);
+        if(!(note->position.y <= 0) && !note->isHit && !note->isHoldSuccess){
+          _drawBeatmapNote(self, *note);
+        }
+        cur = cur->next;
       }
-      cur = cur->next;
-    }
     }
     if(self->gp->life <= 0 && self->ctx->app_state == APP_PLAYING){
       self->ctx->app_state = END_OF_THE_GAME;
@@ -47,9 +47,6 @@ void note_update(NoteManager *self){
     timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
   }
   if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
-    // for (int i = 0; i < self->beatmap.len; i++) {
-      //   self->note[i].isHit = 0;
-      // }
       printf("Music start time: %f\n", self->gp->gameTime);
       PlaySelectedTrack(self->ctx);
       self->isTrackPlayed = true;
@@ -64,14 +61,6 @@ void note_update(NoteManager *self){
   if(self->isTrackPlayed){
      if(IsSelectedMusicEnd(self->ctx) ){
         self->ctx->app_state = END_OF_THE_GAME;
-        self->isTrackPlayed = false;
-        self->isBeatmapLoaded = false;
-        self->isFirstHit = false;
-        self->timer.is_started = false;
-        self->musicTimer.is_started = false;
-        self->gp->timer.is_started = false;
-        self->gp->gameTime = 0;
-        self->gp->isBackgroundLoaded = false;
         _resetNoteManager(self); // Ensure all note-related states are reset
         return;
       }
@@ -91,8 +80,8 @@ void note_update(NoteManager *self){
         
     }
     
-
     if(is_timer_end(&self->timer)){
+      printf("UPDATE SEKARANGGGGGGGGG!!!!\nwaktu: %f\n", self->gp->gameTime);
       _updateNotePosition(self);
     }
 
@@ -124,11 +113,6 @@ void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp, ScoreManager *sc
   self->isTrackPlayed = false;
   self->isFirstHit = false;
   self->acc = PERFECT;
-  self->accOff = (AccuracyOffset){
-    50, 50,
-    70, 70,
-    80, 80
-  };
   self->scoreManager = scoreManager;
   self->isBeatmapLoaded = false;
   self->missCombo = 0;
@@ -298,7 +282,7 @@ void _updateNotePosition(NoteManager* self){
   NodeAddress curr = self->noteHead;
   // Dapatkan frametime
   float dt = GetFrameTime();
-  for (int i = 0; i <  self->beatmap.len && curr != NULL; i++)
+  while(curr != NULL)
   {
     double elapsed = time_elapsed(&(self->timer));
     DrawableNote *note = (DrawableNote*)(curr->info);
@@ -310,19 +294,21 @@ void _updateNotePosition(NoteManager* self){
       if(!note->isSpawned){
         note->position.y = self->ctx->screen_height;
         note->isSpawned = true;
+        note->isTrailVisible = true;
       }
-      float note_k = ((self->ctx->screen_height - 45)/self->timeToHitPad) * dt ; 
-      note->position.y -= note_k;
-      _noteHitHandler(self, &(*note));
+      float note_speed = ((self->ctx->screen_height - 45)/self->timeToHitPad) * dt ; 
+      note->position.y -= note_speed;
+      if(note->duration_in_ms > 0){
+        _noteHoldHitHandler(self, &(*note));
+      }else{
+        _noteHitHandler(self, &(*note));
       }
-      curr = curr->next;
     }
+      curr = curr->next;
+  }
 }
 
 void _noteHitHandler(NoteManager* self, DrawableNote *note){
-  // Time miss
-  // bool isMiss = self->gp->gameTime >= note->hit_at_ms +self->accOff.missLowerOffset;
-  // Position miss
   bool isMissPos = note->position.y + self->gp->padSize/2 < self->gp->padPositions[0].x - 50;
   if(isMissPos){
     if(!note->isHit){
@@ -334,10 +320,6 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
       UpdateLife(self->gp, self->acc);
     }
   }
-  // if(note->isHit){
-  //   note->position.x= -999;
-  // }
-
   if(!note->isHit){
     if(_isNoteHit(self, *note)){
       self->gp->alpha = 255;
@@ -351,6 +333,81 @@ void _noteHitHandler(NoteManager* self, DrawableNote *note){
     }
   }
 }
+void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
+    double currentTime = self->gp->gameTime + self->gp->gameTimeOffset;
+    double startTime = note->hit_at_ms + self->gp->gameTimeOffset;
+    double endTime = startTime + note->duration_in_ms;
+    static bool isStillHeld = false;
+    // printf("start time: %f\nduration: %f\nendtime: %f\n" , startTime, note->duration_in_ms, endTime);
+
+    
+    // Jika belum mulai hold
+    if(!note->isHolding && !note->isHit){
+      if(_isNoteHit(self, *note)){  // sama seperti tap, tapi hanya untuk trigger awal
+        note->isHolding = true;
+        self->gp->alpha = 255;
+        self->isFirstHit = true;
+        printf("current time: %f\n start time: %f\n", currentTime, startTime);
+      }
+    }
+
+    // Jika sedang hold
+    if(note->isHolding && !note->isHit){
+      // Cek apakah tombol masih ditekan sesuai arah
+      switch(note->direction){
+        case NOTE_LEFT:
+        isStillHeld = IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_D);
+        break;
+        case NOTE_DOWN:
+        isStillHeld = IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J);
+        break;
+        case NOTE_UP:
+        isStillHeld = IsKeyDown(KEY_UP) || IsKeyDown(KEY_F);
+        break;
+        case NOTE_RIGHT:
+        isStillHeld = IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_K);
+        break;
+      }
+      
+      // Jika tombol dilepas sebelum waktunya
+      if(!isStillHeld && currentTime < endTime){
+        printf("YAH LEPAS!\n");
+        note->isHit = true;
+        self->acc = MISS;
+        AddScore(self->scoreManager, self->acc);
+        UpdateLife(self->gp, self->acc);
+        self->gp->alpha = 255;
+        return;
+      }
+      printf("isStillHeld: %d\n", isStillHeld);
+
+      // Jika hold selesai dengan sukses
+      if(isStillHeld && currentTime >= endTime){
+        printf("GACOR KANG!\n");
+        note->isHit = true;
+        note->isHoldSuccess = true;
+        self->acc = PERFECT;
+        AddScore(self->scoreManager, self->acc);
+        UpdateLife(self->gp, self->acc);
+        note->isTrailVisible = false;
+        self->gp->alpha = 255;
+      }
+    }
+    // Cek apakah sudah MISS karena lewat waktu dan belum holding
+    if(currentTime > endTime && !note->isHoldSuccess && !note->isHit){
+        note->isHit = true;
+        self->acc = MISS;
+        AddScore(self->scoreManager, self->acc);
+        UpdateLife(self->gp, self->acc);
+        self->gp->alpha = 255;
+        self->isFirstHit = true;
+        printf("EndTime: %f\nCurrentTime: %f\n", endTime, currentTime);
+        printf("YAH LEWAT!\n");
+        note->isTrailVisible = false;
+        return;
+    }
+}
+
 
 void _extractNoteFromBeatmap(NoteManager* self){
   DrawableNote *noteToInsert;
@@ -362,6 +419,9 @@ void _extractNoteFromBeatmap(NoteManager* self){
     noteToInsert->position = self->beatmap.items[i].position; 
     noteToInsert->isHit = false;
     noteToInsert->isSpawned = false;
+    noteToInsert->isHolding = false;
+    noteToInsert->isHoldSuccess = false;
+    noteToInsert->isTrailVisible = false;
     noteToInsert->duration_in_ms = self->beatmap.items[i].duration_in_ms;
     node_append(&(self->noteHead), (void*)noteToInsert);
   }
@@ -379,13 +439,12 @@ void _resetNoteManager(NoteManager *self) {
   self->timer.is_started = false;
   self->musicTimer.is_started = false;
   self->gp->gameTime = 0;
-  for (int i = 0; i < self->beatmap.len; i++) {
-    DrawableNote *note = (DrawableNote*)(cur->info);
-    note->position.y = -999;
-    note->isHit = 0;
-    note->isSpawned = false;
-    cur = cur->next;
+  self->gp->isPlaying = false;
+  while(self->noteHead != NULL) {
+    free(self->noteHead->info);
+    node_remove_first(&(self->noteHead));
   }
+  
   
 }
 
@@ -434,7 +493,7 @@ void _drawNoteTrail(NoteManager* self, DrawableNote note){
   }
 
   if (note.duration_in_ms > 0) {
-    float holdLength = ms_to_s(note.duration_in_ms) * ( (self->ctx->screen_height - 45)/self->timeToHitPad );
+    float holdLength = (self->ctx->screen_height-(self->gp->padPositions[0].y + ((self->gp->padSize)/2))/(self->timeToHitPad)) * ms_to_s(note.duration_in_ms) *0.7;
 
     Rectangle holdBody = {
         position.x + self->gp->padSize/2 -self->gp->padSize/4 ,

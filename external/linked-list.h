@@ -125,6 +125,7 @@ bool node_iter_is_end(NodeIterator iter);
 
 void node_create(NodeAddress* node){
     NodeAddress new_node = (NodeAddress)malloc(sizeof(Node));
+    assert(new_node != NULL || "Buy more ram lol...");
     *node = new_node;
 }
 void node_init(NodeAddress* node, NodeInfoType value){

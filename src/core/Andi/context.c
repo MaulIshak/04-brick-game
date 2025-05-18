@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <stdio.h>
 #include "array_list.h"
+#include "sqlite3.h"
+#include "query.h"
 
 #include "linked-list.h"
 
@@ -18,11 +20,16 @@ const char *music_lists[] = {
     "resources/ToyLand",
     "resources/Bad Apple",
 };
-
+// For bakcward compability
 Track GetTrack(Tracks tracks, int index) {
     NodeInfoType add = node_at(tracks.track, index);
     Track* as_track = (Track*)add;
     return *as_track;
+}
+
+Track *GetTrackRef(Tracks tracks, int index) {
+    NodeInfoType add = node_at(tracks.track, index);
+    return (Track*)add;
 }
 
 Track GetSelectedTrack(AppContext* ctx) {
@@ -73,6 +80,16 @@ Tracks InitTracks() {
     return tr;
 }
 
+Tracks InitTracksFromDB(sqlite3 *beatmap_db, sqlite3 *score_db) {
+    Tracks tracks = {0};
+    
+    select_music(beatmap_db, &tracks);
+    printf("MUSIC LOADED....\n");
+    populate_score(score_db, &tracks);
+    printf("SCORE POPULATED....\n");
+    return tracks;
+}
+
 void GetScoreAndAccuracy(const char* file_name, int *scoreOut, float *accuracyOut){
     FILE *f = fopen(file_name, "r");
     char buff[2048];
@@ -93,6 +110,7 @@ void DestroyTracks(Tracks *tracks) {
     for(int i = 0; i < tracks->len; i++) {
         Track track = GetTrack(*tracks, i);
         UnloadMusicStream(track.music);
+        free(track.file_path);
     }
     free(tracks->track);
 }
@@ -103,7 +121,8 @@ void DestroyContext(AppContext *ctx) {
     free(ctx->_beatmap_name);
 }
 const char* font_path = "resources/font/Jersey15-Regular.ttf";
-AppContext CreateContext(int screen_width , int screen_height ){
+
+AppContext CreateForMigrate(int screen_width , int screen_height ){
     Tracks tracks = InitTracks();
     AppContext ctx = {
         .app_state = APP_LOADING,
@@ -118,9 +137,42 @@ AppContext CreateContext(int screen_width , int screen_height ){
     ctx._beatmap.cap = 10;
     ctx._beatmap.len = 0;
     ctx._beatmap_name = malloc(sizeof(char) * 400);
+    ctx._beatmap_music_id = -1;
     memset(ctx._beatmap_name, 0, 400);
     Font font = LoadFontEx(font_path, 30, NULL, 0);
     ctx.font = font;
+    printf("Context created...\n");
+    return ctx;
+}
+
+AppContext CreateContext(int screen_width , int screen_height ){
+    sqlite3 *beatmap_db;
+    sqlite3 *score_db;
+    sqlite3_open("beatmap.db", &beatmap_db);
+    sqlite3_open("score.db", &score_db);
+    create_music_score_table(score_db);
+    Tracks tracks = InitTracksFromDB(beatmap_db, score_db);
+    // Tracks tracks = InitTracks();
+    AppContext ctx = {
+        .app_state = APP_LOADING,
+        .screen_width = screen_width,
+        .screen_height = screen_height,
+        .tracks = tracks,
+        .selected_track = 1,
+        .is_music_playing = false,
+        .score = {0},
+        .beatmap_db = beatmap_db,
+        .score_db = score_db,
+    };
+    ctx._beatmap.items = malloc(sizeof(Note) * 10);
+    ctx._beatmap.cap = 10;
+    ctx._beatmap.len = 0;
+    ctx._beatmap_name = malloc(sizeof(char) * 400);
+    ctx._beatmap_music_id = -1;
+    memset(ctx._beatmap_name, 0, 400);
+    Font font = LoadFontEx(font_path, 30, NULL, 0);
+    ctx.font = font;
+    printf("Context created...\n");
     return ctx;
 }
 
@@ -155,8 +207,24 @@ void StopSelectedTrack(AppContext *ctx) {
     printf("StopSelectedTrack: Stopping %s\n",  track.music_name);
     #endif
 }
-// TODO: memoize this function
+
 Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
+    Track track = GetSelectedTrack(ctx);
+    if(ctx->_beatmap_music_id != track.music_id) {
+        ctx->_beatmap.len = 0;
+        ctx->_beatmap_music_id = track.music_id;
+        get_beatmap(ctx->beatmap_db, track.music_id, &ctx->_beatmap);
+        printf("GetSelectedMusicBeatmap: Readed %d notes\n", ctx->_beatmap.len);
+        
+    }else {
+        printf("GetSelectedMusicBeatmapDB: CACHE HIT");
+        printf("GetSelectedMusicBeatmap: Readed %d notes\n", ctx->_beatmap.len);
+    }
+    return ctx->_beatmap;
+}
+
+Beatmap GetSelectedMusicBeatmapForDB(AppContext* ctx) {
+
     char *music_name = GetSelectedMusicName(ctx);
     if (strcmp(ctx->_beatmap_name, music_name ) == 0) {
         printf("GetSelectedMusicBeatmap: CACHE HIT");
@@ -236,8 +304,8 @@ bool IsSelectedMusicEnd(AppContext* ctx) {
 char *GetSelectedMusicName(AppContext* ctx) {
     size_t selected = ctx->selected_track;
     assert(ctx->selected_track != -1);
-    Track track = GetTrack(ctx->tracks, selected);
-    return track.music_name;
+    Track *track = GetTrackRef(ctx->tracks, selected);
+    return track->music_name;
 }
 
 void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int score, float accuracy){
@@ -259,12 +327,11 @@ void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int s
     fclose(f);
 }
 
-// TODO: refresh score di track list setelah di set.
 void SetScoreAndAccuracy(AppContext* ctx, int score, int acc){
     int selected = ctx->selected_track;
-    Beatmap map = GetSelectedMusicBeatmap(ctx);
     Track track = GetTrack(ctx->tracks, selected);
-    WriteSelectedMusicBeatmapToFile(&map, track.music_name, score, acc);
+    update_score(ctx->score_db, track.music_id ,score, (float)acc);
+    populate_score(ctx->score_db, &ctx->tracks);
 }
 
 float GetSelectedMusicLength(AppContext* ctx){
