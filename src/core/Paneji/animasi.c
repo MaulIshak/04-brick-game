@@ -52,7 +52,7 @@ else if (self->state == LOGO_FADE_OUT) {
     self->alpha -= 0.02f;
     if (self->alpha <= 0.0f) {
         self->alpha = 0.0f;
-        self->state = READY;  // Langsung lompat ke READY
+        self->state = READY;  
     }
 }
     else if (self->state == LOADING) {

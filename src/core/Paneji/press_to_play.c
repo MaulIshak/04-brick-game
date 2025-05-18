@@ -5,7 +5,6 @@ void PressToPlay_LoadTextures(PressToPlay *self){
     self->logogame = LoadTexture("resources/texture/logo-game.png");
     self->selectedIndex = 0;
 
-    // Sementara teks bebas
     self->menuItems[0] = "MENU 1";
     self->menuItems[1] = "MENU 2";
     self->menuItems[2] = "MENU 3";
@@ -26,7 +25,6 @@ void PressToPlay_Update(PressToPlay *self) {
                 self->ctx->app_state = APP_SELECT;
                 break;
             case 1:
-                // Placeholder
                 break;
             case 2:
                 CloseWindow();
@@ -36,19 +34,17 @@ void PressToPlay_Update(PressToPlay *self) {
 }
 
 void PressToPlay_Draw(PressToPlay *self){
-    // Gambar logo
+
     DrawTextureEx(self->logogame, (Vector2){SCREEN_WIDTH / 2 - (self->logogame.width * 0.25f), 80}, 0, 0.5f, WHITE);
 
-    // Gambar menu
     for (int i = 0; i < MENU_COUNT; i++) {
         Rectangle box = {
-            .x = SCREEN_WIDTH / 2 - 100,
-            .y = 300 + i * 80,
-            .width = 200,
-            .height = 50
-        };
+        .x = SCREEN_WIDTH / 2 - 150,
+        .y = 300 + i * 100,
+        .width = 300,
+        .height = 70
+    };
 
-        // Warna highlight
         Color bgColor = (i == self->selectedIndex) ? DARKBLUE : GRAY;
         Color textColor = (i == self->selectedIndex) ? YELLOW : WHITE;
 
