@@ -28,6 +28,7 @@ void PressToPlay_Update(PressToPlay *self) {
                 self->ctx->app_state = APP_SELECT;
                 break;
             case 1:
+                self->ctx->app_state = APP_HOW_TO_PLAY;
                 break;
             case 2:
                 CloseWindow();

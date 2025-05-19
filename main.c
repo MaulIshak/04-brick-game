@@ -29,6 +29,7 @@
 #include "eotg.h"
 #include "note.h"
 #include "selection_menu.h"
+#include "how_to_play.h"
 #include "animasi.h"
 #include "sfx.h"
 #include "album_cover.h"
@@ -43,16 +44,13 @@
 
 #include <stdlib.h>
 
-
-
-
 int _main()
 {
   const int screenWidth = 600;
   const int screenHeight = 800;
   Image icon = LoadImage("resources/texture/game-icon.png");
   SetConfigFlags(FLAG_WINDOW_ALWAYS_RUN);
-  
+
   InitWindow(screenWidth, screenHeight, "Rythm.me");
   SetWindowIcon(icon);
   InitAudioDevice();
@@ -61,31 +59,28 @@ int _main()
   InitLinkedListSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-  #ifdef GAME_DEBUG
-  // ctx.app_state = APP_BEATMAP_CREATOR;
-  // ctx.app_state = APP_LOADING;
-  // ctx.app_state = END_OF_THE_GAME;
-  #endif // GAME_DEBUG
+#ifdef GAME_DEBUG
+// ctx.app_state = APP_BEATMAP_CREATOR;
+// ctx.app_state = APP_LOADING;
+// ctx.app_state = END_OF_THE_GAME;
+#endif // GAME_DEBUG
   Loading loading = {
-    .ctx = &ctx,
-    .ptp = {
       .ctx = &ctx,
-    }
-  };
+      .ptp = {
+          .ctx = &ctx,
+      }};
 
-    LoadingLoadTextures(&loading);
-    LoadingInitPositions(&loading);
+  LoadingLoadTextures(&loading);
+  LoadingInitPositions(&loading);
 
   Drawable loading_draw = Loading_ToScene(&loading);
   EndOfTheGame eotg = {
-    .ctx = &ctx
-  };
+      .ctx = &ctx};
   EndOfTheGame_Init(&eotg);
   Drawable eotg_draw = EndOfTheGame_ToScene(&eotg);
-  
+
   PressToPlay press_to_play = {
-    .ctx = &ctx
-  };
+      .ctx = &ctx};
   Drawable press_to_play_draw = PressToPlay_ToScene(&press_to_play);
 
   Background bg = CreateBackground(&ctx);
@@ -94,20 +89,24 @@ int _main()
   SelectionMenu selection_menu;
   InitSelectionMenu(&selection_menu, &ctx);
   Drawable selection_menu_draw = SelectionMenu_ToScene(&selection_menu);
-  
+
+  // HowToPlayManager how_to_play;
+  HowToPlayManager how_to_play = InitHowToPlay(&ctx);
+  Drawable how_to_play_draw = HowToPlay_ToScene(&how_to_play);
+
   Gameplay gameplay;
-  InitGameplay(&gameplay,&ctx);
+  InitGameplay(&gameplay, &ctx);
   Drawable gameplay_draw = Gameplay_ToScene(&gameplay);
-  
+
   BeatmapCreator creator = CreateBeatmap(&ctx);
   Drawable creator_draw = BeatmapCreator_ToScene(&creator);
 
   ScoreManager score_manager = InitScore(&ctx, &gameplay);
   Drawable score_draw = Score_ToScene(&score_manager);
-  
+
   ScoreManager acc_manager = InitAcc(&ctx, &gameplay);
   Drawable acc_draw = Acc_ToScene(&acc_manager);
-  
+
   NoteManager note;
   InitNote(&note, &ctx, &gameplay, &score_manager);
   Drawable note_draw = Note_toScene(&note);
@@ -116,33 +115,37 @@ int _main()
   Drawable cover_draw = AlbumCover_ToScene(&cover);
 
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {selection_menu_draw, loading_draw, press_to_play_draw, creator_draw, gameplay_draw, score_draw, acc_draw, note_draw, bg_draw, eotg_draw, cover_draw};
+  Drawable draws[] = {selection_menu_draw, loading_draw, press_to_play_draw, creator_draw, gameplay_draw, score_draw, acc_draw, note_draw, bg_draw, how_to_play_draw, eotg_draw, cover_draw};
 
-  
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
-  #ifdef GAME_DEBUG
+#ifdef GAME_DEBUG
   ctx.selected_track = 7;
-  #endif //GAME_DEBUG
-  #ifdef TEST_CONTEXT 
-    PlaySelectedTrack(&ctx);
-  #endif
-  
-  while (!WindowShouldClose()) {
+#endif // GAME_DEBUG
+#ifdef TEST_CONTEXT
+  PlaySelectedTrack(&ctx);
+#endif
+
+  while (!WindowShouldClose())
+  {
     UpdateContext(&ctx);
 
-    if (ctx.app_state != APP_PLAYING && ctx.app_state != APP_BEATMAP_CREATOR && ctx.app_state != APP_LOADING) {
-        if (IsKeyPressed(KEY_F) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)) {
-          PlayArrowSfx(KEY_K);
-        }
-        if (IsKeyPressed(KEY_J) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) || IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) {
-          PlayArrowSfx(KEY_D);
-        }
-        if (IsKeyPressed(KEY_ENTER)) {
-            PlayEnterSfx();
-        }
+    if (ctx.app_state != APP_PLAYING && ctx.app_state != APP_BEATMAP_CREATOR && ctx.app_state != APP_LOADING)
+    {
+      if (IsKeyPressed(KEY_F) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
+      {
+        PlayArrowSfx(KEY_K);
+      }
+      if (IsKeyPressed(KEY_J) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
+      {
+        PlayArrowSfx(KEY_D);
+      }
+      if (IsKeyPressed(KEY_ENTER))
+      {
+        PlayEnterSfx();
+      }
     }
-    
+
     for (int i = 0; i < draws_len; i++)
     {
       if (draws[i].scene->IsShow(draws[i].self))
@@ -154,7 +157,7 @@ int _main()
 
     BeginDrawing();
 
-    ClearBackground((Color) {207, 239, 252, 255});
+    ClearBackground((Color){207, 239, 252, 255});
 
     for (int i = 0; i < draws_len; i++)
     {
@@ -163,9 +166,9 @@ int _main()
         draws[i].scene->Draw(draws[i].self);
       }
     }
-    #ifdef GAME_DEBUG
-    DrawFPS( 20,screenHeight- 40);
-    #endif //GAME_DEBUG
+#ifdef GAME_DEBUG
+    DrawFPS(20, screenHeight - 40);
+#endif // GAME_DEBUG
     // DrawLine(screenWidth*2/3, 0, screenWidth*2/3, screenHeight, BLACK);
     EndDrawing();
   }
@@ -179,6 +182,7 @@ int _main()
   return 0;
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* pCmdLine, int nCmdShow) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *pCmdLine, int nCmdShow)
+{
   return _main();
 }
