@@ -81,7 +81,7 @@ void note_update(NoteManager *self){
     }
     
     if(is_timer_end(&self->timer)){
-      printf("UPDATE SEKARANGGGGGGGGG!!!!\nwaktu: %f\n", self->gp->gameTime);
+      // printf("UPDATE SEKARANGGGGGGGGG!!!!\nwaktu: %f\n", self->gp->gameTime);
       _updateNotePosition(self);
     }
 
@@ -347,7 +347,7 @@ void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
         note->isHolding = true;
         self->gp->alpha = 255;
         self->isFirstHit = true;
-        printf("current time: %f\n start time: %f\n", currentTime, startTime);
+        // printf("current time: %f\n start time: %f\n", currentTime, startTime);
       }
     }
 
@@ -371,7 +371,7 @@ void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
       
       // Jika tombol dilepas sebelum waktunya
       if(!isStillHeld && currentTime < endTime){
-        printf("YAH LEPAS!\n");
+        // printf("YAH LEPAS!\n");
         note->isHit = true;
         self->acc = MISS;
         AddScore(self->scoreManager, self->acc);
@@ -379,11 +379,11 @@ void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
         self->gp->alpha = 255;
         return;
       }
-      printf("isStillHeld: %d\n", isStillHeld);
+      // printf("isStillHeld: %d\n", isStillHeld);
 
       // Jika hold selesai dengan sukses
       if(isStillHeld && currentTime >= endTime){
-        printf("GACOR KANG!\n");
+        // printf("GACOR KANG!\n");
         note->isHit = true;
         note->isHoldSuccess = true;
         self->acc = PERFECT;
@@ -401,8 +401,8 @@ void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
         UpdateLife(self->gp, self->acc);
         self->gp->alpha = 255;
         self->isFirstHit = true;
-        printf("EndTime: %f\nCurrentTime: %f\n", endTime, currentTime);
-        printf("YAH LEWAT!\n");
+        // printf("EndTime: %f\nCurrentTime: %f\n", endTime, currentTime);
+        // printf("YAH LEWAT!\n");
         note->isTrailVisible = false;
         return;
     }
@@ -444,7 +444,6 @@ void _resetNoteManager(NoteManager *self) {
     free(self->noteHead->info);
     node_remove_first(&(self->noteHead));
   }
-  
   
 }
 

@@ -1,7 +1,6 @@
 #pragma once
 #ifndef GAMEPLAY_H
 #define GAMEPLAY_H
-#define TEXTURE_COUNT 4
 #define LINE_COUNT 4
 
 #include "scene.h"
@@ -24,14 +23,14 @@ typedef struct Gameplay{
   // Lebar tampilan gameplay
   int width;
   // Texture untuk diload
-  Texture2D textureToLoad[TEXTURE_COUNT];
-  Texture2D activeTextureToLoad[TEXTURE_COUNT];
-  Texture2D passiveTextureToLoad[TEXTURE_COUNT];
-  //
+  Texture2D textureToLoad[LINE_COUNT];
+  Texture2D activeTextureToLoad[LINE_COUNT];
+  Texture2D passiveTextureToLoad[LINE_COUNT];
+  // Background
   Texture2D background[3];
   // Path dari texture untuk diload
-  char *texturePaths [TEXTURE_COUNT];
-  char *textureActivePaths [TEXTURE_COUNT];
+  char *texturePaths [LINE_COUNT];
+  char *textureActivePaths [LINE_COUNT];
   // Opacity dari setiap pad
   int padOpacity[LINE_COUNT];
   // Positi setiap pad
@@ -56,7 +55,6 @@ typedef struct Gameplay{
   
   //Health untuk gameplay
   float life;
-  
   // Maks Health
   float maxLife;
   // Life Bar

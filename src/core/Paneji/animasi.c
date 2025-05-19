@@ -2,12 +2,13 @@
 #include "animasi.h"
 #include "background.h"
 #include "press_to_play.h"
+#include "sfx.h"
 
 void LoadingLoadTextures(Loading *self) {
     self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
     PressToPlay_LoadTextures(&self->ptp);
-    self->intro = LoadSound("resources/sfx/coc-intro.wav");
-    self->load = LoadSound("resources/sfx/sfx1.wav");
+    self->intro = LoadSound("resources/sfx/1.coc-intro.wav"); // <-- Kemunginan bisa dihapus
+    self->load = LoadSound("resources/sfx/7.sfx1.wav"); // <-- Kemunginan bisa dihapus
 }
 
 void LoadingUnloadTextures(Loading *self) {
@@ -31,6 +32,10 @@ void LoadingUpdatePositions(Loading *self) {
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
 
+        if(!IsSoundPlaying(introSfx)){ // <-- Update ambil dari sfx
+            PlayIntroSfx();
+        }
+
         // if (!IsSoundPlaying(self->intro)) {
         //     PlaySound(self->intro);
         // }
@@ -52,19 +57,20 @@ void LoadingUpdatePositions(Loading *self) {
         self->alpha = 0.0f;
         self->state = READY;  
     }
-    }
-    // else if (self->state == LOADING) {
-    //     EnableParticle();
-    //     self->timer += GetFrameTime();
-    //     if (self->timer >= 0.5f) {
-    //         self->loadingVisible = !self->loadingVisible;
-    //         count++;
-    //         PlaySound(self->load);
-    //         self->timer = 0.0f;  
-    //     }
-    //     if (count == 7) {
-    //         self->state = READY; 
-    //     }
+}
+    else if (self->state == LOADING) {
+        EnableParticle();
+        self->timer += GetFrameTime();
+        if (self->timer >= 0.5f) {
+            self->loadingVisible = !self->loadingVisible;
+            count++;
+            PlayArrowSfx(KEY_D); // <-- Update ambil dari sfx
+            self->timer = 0.0f;  
+        }
+        if (count == 7) {
+            self->state = READY; 
+        }
+    } 
     else if (self->state == READY) { 
         PressToPlay_Update(&self->ptp); 
     }

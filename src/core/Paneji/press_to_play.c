@@ -1,5 +1,6 @@
 #include "press_to_play.h"
 #include "context.h"
+    #include "sfx.h"
 
 void PressToPlay_LoadTextures(PressToPlay *self){
     self->logogame = LoadTexture("resources/texture/logo-game.png");

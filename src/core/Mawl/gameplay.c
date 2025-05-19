@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include "timer.h"
 #include "progress_bar.h"
-#include "sfx.h"
 #include "score.h"
 
 
@@ -140,12 +139,12 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
 }
 
 void _LoadNoteTexture(Gameplay*self){
-  for (int i = 0; i < TEXTURE_COUNT; i++)
+  for (int i = 0; i < LINE_COUNT; i++)
   {
     self->passiveTextureToLoad[i] = LoadTexture(self->texturePaths[i]);
     self->activeTextureToLoad[i] = LoadTexture(self->textureActivePaths[i]);
   }
-  for (int i = 0; i < TEXTURE_COUNT; i++)
+  for (int i = 0; i < LINE_COUNT; i++)
   {
     /* code */
     self->textureToLoad[i] =  self->passiveTextureToLoad[i];
