@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include "scene.h"
 #include "context.h"
+#include "flying_object.h"
 
 #ifndef PRESS_TO_PLAY_H
 #define PRESS_TO_PLAY_H
@@ -13,6 +14,7 @@
 typedef struct PressToPlay {
     AppContext *ctx;
     Texture2D logogame;
+    FlyingObjects flying_objects;
     int selectedIndex;
     const char *menuItems[MENU_COUNT];
     Color WarnaAwal[MENU_COUNT];
