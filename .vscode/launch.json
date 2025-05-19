@@ -4,7 +4,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Launch",
-            "program": "${workspaceFolder}/out/main.exe",
+            "program": "${workspaceFolder}/out/migrate.exe",
             "args": [],
             "cwd": "${workspaceFolder}"
         },
