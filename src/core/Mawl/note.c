@@ -21,7 +21,7 @@ void note_draw(NoteManager *self){
       {
         DrawableNote* note = (DrawableNote*)(cur->info);
         if(note->isTrailVisible) _drawNoteTrail(self, *note);
-        if(!(note->position.y <= 0) && !note->isHit && !note->isHoldSuccess){
+        if(!(note->position.y <= 0) && !note->isHit && !note->isHoldSuccess && !note->isHolding){
           _drawBeatmapNote(self, *note);
         }
         cur = cur->next;
