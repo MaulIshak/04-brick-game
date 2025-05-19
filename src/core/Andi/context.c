@@ -121,6 +121,30 @@ void DestroyContext(AppContext *ctx) {
     free(ctx->_beatmap_name);
 }
 const char* font_path = "resources/font/Jersey15-Regular.ttf";
+
+AppContext CreateForMigrate(int screen_width , int screen_height ){
+    Tracks tracks = InitTracks();
+    AppContext ctx = {
+        .app_state = APP_LOADING,
+        .screen_width = screen_width,
+        .screen_height = screen_height,
+        .tracks = tracks,
+        .selected_track = 1,
+        .is_music_playing = false,
+        .score = {0},
+    };
+    ctx._beatmap.items = malloc(sizeof(Note) * 10);
+    ctx._beatmap.cap = 10;
+    ctx._beatmap.len = 0;
+    ctx._beatmap_name = malloc(sizeof(char) * 400);
+    ctx._beatmap_music_id = -1;
+    memset(ctx._beatmap_name, 0, 400);
+    Font font = LoadFontEx(font_path, 30, NULL, 0);
+    ctx.font = font;
+    printf("Context created...\n");
+    return ctx;
+}
+
 AppContext CreateContext(int screen_width , int screen_height ){
     sqlite3 *beatmap_db;
     sqlite3 *score_db;
@@ -184,7 +208,7 @@ void StopSelectedTrack(AppContext *ctx) {
     #endif
 }
 
-Beatmap GetSelectedMusicBeatmapDB(AppContext* ctx) {
+Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
     Track track = GetSelectedTrack(ctx);
     if(ctx->_beatmap_music_id != track.music_id) {
         ctx->_beatmap.len = 0;
@@ -199,8 +223,7 @@ Beatmap GetSelectedMusicBeatmapDB(AppContext* ctx) {
     return ctx->_beatmap;
 }
 
-Beatmap GetSelectedMusicBeatmap(AppContext* ctx) {
-    return GetSelectedMusicBeatmapDB(ctx);
+Beatmap GetSelectedMusicBeatmapForDB(AppContext* ctx) {
 
     char *music_name = GetSelectedMusicName(ctx);
     if (strcmp(ctx->_beatmap_name, music_name ) == 0) {
