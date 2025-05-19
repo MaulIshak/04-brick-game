@@ -4,7 +4,6 @@
 void PressToPlay_LoadTextures(PressToPlay *self){
     self->logogame = LoadTexture("resources/texture/logo-game.png");
     self->selectedIndex = 0;
-
     self->menuItems[0] = "MENU 1";
     self->menuItems[1] = "MENU 2";
     self->menuItems[2] = "MENU 3";
@@ -36,11 +35,11 @@ void PressToPlay_Update(PressToPlay *self) {
 void PressToPlay_Draw(PressToPlay *self){
 
     DrawTextureEx(self->logogame, (Vector2){SCREEN_WIDTH / 2 - (self->logogame.width * 0.25f), 80}, 0, 0.5f, WHITE);
-
+    DrawTexture()
     for (int i = 0; i < MENU_COUNT; i++) {
         Rectangle box = {
         .x = SCREEN_WIDTH / 2 - 150,
-        .y = 300 + i * 100,
+        .y = 400 + i * 100,
         .width = 300,
         .height = 70
     };

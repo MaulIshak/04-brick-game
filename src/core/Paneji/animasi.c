@@ -26,14 +26,14 @@ void LoadingInitPositions(Loading *self) {
 
 
 void LoadingUpdatePositions(Loading *self) {
-    static int count = 0;
+    // static int count = 0;
 
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
 
-        if (!IsSoundPlaying(self->intro)) {
-            PlaySound(self->intro);
-        }
+        // if (!IsSoundPlaying(self->intro)) {
+        //     PlaySound(self->intro);
+        // }
 
         self->alpha += 0.02f;
         if (self->alpha >= 1.0f) {
@@ -41,33 +41,30 @@ void LoadingUpdatePositions(Loading *self) {
             self->state = LOGO_HOLD;
             self->timer = 1.5f;
         }
-    } 
-    else if (self->state == LOGO_HOLD) {
+    }else if (self->state == LOGO_HOLD) {
         self->timer -= GetFrameTime();
         if (self->timer <= 0) {
             self->state = LOGO_FADE_OUT;
         }
-    } 
-else if (self->state == LOGO_FADE_OUT) {
+    }else if (self->state == LOGO_FADE_OUT) {
     self->alpha -= 0.02f;
     if (self->alpha <= 0.0f) {
         self->alpha = 0.0f;
         self->state = READY;  
     }
-}
-    else if (self->state == LOADING) {
-        EnableParticle();
-        self->timer += GetFrameTime();
-        if (self->timer >= 0.5f) {
-            self->loadingVisible = !self->loadingVisible;
-            count++;
-            PlaySound(self->load);
-            self->timer = 0.0f;  
-        }
-        if (count == 7) {
-            self->state = READY; 
-        }
-    } 
+    }
+    // else if (self->state == LOADING) {
+    //     EnableParticle();
+    //     self->timer += GetFrameTime();
+    //     if (self->timer >= 0.5f) {
+    //         self->loadingVisible = !self->loadingVisible;
+    //         count++;
+    //         PlaySound(self->load);
+    //         self->timer = 0.0f;  
+    //     }
+    //     if (count == 7) {
+    //         self->state = READY; 
+    //     }
     else if (self->state == READY) { 
         PressToPlay_Update(&self->ptp); 
     }
