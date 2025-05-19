@@ -15,6 +15,7 @@ typedef struct PressToPlay {
     Texture2D logogame;
     int selectedIndex;
     const char *menuItems[MENU_COUNT];
+    Color WarnaAwal[MENU_COUNT];
 } PressToPlay;
 
 void PressToPlay_LoadTextures(PressToPlay *self);

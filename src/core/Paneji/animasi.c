@@ -31,12 +31,8 @@ void LoadingUpdatePositions(Loading *self) {
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
 
-        // if(!IsSoundPlaying(introSfx)){ 
-        //     PlayIntroSfx();
-        // }
-
-        if (!IsSoundPlaying(self->intro)) {
-            PlaySound(self->intro);
+        if(!IsSoundPlaying(introSfx)){ 
+            PlayIntroSfx();
         }
 
         self->alpha += 0.04f;
