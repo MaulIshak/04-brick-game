@@ -6,6 +6,7 @@
 
 void LoadingLoadTextures(Loading *self) {
     self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
+    self->intro = LoadSound("resources/sfx/logo-sfx.wav");
     PressToPlay_LoadTextures(&self->ptp);
 }
 
@@ -34,12 +35,12 @@ void LoadingUpdatePositions(Loading *self) {
         //     PlayIntroSfx();
         // }
 
-        // if (!IsSoundPlaying(self->intro)) {
-        //     PlaySound(self->intro);
-        // }
+        if (!IsSoundPlaying(self->intro)) {
+            PlaySound(self->intro);
+        }
 
-        self->alpha += 0.02f;
-        if (self->alpha >= 0.8f) {
+        self->alpha += 0.04f;
+        if (self->alpha >= 1.0f) {
             self->alpha = 1.0f;
             self->state = LOGO_HOLD;
             self->timer = 1.5f;
