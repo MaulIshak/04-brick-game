@@ -7,8 +7,6 @@
 void LoadingLoadTextures(Loading *self) {
     self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
     PressToPlay_LoadTextures(&self->ptp);
-    self->intro = LoadSound("resources/sfx/1.coc-intro.wav"); // <-- Kemunginan bisa dihapus
-    self->load = LoadSound("resources/sfx/7.sfx1.wav"); // <-- Kemunginan bisa dihapus
 }
 
 void LoadingUnloadTextures(Loading *self) {
@@ -32,7 +30,7 @@ void LoadingUpdatePositions(Loading *self) {
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
 
-        if(!IsSoundPlaying(introSfx)){ // <-- Update ambil dari sfx
+        if(!IsSoundPlaying(introSfx)){ 
             PlayIntroSfx();
         }
 
