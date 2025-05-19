@@ -89,7 +89,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
         score->comboValue = 0;
         score->comboShow = false;
     }
-    
+
     AddAcc(score, acc);
 }
 
@@ -110,8 +110,7 @@ void DrawScore(ScoreManager *score)
     Vector2 bottomTriangle[3] = {
         {450, score->ctx->screen_width + 150},
         {400, score->ctx->screen_width + 200},
-        {450, score->ctx->screen_width + 200}
-    };
+        {450, score->ctx->screen_width + 200}};
 
     DrawTriangle(bottomTriangle[0], bottomTriangle[1], bottomTriangle[2], WHITE);
 
@@ -135,7 +134,7 @@ void DrawScore(ScoreManager *score)
     }
 
     DrawTextEx(score->ctx->font, scoreText, (Vector2){score->ctx->screen_width - score->width + (score->width / 2) - (MeasureText(scoreText, 50) / 2), score->ctx->screen_height - 50}, 50, 1, BLACK);
-    
+
     DrawTextEx(score->ctx->font, accuracyText, (Vector2){score->ctx->screen_width - score->width + 30 + (score->width / 2) - (MeasureText(accuracyText, 29) / 2), score->ctx->screen_height - 80}, 29, 1, WHITE);
 
     if (score->value > lastScore)
@@ -175,7 +174,8 @@ void UpdateScore(ScoreManager *score)
     score->ctx->score.miss = score->miss;
     if (IsSelectedMusicEnd(score->ctx) && (score->value > 0 || score->miss > 0))
     {
-        if (score->value > GetSelectedTrack(score->ctx).high_score){
+        if (score->value > GetSelectedTrack(score->ctx).high_score)
+        {
             SetScoreAndAccuracy(score->ctx, score->value, score->ctx->score.accuracy);
         }
         score->value = 0;
@@ -184,6 +184,11 @@ void UpdateScore(ScoreManager *score)
         score->good = 0;
         score->miss = 0;
         score->perfectCombo = 0;
+
+        score->ctx->score.point = 0;
+        score->ctx->score.perfect = 0;
+        score->ctx->score.good = 0;
+        score->ctx->score.miss = 0;
     }
 }
 
