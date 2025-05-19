@@ -39,7 +39,7 @@ void LoadingUpdatePositions(Loading *self) {
         // }
 
         self->alpha += 0.02f;
-        if (self->alpha >= 1.0f) {
+        if (self->alpha >= 0.8f) {
             self->alpha = 1.0f;
             self->state = LOGO_HOLD;
             self->timer = 1.5f;
