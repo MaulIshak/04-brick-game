@@ -40,7 +40,7 @@ void PressToPlay_Draw(PressToPlay *self){
     for (int i = 0; i < MENU_COUNT; i++) {
         Rectangle box = {
         .x = SCREEN_WIDTH / 2 - 150,
-        .y = 400 + i * 100,
+        .y = 350 + i * 150,
         .width = 300,
         .height = 70
     };
