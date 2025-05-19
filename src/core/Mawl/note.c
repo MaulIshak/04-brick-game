@@ -8,7 +8,6 @@
 #include "linked_list.h"
 #include <math.h>
 
-#define NOTE_DEBUG
 
 void note_draw(NoteManager *self){
   // Mulai gambar akurasi hanya jika note pertama sampai
@@ -62,14 +61,6 @@ void note_update(NoteManager *self){
   if(self->isTrackPlayed){
      if(IsSelectedMusicEnd(self->ctx) ){
         self->ctx->app_state = END_OF_THE_GAME;
-        self->isTrackPlayed = false;
-        self->isBeatmapLoaded = false;
-        self->isFirstHit = false;
-        self->timer.is_started = false;
-        self->musicTimer.is_started = false;
-        self->gp->timer.is_started = false;
-        self->gp->gameTime = 0;
-        self->gp->isBackgroundLoaded = false;
         _resetNoteManager(self); // Ensure all note-related states are reset
         return;
       }
@@ -89,8 +80,8 @@ void note_update(NoteManager *self){
         
     }
     
-
     if(is_timer_end(&self->timer)){
+      printf("UPDATE SEKARANGGGGGGGGG!!!!\nwaktu: %f\n", self->gp->gameTime);
       _updateNotePosition(self);
     }
 
@@ -305,8 +296,8 @@ void _updateNotePosition(NoteManager* self){
         note->isSpawned = true;
         note->isTrailVisible = true;
       }
-      float note_k = ((self->ctx->screen_height - 45)/self->timeToHitPad) * dt ; 
-      note->position.y -= note_k;
+      float note_speed = ((self->ctx->screen_height - 45)/self->timeToHitPad) * dt ; 
+      note->position.y -= note_speed;
       if(note->duration_in_ms > 0){
         _noteHoldHitHandler(self, &(*note));
       }else{
@@ -354,7 +345,6 @@ void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
     if(!note->isHolding && !note->isHit){
       if(_isNoteHit(self, *note)){  // sama seperti tap, tapi hanya untuk trigger awal
         note->isHolding = true;
-        self->acc = PERFECT; // asumsi awal
         self->gp->alpha = 255;
         self->isFirstHit = true;
         printf("current time: %f\n start time: %f\n", currentTime, startTime);
@@ -449,16 +439,7 @@ void _resetNoteManager(NoteManager *self) {
   self->timer.is_started = false;
   self->musicTimer.is_started = false;
   self->gp->gameTime = 0;
-  while (cur != NULL) {
-    DrawableNote *note = (DrawableNote*)(cur->info);
-    note->position.y = -999;
-    note->isHit = 0;
-    note->isSpawned = false;
-    note->isHolding = false;
-    note->isHoldSuccess = false;
-    cur = cur->next;
-  }
-
+  self->gp->isPlaying = false;
   while(self->noteHead != NULL) {
     free(self->noteHead->info);
     node_remove_first(&(self->noteHead));
