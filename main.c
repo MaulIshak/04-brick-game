@@ -116,7 +116,7 @@ int _main()
   Drawable cover_draw = AlbumCover_ToScene(&cover);
 
   // Drawable akan digambar dari urutan awal ke akhir. Untuk prioritas lebih tinggi, taruh Drawable di belakang
-  Drawable draws[] = {loading_draw, press_to_play_draw, selection_menu_draw, creator_draw, gameplay_draw, score_draw, acc_draw, note_draw, bg_draw, eotg_draw, cover_draw};
+  Drawable draws[] = {selection_menu_draw, loading_draw, press_to_play_draw, creator_draw, gameplay_draw, score_draw, acc_draw, note_draw, bg_draw, eotg_draw, cover_draw};
 
   
   int draws_len = ARRAY_LEN(draws);
