@@ -376,6 +376,7 @@ void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
         self->acc = MISS;
         AddScore(self->scoreManager, self->acc);
         UpdateLife(self->gp, self->acc);
+        note->isTrailVisible = false;
         self->gp->alpha = 255;
         return;
       }
