@@ -15,9 +15,9 @@ void PressToPlay_UnloadTextures(PressToPlay *self){
 }
 
 void PressToPlay_Update(PressToPlay *self) {
-    if (IsKeyPressed(KEY_DOWN)) {
+    if (IsKeyPressed(KEY_F)) {
         self->selectedIndex = (self->selectedIndex + 1) % MENU_COUNT;
-    } else if (IsKeyPressed(KEY_UP)) {
+    } else if (IsKeyPressed(KEY_J)) {
         self->selectedIndex = (self->selectedIndex - 1 + MENU_COUNT) % MENU_COUNT;
     } else if (IsKeyPressed(KEY_ENTER)) {
         switch (self->selectedIndex) {
@@ -36,7 +36,6 @@ void PressToPlay_Update(PressToPlay *self) {
 void PressToPlay_Draw(PressToPlay *self){
 
     DrawTextureEx(self->logogame, (Vector2){SCREEN_WIDTH / 2 - (self->logogame.width * 0.25f), 80}, 0, 0.5f, WHITE);
-    DrawTexture()
     for (int i = 0; i < MENU_COUNT; i++) {
         Rectangle box = {
         .x = SCREEN_WIDTH / 2 - 150,

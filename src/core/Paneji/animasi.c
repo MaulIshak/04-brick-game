@@ -30,9 +30,9 @@ void LoadingUpdatePositions(Loading *self) {
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
 
-        if(!IsSoundPlaying(introSfx)){ 
-            PlayIntroSfx();
-        }
+        // if(!IsSoundPlaying(introSfx)){ 
+        //     PlayIntroSfx();
+        // }
 
         // if (!IsSoundPlaying(self->intro)) {
         //     PlaySound(self->intro);
@@ -56,19 +56,18 @@ void LoadingUpdatePositions(Loading *self) {
         self->state = READY;  
     }
 }
-    else if (self->state == LOADING) {
-        EnableParticle();
-        self->timer += GetFrameTime();
-        if (self->timer >= 0.5f) {
-            self->loadingVisible = !self->loadingVisible;
-            count++;
-            PlayArrowSfx(KEY_D); // <-- Update ambil dari sfx
-            self->timer = 0.0f;  
-        }
-        if (count == 7) {
-            self->state = READY; 
-        }
-    } 
+    // else if (self->state == LOADING) {
+    //     EnableParticle();
+    //     self->timer += GetFrameTime();
+    //     if (self->timer >= 0.5f) {
+    //         self->loadingVisible = !self->loadingVisible;
+    //         PlayArrowSfx(KEY_D); // <-- Update ambil dari sfx
+    //         self->timer = 0.0f;  
+    //     }
+    //     if (count == 7) {
+    //         self->state = READY; 
+    //     }
+    // } 
     else if (self->state == READY) { 
         PressToPlay_Update(&self->ptp); 
     }
