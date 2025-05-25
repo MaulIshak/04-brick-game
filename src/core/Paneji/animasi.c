@@ -48,7 +48,7 @@ void LoadingUpdatePositions(Loading *self) {
             self->state = LOGO_FADE_OUT;
         }
     }else if (self->state == LOGO_FADE_OUT) {
-    self->alpha -= 0.02f;
+    self->alpha -= 0.01f;
     if (self->alpha <= 0.0f) {
         self->alpha = 0.0f;
         self->state = READY;  

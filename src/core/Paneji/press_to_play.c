@@ -11,21 +11,41 @@ void PressToPlay_LoadTextures(PressToPlay *self){
     self->WarnaAwal[0] =  RED;
     self->WarnaAwal[1] =  GREEN;
     self->WarnaAwal[2] =  BLUE;
+
+    self->enterSfx = LoadSound("resources/sfx/10.sfx-sementara.wav"); 
+    self->menuBgm = LoadMusicStream("resources/backsound-mainmenu.mp3"); 
+    self->MenuNaik = LoadSound("resources/sfx/7.sfx1.wav");     
+    self->MenuTurun = LoadSound("resources/sfx/8.sfx2.wav"); 
+    PlayMusicStream(self->menuBgm);
+    self->isMusicPlaying = true;
 }
 
 void PressToPlay_UnloadTextures(PressToPlay *self){
     UnloadTexture(self->logogame);
+    UnloadSound(self->enterSfx);
+    UnloadSound(self->MenuNaik);
+    UnloadSound(self->MenuTurun);
+    UnloadMusicStream(self->menuBgm);
 }
 
 void PressToPlay_Update(PressToPlay *self) {
-
     FlyingObject_Update(&self->flying_objects, self->ctx);
+
+    if (self->isMusicPlaying) {
+        UpdateMusicStream(self->menuBgm);
+    }
 
     if (IsKeyPressed(KEY_J)) {
         self->selectedIndex = (self->selectedIndex + 1) % MENU_COUNT;
+        PlaySound(self->MenuNaik);
     } else if (IsKeyPressed(KEY_F)) {
         self->selectedIndex = (self->selectedIndex - 1 + MENU_COUNT) % MENU_COUNT;
+        PlaySound(self->MenuTurun);
     } else if (IsKeyPressed(KEY_ENTER)) {
+        PlaySound(self->enterSfx);
+        StopMusicStream(self->menuBgm);
+        self->isMusicPlaying = false;
+
         switch (self->selectedIndex) {
             case 0:
                 self->ctx->app_state = APP_SELECT;

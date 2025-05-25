@@ -11,6 +11,7 @@
 #define SCREEN_HEIGHT 800
 #define MENU_COUNT 3
 
+
 typedef struct PressToPlay {
     AppContext *ctx;
     Texture2D logogame;
@@ -18,6 +19,12 @@ typedef struct PressToPlay {
     int selectedIndex;
     const char *menuItems[MENU_COUNT];
     Color WarnaAwal[MENU_COUNT];
+    Sound enterSfx;
+    Music menuBgm;
+    bool isMusicPlaying;
+    Sound MenuNaik;
+    Sound MenuTurun;
+
 } PressToPlay;
 
 void PressToPlay_LoadTextures(PressToPlay *self);
