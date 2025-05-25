@@ -79,19 +79,27 @@ void PressToPlay_Update(PressToPlay *self) {
 
 void PressToPlay_Draw(PressToPlay *self){
     Font font = self->ctx->font;
+
+    DrawCircleGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 220}, (Color){255, 147, 98, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 100, self->ctx->screen_height / 2 + 500, self->ctx->screen_height, (Color){255, 147, 98, 220}, (Color){255, 92, 93, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 200, self->ctx->screen_height / 2 + 600, self->ctx->screen_height, (Color){255, 92, 93, 220}, (Color){128, 69, 255, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 300, self->ctx->screen_height / 2 + 700, self->ctx->screen_height, (Color){128, 69, 255, 220}, (Color){57, 43, 214, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 400, self->ctx->screen_height / 2 + 800, self->ctx->screen_height, (Color){57, 43, 214, 220}, (Color){24, 29, 149, 220});
+    DrawCircle(self->ctx->screen_width / 2 - 500, self->ctx->screen_height / 2 + 900, self->ctx->screen_height, (Color){24, 29, 149, 220});
+    
     FlyingObject_Draw(&self->flying_objects);
     
     DrawTextureEx(self->logogame, (Vector2){SCREEN_WIDTH / 2 - (self->logogame.width * 0.25f), 80}, 0, 0.5f, WHITE);
     for (int i = 0; i < MENU_COUNT; i++) {
         Rectangle box = {
         .x = SCREEN_WIDTH / 2 - 150,
-        .y = 350 + i * 125,
+        .y = 350 + i * 150,
         .width = 300,
         .height = 75
     };
 
-        Color bgColor = (i == self->selectedIndex) ? DARKBLUE : BLUE;
-        Color textColor = (i == self->selectedIndex) ? YELLOW : WHITE;
+        Color bgColor = (i == self->selectedIndex) ? RAYWHITE : LIGHTGRAY;
+        Color textColor = (i == self->selectedIndex) ? GOLD : GRAY;
 
         DrawRectangleRounded(box,0.6f, 10, bgColor);
         DrawTextEx(self->ctx->font, self->menuItems[i],
