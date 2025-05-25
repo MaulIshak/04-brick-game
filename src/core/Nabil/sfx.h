@@ -3,7 +3,7 @@
 #include "raylib.h"
 #include <stdlib.h>
 #include <string.h>
-#define TOTAL_SOUND 8
+#define TOTAL_SOUND 9
 
 extern int methodCase;
 
@@ -15,6 +15,7 @@ extern Sound enterSfx;
 extern Sound perfectSfx;
 extern Sound goodSfx;
 extern Sound missSfx;
+extern Sound countSfx;
 
 typedef struct
 {
@@ -44,6 +45,7 @@ void PlayEnterSfx();
 void PlayPerfectSfx();
 void PlayGoodSfx();
 void PlayMissSfx();
+void PlayCountScoreSfx();
 void UnloadSfx();
 
 #endif

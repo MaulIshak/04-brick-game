@@ -9,6 +9,11 @@
 typedef struct EndOfTheGame {
     AppContext *ctx;
     Font gradeFont;
+    float anim_accuracy;
+    long anim_point;
+    float animation_timer;
+    bool animation_done;
+    bool count_played;
 } EndOfTheGame;
 
 void EndOfTheGame_Init(EndOfTheGame *self);

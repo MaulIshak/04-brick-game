@@ -3,12 +3,18 @@
 #include <stdio.h>
 #include "raylib.h"
 #include "macro.h"
+#include "sfx.h"
 
 
 void EndOfTheGame_Init(EndOfTheGame *self){
     Font gradeFont;
     gradeFont = LoadFontEx("resources/font/BungeeSpice-Regular.ttf", 175, NULL, 0);
     self->gradeFont = gradeFont;
+    self->anim_accuracy = 0.0f;
+    self->anim_point = 0;
+    self->animation_timer = 0.0f;
+    self->animation_done = false;
+    self->count_played = false;
 }
 
 void EndOfTheGame_Draw(EndOfTheGame *self){
@@ -18,12 +24,20 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     Color gradeColor;
     
     // CREATE A CENTER RECTANGLE
-    BeginBlendMode(BLEND_ALPHA);
-    DrawRectangle(0, 0, self->ctx->screen_width, self->ctx->screen_height, ColorAlpha(BLACK, 0.3));
+    ClearBackground(WHITE);
+    DrawCircleGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 220}, (Color){255, 147, 98, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 + 100, self->ctx->screen_height / 2 - 500, self->ctx->screen_height, (Color){255, 147, 98, 220}, (Color){255, 92, 93, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 + 200, self->ctx->screen_height / 2 - 600, self->ctx->screen_height, (Color){255, 92, 93, 220}, (Color){128, 69, 255, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 + 300, self->ctx->screen_height / 2 - 700, self->ctx->screen_height, (Color){128, 69, 255, 220}, (Color){57, 43, 214, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 + 400, self->ctx->screen_height / 2 - 800, self->ctx->screen_height, (Color){57, 43, 214, 220}, (Color){24, 29, 149, 220});
+    DrawCircle(self->ctx->screen_width / 2 + 500, self->ctx->screen_height / 2 - 900, self->ctx->screen_height, (Color){24, 29, 149, 220});
+
+    // BeginBlendMode(BLEND_ALPHA);
+    // DrawRectangle(0, 0, self->ctx->screen_width, self->ctx->screen_height, ColorAlpha(BLACK, 0.3));
     DrawRectangle(50, (self->ctx->screen_height/2) / 2 - 50, self->ctx->screen_width - 100, self->ctx->screen_height/2 + 100, RAYWHITE);
     
     // DRAW GRADE
-    float accuracy = ((float)self->ctx->score.point / (float)((self->ctx->score.perfect + self->ctx->score.good + self->ctx->score.miss) * 100)) * 100;
+    float accuracy = self->anim_accuracy;
     if (accuracy >= 90) {
         grade = "S";
         gradeColor = GOLD;
@@ -43,17 +57,18 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     DrawTextEx(self->gradeFont, grade, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, grade, 174, 0).x / 2, 160 }, 174, 0, gradeColor);
     
     // DRAW ACCURACY PERCENTAGE
-    sprintf(buff, "%ld", self->ctx->score.point);
+    sprintf(buff, "%ld", self->anim_point);
     float pointWidth = MeasureTextEx(self->gradeFont, buff, 70, 0).x;
-    sprintf(buff, "%.2f%%", self->ctx->score.accuracy);
+    sprintf(buff, "%.2f%%", self->anim_accuracy);
     float accuracyWidth = MeasureTextEx(self->gradeFont, buff, 70, 0).x;
+
     float separatorWidth = MeasureTextEx(self->gradeFont, "|", 70, 0).x;
     float totalWidth = pointWidth + separatorWidth + accuracyWidth + 20; 
     
-    sprintf(buff, "%ld", self->ctx->score.point);
+    sprintf(buff, "%ld", self->anim_point);
     DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2, 320 }, 70, 0, BLACK);
     DrawTextEx(self->gradeFont, "|", (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2 + pointWidth + 10, 320 }, 70, 0, BLACK);
-    sprintf(buff, "%.2f%%", self->ctx->score.accuracy);
+    sprintf(buff, "%.2f%%", self->anim_accuracy);
     DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2 + pointWidth + separatorWidth + 20, 320 }, 70, 0, BLACK);
     
     // DRAW ACCURACY NOTE
@@ -82,13 +97,41 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
 }
 
 void EndOfTheGame_Update(EndOfTheGame *self){
+    if (!self->count_played && !self->animation_done) {
+        PlayCountScoreSfx();
+        self->count_played = true;
+    }
+    
+    if (!self->animation_done) {
+        self->animation_timer += GetFrameTime();
+        float t = self->animation_timer / 2.5f;
+        if (t >= 1.0f) {
+            t = 1.0f;
+            self->animation_done = true;
+        }
+        self->anim_point = (long)(self->ctx->score.point * t);
+        self->anim_accuracy = self->ctx->score.accuracy * t;
+    }
+    
     if(IsKeyPressed(KEY_D)) {
         self->ctx->app_state = APP_PLAYING;
         self->ctx->score.accuracy = 0.00;
+        
+        self->anim_accuracy = 0.0f;
+        self->anim_point = 0;
+        self->animation_timer = 0.0f;
+        self->animation_done = false;
+        self->count_played = false;
     }
     if (IsKeyPressed(KEY_K)) {
         self->ctx->app_state = APP_SELECT;
         self->ctx->score.accuracy = 0.00;
+        
+        self->anim_accuracy = 0.0f;
+        self->anim_point = 0;
+        self->animation_timer = 0.0f;
+        self->animation_done = false;
+        self->count_played = false;
     }
 }
 

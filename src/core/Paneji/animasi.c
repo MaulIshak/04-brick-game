@@ -4,6 +4,7 @@
 #include "press_to_play.h"
 #include "sfx.h"
 
+
 void LoadingLoadTextures(Loading *self) {
     self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
     self->intro = LoadSound("resources/sfx/logo-sfx.wav");
@@ -31,12 +32,8 @@ void LoadingUpdatePositions(Loading *self) {
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
 
-        // if(!IsSoundPlaying(introSfx)){ 
-        //     PlayIntroSfx();
-        // }
-
-        if (!IsSoundPlaying(self->intro)) {
-            PlaySound(self->intro);
+        if(!IsSoundPlaying(introSfx)){ 
+            PlayIntroSfx();
         }
 
         self->alpha += 0.04f;
@@ -77,6 +74,7 @@ void LoadingUpdatePositions(Loading *self) {
 
 
 void LoadingDrawTextures(Loading *self) {
+
 
     if (self->state == LOGO_FADE_IN || self->state == LOGO_HOLD || self->state == LOGO_FADE_OUT) {
         DrawTextureEx(self->logo, (Vector2){SCREEN_WIDTH / 2 - (self->logo.width / 2) / 2, SCREEN_HEIGHT / 2 - (self->logo.height / 2) / 2} , 0, 0.5, Fade(WHITE, self->alpha));
