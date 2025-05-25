@@ -2,29 +2,53 @@
 #include "context.h"
 #include "sfx.h"
 
-void PressToPlay_LoadTextures(PressToPlay *self){
+void PressToPlay_LoadTextures(PressToPlay *self) {
     self->logogame = LoadTexture("resources/texture/logo-game.png");
-    self->selectedIndex = 0;
-    self->menuItems[0] = "PILIH LAGU";
-    self->menuItems[1] = "TUTORIAL";
-    self->menuItems[2] = "EXIT";
-    self->WarnaAwal[0] =  RED;
-    self->WarnaAwal[1] =  GREEN;
-    self->WarnaAwal[2] =  BLUE;
 
+    const char *items[MENU_COUNT] = { "PILIH LAGU", "TUTORIAL", "EXIT" };
+    Color colors[MENU_COUNT] = { RED, GREEN, BLUE };
+
+    self->head = NULL;
+    self->tail = NULL;
+    self->menuterpilih = NULL;
+
+    for (int i = 0; i < MENU_COUNT; i++) {
+        MenuNode *node = malloc(sizeof(MenuNode));
+        node->text = items[i];
+        node->warna = colors[i];
+        node->transisi = 1.0f;
+        node->prev = self->tail;
+        node->next = NULL;
+
+        if (self->tail)
+            self->tail->next = node;
+        else
+            self->head = node;
+
+        self->tail = node;
+    }
+
+    self->menuterpilih = self->head;
+
+    // Load sound dan BGM tetap sama
     self->enterSfx = LoadSound("resources/sfx/10.sfx-sementara.wav"); 
     self->menuBgm = LoadMusicStream("resources/backsound-mainmenu.mp3"); 
     self->MenuNaik = LoadSound("resources/sfx/7.sfx1.wav");     
     self->MenuTurun = LoadSound("resources/sfx/8.sfx2.wav"); 
     PlayMusicStream(self->menuBgm);
     self->isMusicPlaying = true;
-
-    for (int i = 0; i < MENU_COUNT; i++) {
-    self->TransisiMenu[i] = 1.0f;
-    }
 }
 
+
 void PressToPlay_UnloadTextures(PressToPlay *self){
+    
+    MenuNode *current = self->head;
+    while (current) {
+        MenuNode *next = current->next;
+        free(current);
+        current = next;
+    }
+    
     UnloadTexture(self->logogame);
     UnloadSound(self->enterSfx);
     UnloadSound(self->MenuNaik);
@@ -45,35 +69,29 @@ void PressToPlay_Update(PressToPlay *self) {
     }
 
     if (IsKeyPressed(KEY_J)) {
-        self->selectedIndex = (self->selectedIndex + 1) % MENU_COUNT;
+    if (self->menuterpilih->next) {
+        self->menuterpilih = self->menuterpilih->next;
         PlaySound(self->MenuNaik);
+    }
     } else if (IsKeyPressed(KEY_F)) {
-        self->selectedIndex = (self->selectedIndex - 1 + MENU_COUNT) % MENU_COUNT;
-        PlaySound(self->MenuTurun);
+        if (self->menuterpilih->prev) {
+            self->menuterpilih = self->menuterpilih->prev;
+            PlaySound(self->MenuTurun);
+        }
     } else if (IsKeyPressed(KEY_ENTER)) {
         PlaySound(self->enterSfx);
         StopMusicStream(self->menuBgm);
         self->isMusicPlaying = false;
 
-        switch (self->selectedIndex) {
-            case 0:
-                self->ctx->app_state = APP_SELECT;
-                break;
-            case 1:
-                self->ctx->app_state = APP_HOW_TO_PLAY;
-                break;
-            case 2:
-                CloseWindow();
-                break;
-        }
+    if (strcmp(self->menuterpilih->text, "PILIH LAGU") == 0) {
+        self->ctx->app_state = APP_SELECT;
+    } else if (strcmp(self->menuterpilih->text, "TUTORIAL") == 0) {
+        self->ctx->app_state = APP_HOW_TO_PLAY;
+    } else if (strcmp(self->menuterpilih->text, "EXIT") == 0) {
+        CloseWindow();
     }
-    for (int i = 0; i < MENU_COUNT; i++) {
-        if (i == self->selectedIndex) {
-            self->TransisiMenu[i] += (1.1f - self->TransisiMenu[i]) * 0.1f; // Smooth grow
-        } else {
-            self->TransisiMenu[i] += (1.0f - self->TransisiMenu[i]) * 0.1f; // Smooth shrink
-        }
-    }
+}
+
 
 }
 
@@ -90,21 +108,33 @@ void PressToPlay_Draw(PressToPlay *self){
     FlyingObject_Draw(&self->flying_objects);
     
     DrawTextureEx(self->logogame, (Vector2){SCREEN_WIDTH / 2 - (self->logogame.width * 0.25f), 80}, 0, 0.5f, WHITE);
-    for (int i = 0; i < MENU_COUNT; i++) {
+    MenuNode *current = self->head;
+    int i = 0;
+
+    while (current) {
         Rectangle box = {
-        .x = SCREEN_WIDTH / 2 - 150,
-        .y = 350 + i * 150,
-        .width = 300,
-        .height = 75
-    };
+            .x = SCREEN_WIDTH / 2 - 150,
+            .y = 350 + i * 150,
+            .width = 300,
+            .height = 75
+        };
 
-        Color bgColor = (i == self->selectedIndex) ? RAYWHITE : LIGHTGRAY;
-        Color textColor = (i == self->selectedIndex) ? GOLD : GRAY;
+        Color bgColor = (current == self->menuterpilih) ? RAYWHITE : LIGHTGRAY;
+        Color textColor = (current == self->menuterpilih) ? GOLD : GRAY;
 
-        DrawRectangleRounded(box,0.6f, 10, bgColor);
-        DrawTextEx(self->ctx->font, self->menuItems[i],
-            (Vector2){ box.x + 20, box.y + 10 }, 30, 2, textColor);
-    }
+        DrawRectangleRounded(box, 0.6f, 10, bgColor);
+        Vector2 textSize = MeasureTextEx(self->ctx->font, current->text, 30, 2);
+        Vector2 textPos = {
+            box.x + (box.width - textSize.x) / 2,
+            box.y + (box.height - textSize.y) / 2
+        };
+
+    DrawTextEx(self->ctx->font, current->text, textPos, 30, 2, textColor);
+
+    current = current->next;
+    i++;
+}
+
 }
 
 bool PressToPlay_IsShow(PressToPlay *self){
