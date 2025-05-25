@@ -60,6 +60,11 @@ void gp_draw(Gameplay* self){
   }
   void gp_update(Gameplay* self){
     _updateLifeBar(self);
+    _inputHandler(self);
+    // if (self->isPlaying && self->ctx != NULL && self->ctx->selected_track != -1) {
+    //     // Gunakan waktu musik yang sedang diputar sebagai sumber utama gameTime
+    //     self->gameTime = GetSelectedMusicTimePlayed(self->ctx) * 1000.0; // Konversi ke milidetik
+    // }
     // Update Gameplay
     if(!self->isBackgroundLoaded){
       bg = _getRandomBg(self);
@@ -71,12 +76,12 @@ void gp_draw(Gameplay* self){
       timer_start(&(self->timer), 3);
     }
     if(is_timer_end(&(self->timer))){
+      // printf("WAKTU MULAI GAME:%f\n", self->gameTime);
       _UpdateGameTime(self);
     }
     if(!self->isPlaying) return;
     UpdateProgressBar(&self->progressBar, self);
 
-    _inputHandler(self);
     if(self->life >= 100){
       self->life = 100;
     }

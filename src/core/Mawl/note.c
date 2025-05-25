@@ -34,40 +34,39 @@ void note_draw(NoteManager *self){
       // DrawText("FAIL", GetScreenWidth()/2 - MeasureText("FAIL", 100)/2, GetScreenHeight()/2, 100, BLACK);
       self->gp->life = 100;
     }
-
-}
-void note_update(NoteManager *self){
-  // Mulai timer/countdown untuk memulai game (3 detik)
-  if(!self->timer.is_started) {
-    // self->gp->gameTime = 0;
-    timer_start(&self->timer, 3);
+    
   }
-  if(!self->musicTimer.is_started){
-    // self->gp->gameTime = 0;
-    timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
-  }
-  if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
+  void note_update(NoteManager *self){
+    // Mulai timer/countdown untuk memulai game (3 detik)
+    if(!self->timer.is_started) {
+      // self->gp->gameTime = 0;
+      timer_start(&self->timer, 3);
+      printf("Mulai timer di:%f\n", self->gp->gameTime);
+    }
+    
+    if(!self->musicTimer.is_started){
+      // self->gp->gameTime = 0;
+      timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
+    }
+    // if(self->timer.is_started) printf("COUNTDOWN: %s\n", time_elapsed(&(self->timer)));
+    if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
       printf("Music start time: %f\n", self->gp->gameTime);
       PlaySelectedTrack(self->ctx);
       self->isTrackPlayed = true;
       self->gp->isPlaying = true;
     }
-  if(IsKeyPressed(KEY_ENTER)){
-      self->gp->isPlaying = !self->gp->isPlaying;
-  }
-  if(!self->gp->isPlaying){
-    return;
-  }
+
   if(self->isTrackPlayed){
-     if(IsSelectedMusicEnd(self->ctx) ){
-        self->ctx->app_state = END_OF_THE_GAME;
-        _resetNoteManager(self); // Ensure all note-related states are reset
-        return;
-      }
-    }  
-    // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
-    if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
-      printf("%.2f\n\n", self->gp->gameTime);
+    if(IsSelectedMusicEnd(self->ctx) ){
+      self->ctx->app_state = END_OF_THE_GAME;
+      _resetNoteManager(self); // Ensure all note-related states are reset
+      self->gp->life = 100;
+      return;
+    }
+  }  
+  // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
+    if(!self->isBeatmapLoaded){
+      printf("Beatmap loaded at: %.2f\n\n", self->gp->gameTime);
       self->beatmap = GetSelectedMusicBeatmap(self->ctx);
       for (int i = 0; i < self->beatmap.len; i++)
       {
@@ -79,11 +78,8 @@ void note_update(NoteManager *self){
         self->isBeatmapLoaded = true;
         
     }
-    
-    if(is_timer_end(&self->timer)){
-      // printf("UPDATE SEKARANGGGGGGGGG!!!!\nwaktu: %f\n", self->gp->gameTime);
       _updateNotePosition(self);
-    }
+
 
 
 }
@@ -295,6 +291,7 @@ void _updateNotePosition(NoteManager* self){
         note->position.y = self->ctx->screen_height;
         note->isSpawned = true;
         note->isTrailVisible = true;
+        printf("Note spawned at: %f\n", self->gp->gameTime);
       }
       float note_speed = ((self->ctx->screen_height - 45)/self->timeToHitPad) * dt ; 
       note->position.y -= note_speed;
@@ -416,7 +413,7 @@ void _extractNoteFromBeatmap(NoteManager* self){
   {
     noteToInsert = (DrawableNote*)malloc(sizeof(DrawableNote));
     noteToInsert->direction = self->beatmap.items[i].direction; 
-    noteToInsert->hit_at_ms = self->beatmap.items[i].hit_at_ms + self->gp->gameTimeOffset; 
+    noteToInsert->hit_at_ms = self->beatmap.items[i].hit_at_ms + self->gp->gameTimeOffset - 500; // offset waktu untuk hit pad
     noteToInsert->position = self->beatmap.items[i].position; 
     noteToInsert->isHit = false;
     noteToInsert->isSpawned = false;
@@ -439,12 +436,14 @@ void _resetNoteManager(NoteManager *self) {
   self->acc = PERFECT;
   self->timer.is_started = false;
   self->musicTimer.is_started = false;
-  self->gp->gameTime = 0;
   self->gp->isPlaying = false;
+  // SeekMusicStream(GetSelectedTrack(self->ctx).music, 0.1f);
+  // self->gp->gameTimeOffset
   while(self->noteHead != NULL) {
     free(self->noteHead->info);
     node_remove_first(&(self->noteHead));
   }
+  self->noteHead = NULL;
   
 }
 
