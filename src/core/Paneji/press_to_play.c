@@ -85,9 +85,9 @@ void PressToPlay_Draw(PressToPlay *self){
     for (int i = 0; i < MENU_COUNT; i++) {
         Rectangle box = {
         .x = SCREEN_WIDTH / 2 - 150,
-        .y = 350 + i * 150,
+        .y = 350 + i * 125,
         .width = 300,
-        .height = 100
+        .height = 75
     };
 
         Color bgColor = (i == self->selectedIndex) ? DARKBLUE : BLUE;
