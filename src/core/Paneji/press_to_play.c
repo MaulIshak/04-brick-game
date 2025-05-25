@@ -18,6 +18,10 @@ void PressToPlay_LoadTextures(PressToPlay *self){
     self->MenuTurun = LoadSound("resources/sfx/8.sfx2.wav"); 
     PlayMusicStream(self->menuBgm);
     self->isMusicPlaying = true;
+
+    for (int i = 0; i < MENU_COUNT; i++) {
+    self->TransisiMenu[i] = 1.0f;
+    }
 }
 
 void PressToPlay_UnloadTextures(PressToPlay *self){
@@ -30,6 +34,11 @@ void PressToPlay_UnloadTextures(PressToPlay *self){
 
 void PressToPlay_Update(PressToPlay *self) {
     FlyingObject_Update(&self->flying_objects, self->ctx);
+
+    if (!self->isMusicPlaying) {
+        PlayMusicStream(self->menuBgm);
+        self->isMusicPlaying = true;
+    }
 
     if (self->isMusicPlaying) {
         UpdateMusicStream(self->menuBgm);
@@ -58,13 +67,20 @@ void PressToPlay_Update(PressToPlay *self) {
                 break;
         }
     }
+    for (int i = 0; i < MENU_COUNT; i++) {
+        if (i == self->selectedIndex) {
+            self->TransisiMenu[i] += (1.1f - self->TransisiMenu[i]) * 0.1f; // Smooth grow
+        } else {
+            self->TransisiMenu[i] += (1.0f - self->TransisiMenu[i]) * 0.1f; // Smooth shrink
+        }
+    }
+
 }
 
 void PressToPlay_Draw(PressToPlay *self){
-
     Font font = self->ctx->font;
-
     FlyingObject_Draw(&self->flying_objects);
+    
     DrawTextureEx(self->logogame, (Vector2){SCREEN_WIDTH / 2 - (self->logogame.width * 0.25f), 80}, 0, 0.5f, WHITE);
     for (int i = 0; i < MENU_COUNT; i++) {
         Rectangle box = {
