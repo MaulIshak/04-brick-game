@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include "scene.h"
 #include "context.h"
+#include "gameplay.h"
 
 #ifndef END_OF_THE_GAME_H
 #define END_OF_THE_GAME_H
