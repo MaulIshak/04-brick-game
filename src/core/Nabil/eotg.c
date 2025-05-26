@@ -113,9 +113,15 @@ void EndOfTheGame_Update(EndOfTheGame *self){
         self->anim_accuracy = self->ctx->score.accuracy * t;
     }
     
-    if(IsKeyPressed(KEY_D)) {
-        self->ctx->app_state = APP_PLAYING;
+    if(IsKeyPressed(KEY_D) || IsKeyPressed(KEY_K)) {
+        if (IsKeyPressed(KEY_D))
+        {
+            self->ctx->app_state = APP_PLAYING;
+        } else { 
+            self->ctx->app_state = APP_SELECT;
+        }
         self->ctx->score.accuracy = 0.00;
+        self->ctx->score.point = 0;
         
         self->anim_accuracy = 0.0f;
         self->anim_point = 0;
@@ -123,16 +129,7 @@ void EndOfTheGame_Update(EndOfTheGame *self){
         self->animation_done = false;
         self->count_played = false;
     }
-    if (IsKeyPressed(KEY_K)) {
-        self->ctx->app_state = APP_SELECT;
-        self->ctx->score.accuracy = 0.00;
-        
-        self->anim_accuracy = 0.0f;
-        self->anim_point = 0;
-        self->animation_timer = 0.0f;
-        self->animation_done = false;
-        self->count_played = false;
-    }
+    
 }
 
 bool EndOfTheGame_IsShow(EndOfTheGame *self){
