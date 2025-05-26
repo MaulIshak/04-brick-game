@@ -5,7 +5,6 @@
 #include "macro.h"
 #include "sfx.h"
 
-
 void EndOfTheGame_Init(EndOfTheGame *self){
     Font gradeFont;
     gradeFont = LoadFontEx("resources/font/BungeeSpice-Regular.ttf", 175, NULL, 0);
@@ -23,7 +22,7 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     char* grade = "";
     Color gradeColor;
     
-    // CREATE A CENTER RECTANGLE
+    // CREATE TAMPILAN
     ClearBackground(WHITE);
     DrawCircleGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 220}, (Color){255, 147, 98, 220});
     DrawCircleGradient(self->ctx->screen_width / 2 + 100, self->ctx->screen_height / 2 - 500, self->ctx->screen_height, (Color){255, 147, 98, 220}, (Color){255, 92, 93, 220});
@@ -31,9 +30,6 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     DrawCircleGradient(self->ctx->screen_width / 2 + 300, self->ctx->screen_height / 2 - 700, self->ctx->screen_height, (Color){128, 69, 255, 220}, (Color){57, 43, 214, 220});
     DrawCircleGradient(self->ctx->screen_width / 2 + 400, self->ctx->screen_height / 2 - 800, self->ctx->screen_height, (Color){57, 43, 214, 220}, (Color){24, 29, 149, 220});
     DrawCircle(self->ctx->screen_width / 2 + 500, self->ctx->screen_height / 2 - 900, self->ctx->screen_height, (Color){24, 29, 149, 220});
-
-    // BeginBlendMode(BLEND_ALPHA);
-    // DrawRectangle(0, 0, self->ctx->screen_width, self->ctx->screen_height, ColorAlpha(BLACK, 0.3));
     DrawRectangle(50, (self->ctx->screen_height/2) / 2 - 50, self->ctx->screen_width - 100, self->ctx->screen_height/2 + 100, RAYWHITE);
     
     // DRAW GRADE
@@ -97,11 +93,13 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
 }
 
 void EndOfTheGame_Update(EndOfTheGame *self){
+    // Play sound
     if (!self->count_played && !self->animation_done) {
         PlayCountScoreSfx();
         self->count_played = true;
     }
     
+    // Animasi score
     if (!self->animation_done) {
         self->animation_timer += GetFrameTime();
         float t = self->animation_timer / 2.5f;
@@ -113,6 +111,7 @@ void EndOfTheGame_Update(EndOfTheGame *self){
         self->anim_accuracy = self->ctx->score.accuracy * t;
     }
     
+    // Kondisi untuk pindah app state
     if(IsKeyPressed(KEY_D) || IsKeyPressed(KEY_K)) {
         if (IsKeyPressed(KEY_D))
         {
