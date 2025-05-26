@@ -32,7 +32,8 @@ void note_draw(NoteManager *self){
   }
   void note_update(NoteManager *self){
     if(self->gp->life <= 0 && self->ctx->app_state == APP_PLAYING){
-      self->ctx->app_state = 
+      self->ctx->app_state = END_OF_THE_GAME;
+      self->ctx->is_dead = true;
       StopSelectedTrack(self->ctx);
       _resetNoteManager(self);
       // DrawText("FAIL", GetScreenWidth()/2 - MeasureText("FAIL", 100)/2, GetScreenHeight()/2, 100, BLACK);
