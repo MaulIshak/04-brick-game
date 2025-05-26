@@ -11,7 +11,7 @@ for f in $(find src -name '*.c' ! -name '*.standalone.c'); do
     INPUT="$INPUT $f"
 done
 
-# $CC -O3 -c ./external/sqlite/sqlite3.c -o ./out/sqlite.o
+$CC -c ./external/sqlite/sqlite3.c -o ./out/sqlite.o
 
 time $CC $FLAGS $OUT $I_PATH $INPUT $L_PATH $LIBS
 ./out/migrate.exe

@@ -4,6 +4,7 @@
 #include "press_to_play.h"
 #include "sfx.h"
 
+
 void LoadingLoadTextures(Loading *self) {
     self->logo = LoadTexture("resources/texture/lambang-contoh.png"); 
     self->intro = LoadSound("resources/sfx/logo-sfx.wav");
@@ -31,12 +32,8 @@ void LoadingUpdatePositions(Loading *self) {
     if (self->state == LOGO_FADE_IN) {
         DisableParticle();
 
-        // if(!IsSoundPlaying(introSfx)){ 
-        //     PlayIntroSfx();
-        // }
-
-        if (!IsSoundPlaying(self->intro)) {
-            PlaySound(self->intro);
+        if(!IsSoundPlaying(introSfx)){ 
+            PlayIntroSfx();
         }
 
         self->alpha += 0.04f;
@@ -51,7 +48,7 @@ void LoadingUpdatePositions(Loading *self) {
             self->state = LOGO_FADE_OUT;
         }
     }else if (self->state == LOGO_FADE_OUT) {
-    self->alpha -= 0.02f;
+    self->alpha -= 0.01f;
     if (self->alpha <= 0.0f) {
         self->alpha = 0.0f;
         self->state = READY;  
@@ -77,6 +74,12 @@ void LoadingUpdatePositions(Loading *self) {
 
 
 void LoadingDrawTextures(Loading *self) {
+    DrawCircleGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 220}, (Color){255, 147, 98, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 100, self->ctx->screen_height / 2 + 500, self->ctx->screen_height, (Color){255, 147, 98, 220}, (Color){255, 92, 93, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 200, self->ctx->screen_height / 2 + 600, self->ctx->screen_height, (Color){255, 92, 93, 220}, (Color){128, 69, 255, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 300, self->ctx->screen_height / 2 + 700, self->ctx->screen_height, (Color){128, 69, 255, 220}, (Color){57, 43, 214, 220});
+    DrawCircleGradient(self->ctx->screen_width / 2 - 400, self->ctx->screen_height / 2 + 800, self->ctx->screen_height, (Color){57, 43, 214, 220}, (Color){24, 29, 149, 220});
+    DrawCircle(self->ctx->screen_width / 2 - 500, self->ctx->screen_height / 2 + 900, self->ctx->screen_height, (Color){24, 29, 149, 220});
 
     if (self->state == LOGO_FADE_IN || self->state == LOGO_HOLD || self->state == LOGO_FADE_OUT) {
         DrawTextureEx(self->logo, (Vector2){SCREEN_WIDTH / 2 - (self->logo.width / 2) / 2, SCREEN_HEIGHT / 2 - (self->logo.height / 2) / 2} , 0, 0.5, Fade(WHITE, self->alpha));

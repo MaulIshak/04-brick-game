@@ -9,6 +9,7 @@ Sound enterSfx;
 Sound perfectSfx;
 Sound goodSfx;
 Sound missSfx;
+Sound countSfx;
 
 Sound SfxList[TOTAL_SOUND];
 const char* soundFileNames[TOTAL_SOUND] = {
@@ -20,14 +21,16 @@ const char* soundFileNames[TOTAL_SOUND] = {
     "resources/sfx/6.perfectNote.wav",
     "resources/sfx/7.sfx1.wav",
     "resources/sfx/8.sfx2.wav",
+    "resources/sfx/9.count.wav",
 };
 float sfxVolume[] = {
     0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
-    1.0f, 0.5f, 1.0f
+    1.0f, 0.5f, 1.0f, 0.5f
 };
 char *infoSfx[] = {
     "intro", "logo", "enter", "good",
-    "miss", "perfect", "sfx1", "sfx2"
+    "miss", "perfect", "sfx1", "sfx2",
+    "count"
 };
 
 SoundList SfxLinkedList = { NULL };
@@ -45,6 +48,7 @@ void InitSfx(){
     perfectSfx = LoadSound("resources/sfx/6.perfectNote.wav");
     arrowSfx1 = LoadSound("resources/sfx/7.sfx1.wav");
     arrowSfx2 = LoadSound("resources/sfx/8.sfx2.wav");
+    countSfx = LoadSound("resources/sfx/9.count.wav");
     
     SetSoundVolume(introSfx, 0.5f); 
     SetSoundVolume(logoSfx, 0.5f); 
@@ -54,6 +58,7 @@ void InitSfx(){
     SetSoundVolume(missSfx, 1.0f); 
     SetSoundVolume(perfectSfx, 0.5f); 
     SetSoundVolume(goodSfx, 1.0f); 
+    SetSoundVolume(countSfx, 0.5f); 
 }
 
 // ARRAY
@@ -293,6 +298,24 @@ void PlayArrowSfx(int key) {
         default:
             break;
         }
+    }
+}
+
+void PlayCountScoreSfx(){
+    switch (methodCase)
+    {
+    case 1:
+        PlaySound(perfectSfx);
+        break;
+    case 2:
+        PlaySound(SfxList[8]);
+        break;
+    case 3:
+        LinkedListPlayHelper("count");
+        break;
+    
+    default:
+        break;
     }
 }
 
