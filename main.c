@@ -61,6 +61,7 @@ int _main()
   InitLinkedListSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
+  // AppContext ctx = CreateForMigrate(screenWidth, screenHeight);
   #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
   // ctx.app_state = APP_LOADING;
@@ -122,10 +123,10 @@ int _main()
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   #ifdef GAME_DEBUG
-  ctx.selected_track = 7;
+  ctx.selected_track = 8;
   #endif //GAME_DEBUG
   #ifdef TEST_CONTEXT 
-    PlaySelectedTrack(&ctx);
+    // PlaySelectedTrack(&ctx);
   #endif
   
   while (!WindowShouldClose()) {
