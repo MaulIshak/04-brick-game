@@ -27,16 +27,17 @@ void note_draw(NoteManager *self){
         cur = cur->next;
       }
     }
+
+    
+  }
+  void note_update(NoteManager *self){
     if(self->gp->life <= 0 && self->ctx->app_state == APP_PLAYING){
-      self->ctx->app_state = END_OF_THE_GAME;
+      self->ctx->app_state = 
       StopSelectedTrack(self->ctx);
       _resetNoteManager(self);
       // DrawText("FAIL", GetScreenWidth()/2 - MeasureText("FAIL", 100)/2, GetScreenHeight()/2, 100, BLACK);
       self->gp->life = 100;
     }
-    
-  }
-  void note_update(NoteManager *self){
     // Mulai timer/countdown untuk memulai game (3 detik)
     if(!self->timer.is_started) {
       // self->gp->gameTime = 0;
