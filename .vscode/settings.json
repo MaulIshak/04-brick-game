@@ -48,7 +48,9 @@
     "__tree": "c",
     "sqlite3.h": "c",
     "sfx.h": "c",
-    "selection_menu.h": "c"
+    "selection_menu.h": "c",
+    "favorite.h": "c",
+    "list": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

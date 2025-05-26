@@ -20,6 +20,7 @@ const char *music_lists[] = {
     "resources/ToyLand",
     "resources/Bad Apple",
 };
+
 // For bakcward compability
 Track GetTrack(Tracks tracks, int index) {
     NodeInfoType add = node_at(tracks.track, index);

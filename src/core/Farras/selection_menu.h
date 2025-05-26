@@ -3,22 +3,27 @@
 #include "scene.h"
 #include "context.h"
 #include "flying_object.h"
+#include "favorite.h"
 
 #ifndef SELECTION_MENU_H
 #define SELECTION_MENU_H
 #define MAX_MUSIC_SHOWING 30
-typedef struct SelectionMenu {
+typedef struct SelectionMenu
+{
     AppContext *ctx;
 
     float rotationOffset;
     float targetRotationOffset;
-    
+
     float selectionYOffset;
     float targetYOffset;
-    
+
     bool isShow;
 
     FlyingObjects flying_objects;
+    FavoriteList favoriteList;
+    bool showFavoriteList;
+
     Texture2D background;
 } SelectionMenu;
 
@@ -33,6 +38,6 @@ bool SelectionMenu_IsShow(SelectionMenu *self);
 
 void InitSelectionMenu(SelectionMenu *selection_menu, AppContext *ctx);
 
-impl_scene(SelectionMenu*, SelectionMenu_ToScene, SelectionMenu_Draw, SelectionMenu_Update, SelectionMenu_IsShow)
+impl_scene(SelectionMenu *, SelectionMenu_ToScene, SelectionMenu_Draw, SelectionMenu_Update, SelectionMenu_IsShow)
 
 #endif // SELECTION_MENU_H

@@ -42,6 +42,8 @@
 #include "accuracy.h"
 #include "score.h"
 
+#include "favorite.h"
+
 #include <stdlib.h>
 
 int _main()
@@ -178,6 +180,7 @@ int _main()
   CloseWindow();
   UnloadImage(icon);
   AlbumCover_Destroy(&cover);
+  DestroyFavoriteList(&selection_menu.favoriteList);
 
   return 0;
 }
