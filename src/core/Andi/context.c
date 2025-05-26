@@ -168,6 +168,7 @@ AppContext CreateContext(int screen_width , int screen_height ){
         .score = {0},
         .beatmap_db = beatmap_db,
         .score_db = score_db,
+        .is_dead = false,
     };
     ctx._beatmap.items = malloc(sizeof(Note) * 10);
     ctx._beatmap.cap = 10;
