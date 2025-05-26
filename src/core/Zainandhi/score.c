@@ -103,7 +103,7 @@ void DrawScore(ScoreManager *score)
     static float comboScale = 1.0f;
     static float comboTimer = 0.0f;
     int alpha = (int)(255 * (scoreTimer / 1.5f));
-    sprintf(scoreText, "%d", score->value);
+    sprintf(scoreText, "%d",  score->ctx->score.point);
     sprintf(accuracyText, "%.2f%%", score->ctx->score.accuracy);
     sprintf(comboText, "Combo!!\n %d", score->comboValue);
 
