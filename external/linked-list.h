@@ -227,7 +227,7 @@ NodeInfoType node_remove_first(NodeAddress* head){
     return info;
 }
 NodeInfoType node_remove_last(NodeAddress* head){
-    NodeInfoType info;
+    NodeInfoType info= {0};
     if(head == NULL) {
         printf("ERROR(node_remove_last): linked list kosong\n");
         return info;
@@ -255,7 +255,7 @@ NodeInfoType node_remove_last(NodeAddress* head){
     return info;
 }
 NodeInfoType node_remove_at(NodeAddress* head, int at){
-    NodeInfoType info;
+    NodeInfoType info = {0};
     if(at == 0) {
         info = node_remove_first(head);
         return info;
@@ -309,7 +309,7 @@ void node_reverse(NodeAddress* head){
 
 int node_count(NodeAddress head) {
     NodeAddress cur = head;
-    int count;
+    int count = 0;
     while(cur != NULL) {
         count++;
         cur = cur->next;

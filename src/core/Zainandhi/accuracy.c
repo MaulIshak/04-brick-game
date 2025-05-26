@@ -4,8 +4,10 @@
 #include "accuracy.h"
 #include "gameplay.h"
 #include "context.h"
+#include "macro.h"
 
 ScoreManager InitAcc(AppContext *ctx, Gameplay *gameplay){
+    UNUSED(gameplay);
     ScoreManager score = {0};
 
     score.isBeatmapLoaded = false;
@@ -20,7 +22,6 @@ ScoreManager InitAcc(AppContext *ctx, Gameplay *gameplay){
 void AddAcc(ScoreManager *score, Accuracy acc){
     int sumPerfect = 0;
     int sumGood = 0;
-    int sumMiss = 0;
 
     if (acc == PERFECT)
     {
@@ -32,7 +33,7 @@ void AddAcc(ScoreManager *score, Accuracy acc){
     }
     else
     {
-        sumMiss++;
+   
     }
 
     score->ctx->score.accuracy += ((((sumPerfect * 1) + (sumGood * 0.5)) / score->beatmap.len) * (100));
@@ -40,7 +41,6 @@ void AddAcc(ScoreManager *score, Accuracy acc){
 }
 
 void DrawAcc(ScoreManager *score){
-    char accuracyText[20];
 
     Vector2 triangle[3] = {
         {510, score->ctx->screen_width + 120},

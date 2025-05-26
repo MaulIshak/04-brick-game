@@ -49,7 +49,8 @@
     "sqlite3.h": "c",
     "sfx.h": "c",
     "selection_menu.h": "c",
-    "press_to_play.h": "c"
+    "press_to_play.h": "c",
+    "sfx.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

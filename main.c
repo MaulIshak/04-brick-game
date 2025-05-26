@@ -59,11 +59,12 @@ int _main()
   InitLinkedListSfx();
 
   AppContext ctx = CreateContext(screenWidth, screenHeight);
-#ifdef GAME_DEBUG
-// ctx.app_state = APP_BEATMAP_CREATOR;
-// ctx.app_state = APP_LOADING;
-// ctx.app_state = END_OF_THE_GAME;
-#endif // GAME_DEBUG
+  // AppContext ctx = CreateForMigrate(screenWidth, screenHeight);
+  #ifdef GAME_DEBUG
+  // ctx.app_state = APP_BEATMAP_CREATOR;
+  // ctx.app_state = APP_LOADING;
+  // ctx.app_state = END_OF_THE_GAME;
+  #endif // GAME_DEBUG
   Loading loading = {
       .ctx = &ctx,
       .ptp = {
@@ -119,15 +120,14 @@ int _main()
 
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
-#ifdef GAME_DEBUG
-  ctx.selected_track = 7;
-#endif // GAME_DEBUG
-#ifdef TEST_CONTEXT
-  PlaySelectedTrack(&ctx);
-#endif
-
-  while (!WindowShouldClose())
-  {
+  #ifdef GAME_DEBUG
+  ctx.selected_track = 8;
+  #endif //GAME_DEBUG
+  #ifdef TEST_CONTEXT 
+    // PlaySelectedTrack(&ctx);
+  #endif
+  
+  while (!WindowShouldClose()) {
     UpdateContext(&ctx);
 
     if (ctx.app_state != APP_PLAYING && ctx.app_state != APP_BEATMAP_CREATOR && ctx.app_state != APP_LOADING)
@@ -184,5 +184,10 @@ int _main()
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *pCmdLine, int nCmdShow)
 {
+  UNUSED(hInstance);
+  UNUSED(hPrevInstance);
+  UNUSED(pCmdLine);
+  UNUSED(nCmdShow);
+
   return _main();
 }
