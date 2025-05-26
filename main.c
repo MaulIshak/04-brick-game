@@ -184,5 +184,10 @@ int _main()
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *pCmdLine, int nCmdShow)
 {
+  UNUSED(hInstance);
+  UNUSED(hPrevInstance);
+  UNUSED(pCmdLine);
+  UNUSED(nCmdShow);
+
   return _main();
 }

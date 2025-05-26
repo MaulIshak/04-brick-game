@@ -38,7 +38,6 @@ Track GetSelectedTrack(AppContext* ctx) {
 }
 
 Tracks InitTracks() {
-    NodeAddress add = NULL;
     Tracks tr = {
         .cap = 10,
         .len = 2,
@@ -169,6 +168,7 @@ AppContext CreateContext(int screen_width , int screen_height ){
         .score = {0},
         .beatmap_db = beatmap_db,
         .score_db = score_db,
+        .is_dead = false,
     };
     ctx._beatmap.items = malloc(sizeof(Note) * 10);
     ctx._beatmap.cap = 10;
@@ -250,7 +250,7 @@ Beatmap GetSelectedMusicBeatmapForDB(AppContext* ctx) {
     // buang metadata
     for(int i = 0; i < 3; i++) fgets(buff, 2048, f);
     
-    for(int i = 0; ; i++) {
+    for(; ; ) {
         fgets(buff, 2048, f);
       
         int i = 0;
@@ -316,7 +316,6 @@ char *GetSelectedMusicName(AppContext* ctx) {
 
 void WriteSelectedMusicBeatmapToFile(Beatmap* btm, const char* music_name, int score, float accuracy){
     char buff[2048] = {0};
-    Beatmap map = *btm;
     strcat(buff, "resources/");
     strcat(buff, music_name);
     strcat(buff, ".map");

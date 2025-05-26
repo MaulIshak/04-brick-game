@@ -12,8 +12,6 @@ kiss_fft_cpx fft_in[FFT_SIZE];
 kiss_fft_cpx fft_out[FFT_SIZE];
 
 static bool IsTransition = false;
-static bool ShouldUpdate = false;
-static bool ok = false;
 static TransitionPhase _transition_phase = TRANSITION_NONE;
 static ParticleConfig _particle_config = {0};
 static bool _show_particle = false;
@@ -73,37 +71,6 @@ Background CreateBackground(AppContext* ctx){
 }
 
 void Background_Draw(Background* self){
-    
-    int bottom = self->ctx->screen_height;
-    float step = 1.06;
-    float rad = 0;
-    // for(float freq = 1;  freq < FFT_SIZE; freq = (freq * step)) {
-        // int f1 = (int)ceilf(freq);
-        // int total = 0;
-        // int count = 0;
-        // int next_freq = (int)(freq * step);
-        // float avg = 0;
-
-        // for(int i = f1; i < next_freq && i < FFT_SIZE; i++) {
-        //     total += fft_out[i].r;
-        //     count++;
-        // }
-        // if (count > 0) {
-        //     avg = (float)total / (float)count;
-        // }
-        // avg *= 3;
-        // float hz = (fft_out[(int)freq].r);
-        
-        // if(hz > 1) {
-        //     rad += hz * 0.01;
-        // }
-        // char buff[20];
-        // sprintf(buff, "%lf", hz);
-        // DrawText(buff, 20 * freq, 20, 20, BLUE);
-        // DrawRectangle(freq, bottom - avg, 5, avg, Fade(BLACK, 0.125));
-    // }
-    // DrawCircle(self->ctx->screen_width / 2, self->ctx->screen_height / 2, rad, BLUE );
-
 
     DrawTextureEx(self->transition_texture, (Vector2){(-self->transition_texture.width) + (self->start_transition_frame * 40), 0},0, 1, WHITE);
     
@@ -118,35 +85,10 @@ void Background_Draw(Background* self){
             DrawRectangleV((Vector2){x_pos, self->particles[i].pos.y}, (Vector2){self->particles[i].radius, self->particles[i].radius}, c);
         }
     }
-    // FlyingObject_Draw(&self->objects);
+
 }
 void Background_Update(Background* self){
-    
-    // for (int i = 0; i < FFT_SIZE; i++) {
-    //     float t = (float)i/(FFT_SIZE - 1);
-    //     float hann = 0.5 - 0.5*cosf(2*PI*t);
-    //     fft_in[i].r = fft_in[i].r*hann;
-    // }
-
-    // kiss_fft(self->config, fft_in, fft_out);
-    // FlyingObject_Update(&self->objects, self->ctx);
-    // for(int i = 0; i < FFT_SIZE; i++) {
-        
-        // printf("%4f HZ \n", fft_out[i].r);
-    // }
-    // if(!ok) {
-    //     StartTransition();
-    //     ok = true;
-    // }
-
-    // if(!self->timer.is_started) {
-    //     EnableParticle();
-    //     timer_start(&self->timer, 0);
-    // }
-
-    
-
-    
+     
     if(IsTransition) {
         if(!self->is_transition_running) {
             self->is_transition_running = true;
@@ -179,10 +121,6 @@ void Background_Update(Background* self){
             self->is_transition_running = false;
         }
 
-        // if((self->start_transition_frame * 40) > self->transition_texture.width && self->transition_phase == TRANSITION_END) {
-        //     self->is_transition_running = false;
-        //     self->transition_phase = TRANSITION_NONE;
-        // }
     }
 
     // Particle
@@ -208,10 +146,7 @@ void Background_Update(Background* self){
         if(self->particles[i].pos.x == 0) {
             self->particles[i].pos.x = (w / PARTICLE_LEN * i) + 3 + _particle_config.area.x;    
             self->particles[i].speed.x = GetRandomValue(1,10) * 0.01;
-            // self->particles[i].speed.x = 0.02;
             self->particles[i].frame_offset = GetRandomValue(-10, 10);
-        }else {
-            // self->particles[i].pos.x = sinf( ((float)self->frame + self->particles[i].frame_offset) * self->particles[i].speed.x) ;
         }
     }
 
@@ -220,10 +155,7 @@ void Background_Update(Background* self){
 }
 
 bool Background_IsShow(Background* self){
-    // if(self->ctx->app_state != APP_LOADING) {
-    //     return true; 
-    // }
-    // return false;
+    UNUSED(self);
     return true;
 }
 

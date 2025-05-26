@@ -110,6 +110,8 @@ typedef struct AppContext {
     bool is_music_playing;
     // Font yang kita gunakan
     Font font;
+    // apakah pemain kehabisan nyawa
+    bool is_dead;
 
     // Private Field: buffer untuk `GetSelectedMusicBeatmap()`
     Beatmap _beatmap;
