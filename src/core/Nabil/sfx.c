@@ -1,6 +1,7 @@
 #include "sfx.h"
 #include <stdio.h>
 
+// Deklarasi variabel
 Sound introSfx;
 Sound logoSfx;
 Sound arrowSfx1;
@@ -11,7 +12,13 @@ Sound goodSfx;
 Sound missSfx;
 Sound countSfx;
 
+// Deklarasi array SfxList
 Sound SfxList[TOTAL_SOUND];
+
+// Deklarasi int untuk case
+int methodCase;
+
+// Assign file name atau path pada char array
 const char* soundFileNames[TOTAL_SOUND] = {
     "resources/sfx/1.coc-intro.wav",
     "resources/sfx/2.logo-sfx.wav",
@@ -23,18 +30,22 @@ const char* soundFileNames[TOTAL_SOUND] = {
     "resources/sfx/8.sfx2.wav",
     "resources/sfx/9.count.wav",
 };
+
+// Assign sound volume pada array
 float sfxVolume[] = {
     0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
     1.0f, 0.5f, 1.0f, 0.5f
 };
+
+// Assign sound name pada array
 char *infoSfx[] = {
     "intro", "logo", "enter", "good",
     "miss", "perfect", "sfx1", "sfx2",
     "count"
 };
 
+// Set header SoundList null
 SoundList SfxLinkedList = { NULL };
-int methodCase;
 
 // HARD CODE
 void InitSfx(){
@@ -101,6 +112,7 @@ void InitLinkedListSfx(){
         }
     }
     
+    // Unique Case: Set variable untuk play sound dengan kondisi
     temp = SfxLinkedList.head;
     do {
         if (strcmp(temp->info, "logo") == 0) {
@@ -111,6 +123,7 @@ void InitLinkedListSfx(){
     } while (temp != SfxLinkedList.head);
 }
 
+// Unique Case: Play sound dengan kondisi
 void LinkedListPlayHelper(char *info) {
     if (SfxLinkedList.head == NULL) return;
 
@@ -125,6 +138,7 @@ void LinkedListPlayHelper(char *info) {
     } while (node != SfxLinkedList.head);
 }
 
+// Unique Case: Stop sound dengan kondisi
 void LinkedListStopHelper(char *info) {
     SoundNode *node;
     node = SfxLinkedList.head;
@@ -335,7 +349,24 @@ void UnloadSfx() {
         {
             UnloadSound(SfxList[i]);
         }
-        
+    case 3:
+        if (SfxLinkedList.head != NULL) {
+            SoundNode *current = SfxLinkedList.head;
+            SoundNode *temp;
+
+            do {
+                temp = current;
+                current = current->next;
+
+                UnloadSound(temp->sound);
+                free(temp);
+
+            } while (current != SfxLinkedList.head);
+
+            SfxLinkedList.head = NULL;
+        }
+        break;
+
     default:
         break;
     }

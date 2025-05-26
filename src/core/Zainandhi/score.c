@@ -62,7 +62,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
     if (acc == PERFECT)
     {
         PlayPerfectSfx();
-        score->value += perfect;
+        score->ctx->score.point += perfect;
         score->perfectCombo++;
         sumPerfect++;
         score->perfect++;
@@ -72,7 +72,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
     else if (acc == GOOD)
     {
         PlayGoodSfx();
-        score->value += good;
+        score->ctx->score.point += good;
         score->perfectCombo = 0;
         sumGood++;
         score->good++;
@@ -82,7 +82,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
     else
     {
         PlayMissSfx();
-        score->value += miss;
+        score->ctx->score.point += miss;
         score->perfectCombo = 0;
         sumMiss++;
         score->miss++;
@@ -168,7 +168,6 @@ void UpdateScore(ScoreManager *score)
         score->isBeatmapLoaded = true;
     }
 
-    score->ctx->score.point = score->value;
     score->ctx->score.perfect = score->perfect;
     score->ctx->score.good = score->good;
     score->ctx->score.miss = score->miss;
