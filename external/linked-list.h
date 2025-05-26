@@ -214,7 +214,7 @@ NodeAddress node_find(NodeAddress head, NodeInfoType value, LinkedListComparison
     return cur;
 }
 NodeInfoType node_remove_first(NodeAddress* head){
-    NodeInfoType info = {0};
+    NodeInfoType info;
     NodeAddress cur = *head;
     if(head == NULL) {
         printf("ERROR(node_remove_first): linked list kosong\n");
