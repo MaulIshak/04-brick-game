@@ -9,18 +9,12 @@
 #include "score.h"
 
 
-static Color secondary = BLACK;
-static Color primary = BLACK;
-// Texture2D meledak;
-// Vector2 position = { 350.0f, 280.0f };
-// Rectangle frameRec;
-// int currentFrame = 0;
-// int framesCounter = 0;
-// int framesSpeed = 12;  
 Texture2D bg;
 
 void gp_draw(Gameplay* self){
   // Variable lokal
+  char* control[LINE_COUNT]= {"D", "F", "J", "K"};
+
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
@@ -30,12 +24,7 @@ void gp_draw(Gameplay* self){
     Rectangle rec3 = {
       self->padPositions[0].x, self->padPositions[0].y, self->padSize , self->padSize
     };
-    char* control[LINE_COUNT]= {"D", "F", "J", "K"};
 
-
-    // Draw
-
-    // DrawRectangleGradientEx(rec, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR, PRIMARY_COLOR);
     DrawTexture(bg,0,0,WHITE);   
     DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.7f));
     DrawRectangleRec(rec2, Fade(BLACK, .5f));
@@ -43,7 +32,7 @@ void gp_draw(Gameplay* self){
     DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
     for (int i = 0; i < LINE_COUNT; i++)
     {
-      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padOpacity[i] });
+      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padActiveOpacity[i] });
       DrawTextEx(self->ctx->font, control[i], (Vector2){self->padPositions[i].x + self->padSize/2 - 7, self->padPositions[i].y - 30}, 40, 1,WHITE);
     }
 
@@ -60,12 +49,8 @@ void gp_draw(Gameplay* self){
   }
   void gp_update(Gameplay* self){
     _updateLifeBar(self);
-    _inputHandler(self);
-    // if (self->isPlaying && self->ctx != NULL && self->ctx->selected_track != -1) {
-    //     // Gunakan waktu musik yang sedang diputar sebagai sumber utama gameTime
-    //     self->gameTime = GetSelectedMusicTimePlayed(self->ctx) * 1000.0; // Konversi ke milidetik
-    // }
-    // Update Gameplay
+    _padFeedbackHandler(self);
+
     if(!self->isBackgroundLoaded){
       bg = _getRandomBg(self);
       self->isBackgroundLoaded = true;
@@ -76,7 +61,6 @@ void gp_draw(Gameplay* self){
       timer_start(&(self->timer), 3);
     }
     if(is_timer_end(&(self->timer))){
-      // printf("WAKTU MULAI GAME:%f\n", self->gameTime);
       _UpdateGameTime(self);
     }
     if(!self->isPlaying) return;
@@ -111,11 +95,11 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
 
   gameplay->ctx = ctx;
   gameplay->width = gameplay->ctx->screen_width;
-  memcpy(gameplay->texturePaths, textureSources, sizeof(textureSources));
-  memcpy(gameplay->textureActivePaths, newTextureSource, sizeof(newTextureSource));
+  memcpy(gameplay->padPassiveTexturePaths, textureSources, sizeof(textureSources));
+  memcpy(gameplay->padActiveTexturePaths, newTextureSource, sizeof(newTextureSource));
   for (int i = 0; i < LINE_COUNT; i++)
   {
-    gameplay->padOpacity[i] = 255;
+    gameplay->padActiveOpacity[i] = 255;
     gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i+ gameplay->ctx->screen_width/8;
     gameplay->padPositions[i].y = 48;
   }
@@ -146,13 +130,12 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
 void _LoadNoteTexture(Gameplay*self){
   for (int i = 0; i < LINE_COUNT; i++)
   {
-    self->passiveTextureToLoad[i] = LoadTexture(self->texturePaths[i]);
-    self->activeTextureToLoad[i] = LoadTexture(self->textureActivePaths[i]);
+    self->padPassiveTextureToLoad[i] = LoadTexture(self->padPassiveTexturePaths[i]);
+    self->padActiveTextureToLoad[i] = LoadTexture(self->padActiveTexturePaths[i]);
   }
   for (int i = 0; i < LINE_COUNT; i++)
   {
-    /* code */
-    self->textureToLoad[i] =  self->passiveTextureToLoad[i];
+    self->textureToLoad[i] =  self->padPassiveTextureToLoad[i];
   }
   
   
@@ -204,34 +187,34 @@ void UpdateLife(Gameplay *self, Accuracy acc){
   }
 }
 
-void _inputHandler(Gameplay* self){
+void _padFeedbackHandler(Gameplay* self){
   // DOWN ARROW (MIDDLE LEFT)
   if(IsKeyDown(KEY_J) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
-    self->textureToLoad[2] = self->activeTextureToLoad[3];
+    self->textureToLoad[2] = self->padActiveTextureToLoad[DOWN_INDEX];
   }else{
-    self->textureToLoad[2] = self->passiveTextureToLoad[3];
+    self->textureToLoad[2] = self->padPassiveTextureToLoad[DOWN_INDEX]
   }
   
   // LEFT ARROW (LEFT)
   if(IsKeyDown(KEY_D) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
-    self->textureToLoad[0] = self->activeTextureToLoad[0];
+    self->textureToLoad[0] = self->padActiveTextureToLoad[LEFT_INDEX];
   }else{
-    self->textureToLoad[0] = self->passiveTextureToLoad[0];
+    self->textureToLoad[0] = self->padPassiveTextureToLoad[LEFT_INDEX];
     
   }
 
   // UP ARROW (MIDDLE RIGHT)
   if(IsKeyDown(KEY_F) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
-    self->textureToLoad[1] = self->activeTextureToLoad[1];
+    self->textureToLoad[1] = self->padActiveTextureToLoad[UP_INDEX];
   }else{
-    self->textureToLoad[1] = self->passiveTextureToLoad[1];
+    self->textureToLoad[1] = self->padPassiveTextureToLoad[UP_INDEX];
     
   }
   
   // RIGHT ARROW (RIGHT)
   if(IsKeyDown(KEY_K) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
-    self->textureToLoad[3] = self->activeTextureToLoad[2];
+    self->textureToLoad[3] = self->padActiveTextureToLoad[RIGHT_INDEX];
   }else{
-    self->textureToLoad[3] = self->passiveTextureToLoad[2];
+    self->textureToLoad[3] = self->padPassiveTextureToLoad[RIGHT_INDEX];
   }
 }
