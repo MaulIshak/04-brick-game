@@ -6,8 +6,40 @@
 #include "scene.h"
 #include <stdio.h>
 
-int indexMove = 0;
-float textOffsetX = 0;
+void InitSelectionMenu(SelectionMenu *self, AppContext *ctx) {
+    CreateFavoriteList(&self->favoriteList);
+    initFavoriteList(&self->favoriteList);
+
+    self->ctx = ctx;
+
+    self->indexMove = 0;
+    self->textOffsetX = 0;
+
+    self->rotationOffset = 0;
+    self->targetRotationOffset = 0;
+
+    self->selectionYOffset = 0;
+    self->targetYOffset = 0;
+
+    self->isShow = false;
+    self->showFavoriteList = false;
+
+    self->flying_objects = FlyingObject_Create(ctx);
+}
+
+void SelectionMenu_Update(SelectionMenu *self) {
+    FlyingObject_Update(&self->flying_objects, self->ctx);
+    
+    PressToAction(self);
+
+    PreviewMusic(self);
+
+    self->targetYOffset = -self->ctx->selected_track * 110;
+    self->selectionYOffset += (self->targetYOffset - self->selectionYOffset) * 0.1f;
+
+    self->targetRotationOffset = -self->ctx->selected_track;
+    self->rotationOffset += (self->targetRotationOffset - self->rotationOffset) * 0.1f;
+}
 
 void SelectionMenu_Draw(SelectionMenu *self) {
     ClearBackground(WHITE);
@@ -22,95 +54,89 @@ void SelectionMenu_Draw(SelectionMenu *self) {
 
     SelectionMenuHelper_Draw(self);
 
-    SelectionMenuItem_Draw(self);
+    if (self->showFavoriteList) {
+        FavoriteMusicList_Draw(self);
+    } else {
+        MusicList_Draw(self);
+    }
 }
 
-void SelectionMenu_Update(SelectionMenu *self) {
-    FlyingObject_Update(&self->flying_objects, self->ctx);
-
-    PressToAction(self);
-
-    PreviewMusic(self);
-
-    self->targetYOffset = -self->ctx->selected_track * 110;
-    self->selectionYOffset += (self->targetYOffset - self->selectionYOffset) * 0.1f;
-
-    self->targetRotationOffset = -self->ctx->selected_track;
-    self->rotationOffset += (self->targetRotationOffset - self->rotationOffset) * 0.1f;
-}
-
-void SelectionMenuItem_Draw(SelectionMenu *self) {
-    static int lastSelected = -1;
-    static float flashAlpha = 0.0f;
-
-    int boxWidth = 400;
-    float fontsize = 30;
-    float textPadding = 10;
+void MusicList_Draw(SelectionMenu *self) {
     int selected = self->ctx->selected_track;
 
-    for (int i = 0 + indexMove; i < self->ctx->tracks.len + indexMove; i++) {
-        if (self->showFavoriteList && !IsFavorite(&self->favoriteList, GetTrack(self->ctx->tracks, i).music_id)) {
-            continue;
+    for (int i = 0 + self->indexMove; i < self->ctx->tracks.len + self->indexMove; i++) {
+        Track current = GetTrack(self->ctx->tracks, i);
+
+        bool isSelected = (i == selected);
+
+        MusicItem_Draw(self, current, i, isSelected);
+    }
+}
+
+void FavoriteMusicList_Draw(SelectionMenu *self) {
+    Favorite *current = self->favoriteList.head;
+    while (current != NULL) {
+        Track track = GetTrack(self->ctx->tracks, current->id);
+        int index = current->id; 
+        bool isSelected = (index == self->ctx->selected_track);
+
+        MusicItem_Draw(self, track, index, isSelected);
+
+        current = current->next;
+    }
+}
+
+void MusicItem_Draw(SelectionMenu *self, Track track, int index, bool isSelected) {
+    const int boxWidth = 400;
+    const float fontsize = 30;
+    const float textPadding = 10;
+
+    int selected = self->ctx->selected_track;
+    int distance = abs(index - selected);
+
+    float scale = isSelected ? 1.2f : (1.2f / (1.0f + 0.2f * distance));
+    Color textColor = isSelected ? GOLD : LIGHTGRAY;
+    Color bgColor = isSelected ? RAYWHITE : Fade(GRAY, 0.8f);
+
+    float r = self->ctx->screen_height / 2;
+    float angle = ((index + self->rotationOffset) * (PI * 2)) / MAX_MUSIC_SHOWING;
+
+    float y = self->ctx->screen_height / 2 + r * sin(angle);
+    float x = self->ctx->screen_width / 2 - self->ctx->screen_width + r * cos(angle);
+
+    Vector2 textSize = MeasureTextEx(self->ctx->font, track.music_name, fontsize * scale, 2);
+
+    // Background
+    DrawRectangleGradientH(x - textPadding, y - textSize.y + textPadding / 2, boxWidth + textPadding, textSize.y * 2,
+                           bgColor, isSelected ? Fade(bgColor, 1.0f) : Fade(bgColor, 0.0f));
+
+    // Scrolling text
+    if (isSelected && textSize.x > boxWidth) {
+        self->textOffsetX += 50 * GetFrameTime();
+        if (self->textOffsetX > textSize.x) {
+            self->textOffsetX = -boxWidth;
         }
-        
-        int distance = abs(i - selected);
-        float scaleFactor = 1.2f / (1.0f + 0.2f * distance);
-        float scale = (i == selected) ? 1.2f : scaleFactor;
-
-        Color textColor = (i == selected) ? GOLD : LIGHTGRAY;
-        Color bgColor = (i == selected) ? RAYWHITE : GRAY;
-        bgColor = (i == selected) ? bgColor : Fade(bgColor, 0.8f);
-
-        float r = self->ctx->screen_height / 2;
-        float angle = ((i + self->rotationOffset) * (PI * 2)) / MAX_MUSIC_SHOWING;
-
-        float yPosition = self->ctx->screen_height / 2 + r * sin(angle);
-        float xPosition = self->ctx->screen_width / 2 - self->ctx->screen_width + r * cos(angle);
-
-        Vector2 textVector = MeasureTextEx(self->ctx->font, GetSelectedTrack(self->ctx).music_name, fontsize * scale, 2);
-
-        if (i == selected) {
-            DrawRectangleGradientH(xPosition - textPadding, yPosition - textVector.y + textPadding / 2, boxWidth + textPadding, textVector.y * 2, bgColor, Fade(bgColor, 1.0f));
-        } else {
-            DrawRectangleGradientH(xPosition - textPadding, yPosition - textVector.y + textPadding / 2, boxWidth + textPadding, textVector.y * 2, bgColor, Fade(bgColor, 0.0f));
-        }
-
-        if (i == selected && flashAlpha > 0.0f) {
-            DrawRectangle(xPosition - textPadding, yPosition - textVector.y + textPadding / 2, boxWidth + textPadding, textVector.y * 2, Fade(WHITE, flashAlpha));
-        }
-
-        if (selected != lastSelected) {
-            flashAlpha = 1.0f;
-            lastSelected = selected;
-        }
-
-        if (textVector.x > boxWidth) {
-            textOffsetX += 50 * GetFrameTime();
-            if (textOffsetX > textVector.x) {
-                textOffsetX = -boxWidth;
-            }
-        }
-
-        BeginScissorMode(xPosition, yPosition - textVector.y + textPadding / 2, boxWidth, textVector.y + textPadding);
-        if (IsFavorite(&self->favoriteList, GetTrack(self->ctx->tracks, i).music_id)) {
-            DrawTextEx(self->ctx->font, "Favorite",
-                       (Vector2){xPosition - (textVector.x > boxWidth ? textOffsetX : 0) - 30, yPosition - textVector.y + textPadding},
-                       fontsize * scale, 2, GOLD);
-        }
-
-        DrawTextEx(self->ctx->font, GetTrack(self->ctx->tracks, i).music_name, (Vector2){xPosition - (textVector.x > boxWidth ? textOffsetX : 0), yPosition - textVector.y + textPadding}, fontsize * scale, 2, textColor);
-
-        EndScissorMode();
-
-        DrawTextEx(self->ctx->font, TextFormat("Best Score: %d", GetTrack(self->ctx->tracks, i).high_score),
-                   (Vector2){xPosition, yPosition + (textPadding) / 2}, (fontsize - 10) * scale, 2, textColor);
     }
 
-    if (flashAlpha > 0.0f) {
-        flashAlpha -= 0.03f;
-        if (flashAlpha < 0.0f)
-            flashAlpha = 0.0f;
+    BeginScissorMode(x, y - textSize.y + textPadding / 2, boxWidth, textSize.y + textPadding);
+
+    // "Favorite" label
+    if (IsFavorite(&self->favoriteList, track.music_id)) {
+        DrawTextEx(self->ctx->font, "Favorite",
+                   (Vector2){x - (textSize.x > boxWidth ? self->textOffsetX : 0) - 30, y - textSize.y + textPadding},
+                   fontsize * scale, 2, GOLD);
     }
+
+    // Music name
+    DrawTextEx(self->ctx->font, track.music_name,
+               (Vector2){x - (textSize.x > boxWidth ? self->textOffsetX : 0), y - textSize.y + textPadding},
+               fontsize * scale, 2, textColor);
+
+    EndScissorMode();
+
+    // Score
+    DrawTextEx(self->ctx->font, TextFormat("Best Score: %d", track.high_score),
+               (Vector2){x, y + textPadding / 2}, (fontsize - 10) * scale, 2, textColor);
 }
 
 void buttonDraw(Font font, Vector2 position, char *text, float fontSize, float spacing, Color textColor, Color bgColor, Color borderColor) {
@@ -187,26 +213,26 @@ void PressToAction(SelectionMenu *self) {
 
     if (IsKeyPressed(KEY_K)) {
         if (self->ctx->tracks.len > MAX_MUSIC_SHOWING) {
-            indexMove++;
-            if (indexMove > self->ctx->tracks.len - MAX_MUSIC_SHOWING) {
-                indexMove = 0;
+            self->indexMove++;
+            if (self->indexMove > self->ctx->tracks.len - MAX_MUSIC_SHOWING) {
+                self->indexMove = 0;
             }
         }
 
-        textOffsetX = 0;
+        self->textOffsetX = 0;
         self->ctx->selected_track = (self->ctx->selected_track + 1) % self->ctx->tracks.len;
         keyHeld = true;
         time = 0;
         StopSelectedTrack(self->ctx);
     } else if (IsKeyPressed(KEY_D)) {
         if (self->ctx->tracks.len > MAX_MUSIC_SHOWING) {
-            indexMove--;
-            if (indexMove > self->ctx->tracks.len - MAX_MUSIC_SHOWING) {
-                indexMove = 0;
+            self->indexMove--;
+            if (self->indexMove > self->ctx->tracks.len - MAX_MUSIC_SHOWING) {
+                self->indexMove = 0;
             }
         }
 
-        textOffsetX = 0;
+        self->textOffsetX = 0;
         self->ctx->selected_track = (self->ctx->selected_track - 1 + self->ctx->tracks.len) % self->ctx->tracks.len;
         keyHeld = true;
         time = 0;
@@ -214,25 +240,25 @@ void PressToAction(SelectionMenu *self) {
     }
 
     if (IsKeyDown(KEY_K) || IsKeyDown(KEY_D)) {
-        textOffsetX = 0;
+        self->textOffsetX = 0;
 
         time += GetFrameTime();
         if (time >= delay) {
             if (!keyHeld || time >= frameThreshold) {
                 if (IsKeyDown(KEY_K)) {
                     if (self->ctx->tracks.len > MAX_MUSIC_SHOWING) {
-                        indexMove++;
-                        if (indexMove > self->ctx->tracks.len - MAX_MUSIC_SHOWING) {
-                            indexMove = 0;
+                        self->indexMove++;
+                        if (self->indexMove > self->ctx->tracks.len - MAX_MUSIC_SHOWING) {
+                            self->indexMove = 0;
                         }
                     }
                     self->ctx->selected_track = (self->ctx->selected_track + 1) % self->ctx->tracks.len;
                 } else if (IsKeyDown(KEY_D)) {
 
                     if (self->ctx->tracks.len > MAX_MUSIC_SHOWING) {
-                        indexMove--;
-                        if (indexMove > self->ctx->tracks.len - MAX_MUSIC_SHOWING) {
-                            indexMove = 0;
+                        self->indexMove--;
+                        if (self->indexMove > self->ctx->tracks.len - MAX_MUSIC_SHOWING) {
+                            self->indexMove = 0;
                         }
                     }
 
@@ -284,22 +310,4 @@ bool SelectionMenu_IsShow(SelectionMenu *self) {
 
     self->isShow = false;
     return false;
-}
-
-void InitSelectionMenu(SelectionMenu *self, AppContext *ctx) {
-    CreateFavoriteList(&self->favoriteList);
-    initFavoriteList(&self->favoriteList);
-
-    self->ctx = ctx;
-
-    self->rotationOffset = 0;
-    self->targetRotationOffset = 0;
-
-    self->selectionYOffset = 0;
-    self->targetYOffset = 0;
-
-    self->isShow = false;
-    self->showFavoriteList = false;
-
-    self->flying_objects = FlyingObject_Create(ctx);
 }
