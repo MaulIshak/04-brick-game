@@ -87,7 +87,7 @@ void InitNote(NoteManager*, AppContext*, Gameplay *, ScoreManager*);
 */
 // Modul untuk menampilkan Note dari beatmap
 void _drawBeatmapNote(NoteManager*,DrawableNote);
-// Modul untuk mengecek apakah note ditekan atau tidak
+// Modul untuk mengecek apakah note ditekan atau tidak, beserta pengecekkan akurasinya
 bool _isNoteHit(NoteManager*, DrawableNote);
 // Modul untuk menampilkan akurasi
 void _drawAccuracy(NoteManager*);
