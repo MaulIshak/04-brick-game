@@ -107,11 +107,6 @@ void GetScoreAndAccuracy(const char* file_name, int *scoreOut, float *accuracyOu
 
 
 void DestroyTracks(Tracks *tracks) {
-    // for(int i = 0; i < tracks->len; i++) {
-    //     Track track = GetTrack(*tracks, i);
-    //     UnloadMusicStream(track.music);
-    //     free(track.file_path);
-    // }
     NodeIterator iter = node_iter_init(tracks->track);
     NodeAddress current;
     while((current = node_iter_next(&iter))) {

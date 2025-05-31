@@ -64,7 +64,7 @@ int _main()
   // ctx.app_state = APP_BEATMAP_CREATOR;
   // ctx.app_state = APP_LOADING;
   // ctx.app_state = END_OF_THE_GAME;
-  #endif // GAME_DEBUG
+  #endif GAME_DEBUG
   Loading loading = {
       .ctx = &ctx,
       .ptp = {

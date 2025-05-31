@@ -6,7 +6,7 @@
 #ifndef END_OF_THE_GAME_H
 #define END_OF_THE_GAME_H
 
-// Local strucct
+// Local struct
 typedef struct EndOfTheGame {
     AppContext *ctx;
     Font gradeFont;
