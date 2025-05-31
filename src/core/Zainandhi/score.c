@@ -183,10 +183,6 @@ void UpdateScore(ScoreManager *score)
         score->good = 0;
         score->miss = 0;
         score->perfectCombo = 0;
-
-        score->ctx->score.perfect = 0;
-        score->ctx->score.good = 0;
-        score->ctx->score.miss = 0;
     }
 }
 

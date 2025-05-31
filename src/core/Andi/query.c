@@ -83,7 +83,6 @@ int select_music_scanner(void* userdata, int argc ,char** argv ,char** colName) 
     Tracks *tracks = (Tracks*)userdata;
     Track *track;
     track = malloc(sizeof(Track));
-    memset(track, 0, sizeof(Track));
     for(int i = 0; i < argc; i++) {
         
         char* value = argv[i];
