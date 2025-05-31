@@ -1,3 +1,11 @@
+/**
+ * background.h
+ * 
+ * pembuat: andiputraw
+ * 
+ * Modul-modul pada file ini adalah modul yang digunakan untuk memanipulasi elemen background pada game.
+ * Yang paling telrihat adalah partikel pada game.
+ */
 #pragma once
 #include "context.h"
 #include "scene.h"
@@ -51,12 +59,14 @@ typedef struct Background {
     FlyingObjects objects;  
 } Background;
 
-void push_fft(float frame);
-inline float amp(kiss_fft_cpx z);
-void Background_MusicCallback(void *bufferData, unsigned int frames);
+
+// Membuat background
 Background CreateBackground(AppContext* ctx);
+// Menggambar backgroudn
 void Background_Draw(Background* self);
+// Mengupdate background
 void Background_Update(Background* self);
+// Mengecek apakah background perlu di gambar
 bool Background_IsShow(Background* self);
 
 /**

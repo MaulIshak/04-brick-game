@@ -1,3 +1,11 @@
+/**
+ * timer.h
+ * pembuat: andiputraw
+ * 
+ * 
+ * Modul-modul yang tersedia di file ini adalah modul yang berhubungan dengan timer.
+ * Biasa digunakan untuk fungsionalitas yang membutuhkan waktu realtime.
+ */
 #pragma once
 #include <stdbool.h>
 #include "raylib.h"
@@ -11,8 +19,11 @@ typedef struct Timer {
   double second;
 } Timer;
 
+// Update timer
 void timer_update(Timer*);
+// Mulai timer
 void timer_start(Timer*, double second);
+// cek jika timer sudah selesai
 bool is_timer_end(Timer*);
 // Mengembalikan dalam bentuk detik. Minus berarti timer belum selesai
 double time_elapsed(Timer*);

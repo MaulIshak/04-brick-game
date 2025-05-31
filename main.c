@@ -64,7 +64,7 @@ int _main()
   // ctx.app_state = APP_BEATMAP_CREATOR;
   // ctx.app_state = APP_LOADING;
   // ctx.app_state = END_OF_THE_GAME;
-  #endif GAME_DEBUG
+  #endif // GAME_DEBUG
   Loading loading = {
       .ctx = &ctx,
       .ptp = {
@@ -121,7 +121,7 @@ int _main()
   int draws_len = ARRAY_LEN(draws);
   SetTargetFPS(60);
   #ifdef GAME_DEBUG
-  ctx.selected_track = 8;
+  ctx.selected_track = 0;
   #endif //GAME_DEBUG
   #ifdef TEST_CONTEXT 
     // PlaySelectedTrack(&ctx);

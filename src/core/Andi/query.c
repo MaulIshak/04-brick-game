@@ -182,8 +182,13 @@ void select_music(sqlite3 *db, Tracks *track){
     select_query(db, select_beatmap_query, select_music_scanner, track);
 }
 
-void populate_score(sqlite3 *db, Tracks *track) {
-    select_query(db, select_score_query, select_score_scanner, track);
+void populate_score(sqlite3 *db, Tracks *tracks) {
+    for(int i = 0; i < tracks->len; i++) {
+        Track* track = GetTrackRef(*tracks, i);
+        track->high_score = 0;
+        track->accuracy = 0;
+    }
+    select_query(db, select_score_query, select_score_scanner, tracks);
 }
 
 void get_beatmap(sqlite3 *db, int music_id, Beatmap *beatmap) {

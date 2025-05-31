@@ -1,3 +1,12 @@
+/**
+ * context.h
+ * 
+ * pembuat: andiputraw
+ * 
+ * Modul-modul yang tersedia di file ini berfungsi sebagai komunikasi data antar modul yang dibuat oleh orang lain.
+ * Misalnya: Skor, akurasi, list musik yang tersedia, dan sebagainya
+ * 
+ */
 #pragma once
 #include <raylib.h>
 #include <stdlib.h>
@@ -137,10 +146,13 @@ void DestroyTracks(Tracks *tracks);
 // prosedur cleanup. tidak digunakan dalam scene, tapi di akhir aplikasi
 void DestroyContext(AppContext *ctx);
 
-// 
+// Menggambil track dari Tracks
 Track GetTrack(Tracks tracks, int index) ;
-// 
+// Mengambil track berdasarkan selected_track dari context
+// shortcut untuk GetTrack(ctx->tracks, ctx->selected_track)
 Track GetSelectedTrack(AppContext* ctx);
+// Sama seperti GetTrack, tapi mengembalikan referensi, bukan value. sehingga bisa diubah value nya yang berada di list
+Track *GetTrackRef(Tracks tracks, int index);
 
 // Update context. digunakan pada saat gameloop
 void UpdateContext(AppContext* ctx);

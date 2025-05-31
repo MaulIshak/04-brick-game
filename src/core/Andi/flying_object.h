@@ -1,3 +1,11 @@
+/**
+ * flying_object.h
+ * 
+ * pembuat: andiputraw
+ * 
+ * Modul-modul yang tersedia di file ini berfungsi untuk membuat object terbang di belakang layar.
+ * di dalam game, ini terlihat di saat pemilihan musik.
+ */
 #ifndef FLYING_OBJECT_H
 #define FLYING_OBJECT_H
 
@@ -30,13 +38,18 @@ typedef struct FlyingObjects {
     AppContext *ctx;
 } FlyingObjects;
 
-
+// Membuat flying objects
 FlyingObjects FlyingObject_Create(AppContext *ctx);
+// Mengupdate flying object
 void FlyingObject_Update(FlyingObjects *self, AppContext *ctx) ;
+// Menggabar flying object
 void FlyingObject_Draw(FlyingObjects *self);
 
+// Membuat object
 FlyingObject ObjectCreate(int widht, int height);
+// Set flying object di posisi random dengan ketinggian tertentu
 Vector2 FlyingObjectRandomPos(int height);
+// Set target pergerakan dari flying object
 Vector2 FlyingObjectRandomTarget(int width, int height);
 
 #endif
