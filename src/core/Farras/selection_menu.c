@@ -1,46 +1,28 @@
-#include "selection_menu.h"
+/*
+ * Implementasi dari Modul Menu Pemilihan Musik.
+ * Modul ini menciptakan antarmuka pemilihan musik interaktif dengan tampilan
+ * roda berputar, fungsi preview musik, dan pengelolaan lagu favorit.
+ */
+
 #include "context.h"
-#include "favorite.h"
-#include "flying_object.h"
-#include "math.h"
+#include "selection_menu.h"
 #include "scene.h"
 #include <stdio.h>
+#include "math.h"
+#include "flying_object.h"
+#include "favorite.h"
 
-void InitSelectionMenu(SelectionMenu *self, AppContext *ctx) {
-    CreateFavoriteList(&self->favoriteList);
-    initFavoriteList(&self->favoriteList);
+// Variabel global untuk status menu
+int indexMove = 0;         // Offset indeks saat ini untuk rotasi
+float textOffsetX = 0;     // Offset scroll teks untuk judul lagu yang panjang
 
-    self->ctx = ctx;
-
-    self->indexMove = 0;
-    self->textOffsetX = 0;
-
-    self->rotationOffset = 0;
-    self->targetRotationOffset = 0;
-
-    self->selectionYOffset = 0;
-    self->targetYOffset = 0;
-
-    self->isShow = false;
-    self->showFavoriteList = false;
-
-    self->flying_objects = FlyingObject_Create(ctx);
-}
-
-void SelectionMenu_Update(SelectionMenu *self) {
-    FlyingObject_Update(&self->flying_objects, self->ctx);
-    
-    PressToAction(self);
-
-    PreviewMusic(self);
-
-    self->targetYOffset = -self->ctx->selected_track * 110;
-    self->selectionYOffset += (self->targetYOffset - self->selectionYOffset) * 0.1f;
-
-    self->targetRotationOffset = -self->ctx->selected_track;
-    self->rotationOffset += (self->targetRotationOffset - self->rotationOffset) * 0.1f;
-}
-
+/**
+ * Fungsi penggambaran utama yang menampilkan:
+ * - Lingkaran gradient latar belakang
+ * - Animasi objek terbang
+ * - UI pembantu menu
+ * - Item pemilihan musik
+ */
 void SelectionMenu_Draw(SelectionMenu *self) {
     ClearBackground(WHITE);
 
@@ -61,32 +43,40 @@ void SelectionMenu_Draw(SelectionMenu *self) {
     }
 }
 
-void MusicList_Draw(SelectionMenu *self) {
-    int selected = self->ctx->selected_track;
+/**
+ * Memperbarui status menu termasuk:
+ * - Animasi objek terbang
+ * - Penanganan input
+ * - Preview musik
+ * - Animasi halus untuk rotasi dan offset Y
+ */
+void SelectionMenu_Update(SelectionMenu *self) {
+    FlyingObject_Update(&self->flying_objects, self->ctx);
 
-    for (int i = 0 + self->indexMove; i < self->ctx->tracks.len + self->indexMove; i++) {
-        Track current = GetTrack(self->ctx->tracks, i);
-
-        bool isSelected = (i == selected);
-
-        MusicItem_Draw(self, current, i, isSelected);
+    if (self->showFavoriteList) {
+        PressToActionFavorite(self);
+    } else {
+        PressToAction(self);
     }
+
+    PreviewMusic(self);
+
+    self->targetYOffset = -self->ctx->selected_track * 110;
+    self->selectionYOffset += (self->targetYOffset - self->selectionYOffset) * 0.1f;
+
+    self->targetRotationOffset = -self->ctx->selected_track;
+    self->rotationOffset += (self->targetRotationOffset - self->rotationOffset) * 0.1f;
 }
 
-void FavoriteMusicList_Draw(SelectionMenu *self) {
-    Favorite *current = self->favoriteList.head;
-    while (current != NULL) {
-        Track track = GetTrack(self->ctx->tracks, current->id);
-        int index = current->id; 
-        bool isSelected = (index == self->ctx->selected_track);
-
-        MusicItem_Draw(self, track, index, isSelected);
-
-        current = current->next;
-    }
-}
-
-void MusicItem_Draw(SelectionMenu *self, Track track, int index, bool isSelected) {
+/**
+ * Menggambar item menu individual dalam pola roda berputar.
+ * Fitur:
+ * - Penskalaan dinamis berdasarkan seleksi
+ * - Scroll teks untuk judul lagu yang panjang
+ * - Tampilan skor tertinggi
+ * - Indikator status favorit
+ */
+void SelectionMenuItem_Draw(SelectionMenu *self) {
     const int boxWidth = 400;
     const float fontsize = 30;
     const float textPadding = 10;
@@ -139,6 +129,14 @@ void MusicItem_Draw(SelectionMenu *self, Track track, int index, bool isSelected
                (Vector2){x, y + textPadding / 2}, (fontsize - 10) * scale, 2, textColor);
 }
 
+/**
+ * Fungsi pembantu untuk menggambar tombol dan petunjuk UI.
+ * Menampilkan kontrol untuk:
+ * - Navigasi (tombol D/K)
+ * - Toggle favorit (F)
+ * - Tampilan daftar favorit (J)
+ * - Pemilihan lagu (Enter)
+ */
 void buttonDraw(Font font, Vector2 position, char *text, float fontSize, float spacing, Color textColor, Color bgColor, Color borderColor) {
     Vector2 textVector = MeasureTextEx(font, text, fontSize, spacing);
 
@@ -150,6 +148,9 @@ void buttonDraw(Font font, Vector2 position, char *text, float fontSize, float s
     DrawTextEx(font, text, (Vector2){xPosition, yPosition}, fontSize, spacing, textColor);
 }
 
+/**
+ * Menggambar elemen UI pembantu yang menunjukkan kontrol yang tersedia
+ */
 void SelectionMenuHelper_Draw(SelectionMenu *self) {
     Font font = self->ctx->font;
     float screenWidth = self->ctx->screen_width;
@@ -172,6 +173,13 @@ void SelectionMenuHelper_Draw(SelectionMenu *self) {
     buttonDraw(font, (Vector2){screenWidth - 110, screenHeight}, "(Play)", 18, 1, WHITE, BLANK, BLANK);
 }
 
+/**
+ * Mengelola fungsi preview musik:
+ * - Memulai preview setelah jeda
+ * - Menangani transisi volume yang halus
+ * - Mengatur posisi preview
+ * - Mengelola status preview berdasarkan status aplikasi
+ */
 void PreviewMusic(SelectionMenu *self) {
     if (self->ctx->app_state != APP_SELECT)
         return;
@@ -200,6 +208,115 @@ void PreviewMusic(SelectionMenu *self) {
     }
 }
 
+/**
+ * Menangani input untuk navigasi daftar favorit:
+ * - Navigasi atas/bawah melalui favorit
+ * - Pemilihan lagu
+ * - Toggle favorit
+ * - Toggle tampilan daftar
+ */
+void PressToActionFavorite(SelectionMenu *self) {
+    static float time = 0;
+    static float delay = 0.35f;
+    static bool keyHeld = false;
+
+    float maxDelay = 0.01f;
+    float minDelay = 0.35f;
+    float delayReduction = 0.0075f;
+    float delayRecovery = 0.0025f;
+    float frameThreshold = 0.1f;
+
+    // Buat array index dari favorite list
+    int favoriteCount = self->favoriteList.count;
+    int favoriteIndexes[favoriteCount];
+    Favorite *current = self->favoriteList.head;
+    int i = 0;
+    while (current != NULL) {
+        favoriteIndexes[i++] = current->id;
+        current = current->next;
+    }
+
+    // Cari posisi sekarang di array favorite
+    int currentIndex = 0;
+    for (int j = 0; j < favoriteCount; j++) {
+        if (favoriteIndexes[j] == self->ctx->selected_track) {
+            currentIndex = j;
+            break;
+        }
+    }
+
+    // Navigasi
+    if (IsKeyPressed(KEY_K)) {
+        currentIndex = (currentIndex + 1) % favoriteCount;
+        self->ctx->selected_track = favoriteIndexes[currentIndex];
+        keyHeld = true;
+        time = 0;
+        self->textOffsetX = 0;
+        StopSelectedTrack(self->ctx);
+    } else if (IsKeyPressed(KEY_D)) {
+        currentIndex = (currentIndex - 1 + favoriteCount) % favoriteCount;
+        self->ctx->selected_track = favoriteIndexes[currentIndex];
+        keyHeld = true;
+        time = 0;
+        self->textOffsetX = 0;
+        StopSelectedTrack(self->ctx);
+    }
+
+    if (IsKeyDown(KEY_K) || IsKeyDown(KEY_D)) {
+        self->textOffsetX = 0;
+        time += GetFrameTime();
+
+        if (time >= delay) {
+            if (!keyHeld || time >= frameThreshold) {
+                if (IsKeyDown(KEY_K)) {
+                    currentIndex = (currentIndex + 1) % favoriteCount;
+                } else if (IsKeyDown(KEY_D)) {
+                    currentIndex = (currentIndex - 1 + favoriteCount) % favoriteCount;
+                }
+                self->ctx->selected_track = favoriteIndexes[currentIndex];
+                time = 0;
+                keyHeld = true;
+            }
+        }
+
+        if (delay > maxDelay)
+            delay -= delayReduction;
+    } else {
+        if (delay < minDelay)
+            delay += delayRecovery;
+        keyHeld = false;
+    }
+
+    // Enter untuk play
+    if (IsKeyPressed(KEY_ENTER)) {
+        StopSelectedTrack(self->ctx);
+        SeekMusicStream(GetSelectedTrack(self->ctx).music, 0.1f);
+        self->ctx->app_state = APP_PLAYING;
+    }
+
+    // Tombol F untuk toggle favorite
+    if (IsKeyPressed(KEY_F)) {
+        Track selectedTrack = GetSelectedTrack(self->ctx);
+        if (IsFavorite(&self->favoriteList, selectedTrack.music_id)) {
+            RemoveFavorite(&self->favoriteList, selectedTrack.music_id);
+        } else {
+            AddFavorite(&self->favoriteList, selectedTrack.music_id);
+        }
+    }
+
+    // Tombol J untuk keluar dari mode favorite
+    if (IsKeyPressed(KEY_J)) {
+        self->showFavoriteList = !self->showFavoriteList;
+    }
+}
+
+/**
+ * Menangani input untuk daftar lagu utama:
+ * - Navigasi atas/bawah
+ * - Pemilihan lagu
+ * - Toggle favorit
+ * - Toggle tampilan daftar favorit
+ */
 void PressToAction(SelectionMenu *self) {
     static float time = 0;
     static float delay = 0.35f;
@@ -302,6 +419,9 @@ void PressToAction(SelectionMenu *self) {
     }
 }
 
+/**
+ * Menentukan visibilitas menu berdasarkan status aplikasi
+ */
 bool SelectionMenu_IsShow(SelectionMenu *self) {
     if (self->ctx->app_state == APP_SELECT) {
         self->isShow = true;
@@ -310,4 +430,31 @@ bool SelectionMenu_IsShow(SelectionMenu *self) {
 
     self->isShow = false;
     return false;
+}
+
+/**
+ * Menginisialisasi menu pemilihan baru dengan:
+ * - Offset dan animasi default
+ * - Objek terbang
+ * - Status visibilitas
+ */
+void InitSelectionMenu(SelectionMenu *self, AppContext *ctx) {
+    CreateFavoriteList(&self->favoriteList);
+    initFavoriteList(&self->favoriteList);
+
+    self->ctx = ctx;
+
+    self->indexMove = 0;
+    self->textOffsetX = 0;
+
+    self->rotationOffset = 0;
+    self->targetRotationOffset = 0;
+
+    self->selectionYOffset = 0;
+    self->targetYOffset = 0;
+
+    self->isShow = false;
+    self->showFavoriteList = false;
+
+    self->flying_objects = FlyingObject_Create(ctx);
 }
