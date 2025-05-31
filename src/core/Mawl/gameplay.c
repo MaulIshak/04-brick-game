@@ -7,8 +7,10 @@
 #include "timer.h"
 #include "progress_bar.h"
 #include "score.h"
+#include "linked-list.h"
 
 
+// Variable global untuk meyimpan texture background yang dirandom
 Texture2D bg;
 
 void gp_draw(Gameplay* self){
@@ -18,6 +20,7 @@ void gp_draw(Gameplay* self){
     Rectangle rec = {
       0,0,self->width, self->ctx->screen_height
     };
+    // Jalur note
     Rectangle rec2 = {
       self->padPositions[0].x, 0,self->padPositions[3].x + 10, self->ctx->screen_height
     };
@@ -25,17 +28,32 @@ void gp_draw(Gameplay* self){
       self->padPositions[0].x, self->padPositions[0].y, self->padSize , self->padSize
     };
 
-    DrawTexture(bg,0,0,WHITE);   
-    DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.7f));
-    DrawRectangleRec(rec2, Fade(BLACK, .5f));
-    // _drawAccZone(self);
-    DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
-    for (int i = 0; i < LINE_COUNT; i++)
-    {
-      DrawTextureEx(self->textureToLoad[i], self->padPositions[i],0, .16f, (Color){ 240, 240, 240, self->padActiveOpacity[i] });
-      DrawTextEx(self->ctx->font, control[i], (Vector2){self->padPositions[i].x + self->padSize/2 - 7, self->padPositions[i].y - 30}, 40, 1,WHITE);
-    }
+    // Draw background
+    DrawTexture(bg,0,0,WHITE);
 
+    // Flash effect background
+    DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.7f));
+
+    // Background hitam transparan jalur note
+    DrawRectangleRec(rec2, Fade(BLACK, .5f));
+
+    // _drawAccZone(self);
+
+    DrawLine(self->width, 0, self->width, self->ctx->screen_height, BLACK);
+    NodeAddress currentNode = self->textureToDrawHead;
+    // // Draw pad
+    // // Use linked list instead of array for pad textures
+    int i = 0;
+    while(currentNode != NULL){
+      Texture2D texture = *((Texture2D*)(currentNode->info));
+      Vector2 pos = self->padPositions[i];
+      // Draw pad
+      DrawTextureEx(texture, pos, 0, .16f, (Color){ 240, 240, 240, 255 });
+      // Draw guide text
+      DrawTextEx(self->ctx->font, control[i], (Vector2){pos.x + self->padSize/2 - 7, pos.y - 30}, 40, 1,WHITE);
+      currentNode = currentNode->next;
+      i++;
+    }
   
     // Progress Bar
     DrawProgressBar(&self->progressBar);
@@ -63,7 +81,7 @@ void gp_draw(Gameplay* self){
     if(is_timer_end(&(self->timer))){
       _UpdateGameTime(self);
     }
-    if(!self->isPlaying) return;
+    // if(!self->isPlaying) return;
     UpdateProgressBar(&self->progressBar, self);
 
     if(self->life >= 100){
@@ -80,26 +98,15 @@ bool gp_isShow(Gameplay* self){
 }
 
 void InitGameplay(Gameplay *gameplay, AppContext *ctx){
-  char *textureSources [LINE_COUNT] ={
-    "resources/texture/Pad-01.png",
-    "resources/texture/Pad-02.png",
-    "resources/texture/Pad-03.png",
-    "resources/texture/Pad-04.png"
-  };
-  char *newTextureSource [LINE_COUNT]={
-    "resources/texture/Pad_Active-01.png",
-    "resources/texture/Pad_Active-02.png",
-    "resources/texture/Pad_Active-04.png",
-    "resources/texture/Pad_Active-03.png"
-  };
 
+  _AllListInit(gameplay);
+
+  // node_append(gameplay->padActiveTexturePathHead, "resources/texture/Pad_Active-01.png");
+  // printf("Texture init: %s\n", ((char*)gameplay->padActiveTexturePathHead->info));
   gameplay->ctx = ctx;
   gameplay->width = gameplay->ctx->screen_width;
-  memcpy(gameplay->padPassiveTexturePaths, textureSources, sizeof(textureSources));
-  memcpy(gameplay->padActiveTexturePaths, newTextureSource, sizeof(newTextureSource));
   for (int i = 0; i < LINE_COUNT; i++)
   {
-    gameplay->padActiveOpacity[i] = 255;
     gameplay->padPositions[i].x = gameplay->ctx->screen_width/6 * i+ gameplay->ctx->screen_width/8;
     gameplay->padPositions[i].y = 48;
   }
@@ -124,20 +131,52 @@ void InitGameplay(Gameplay *gameplay, AppContext *ctx){
   // meledak = LoadTexture("resources/texture/Meledak-2.png");
   // frameRec = (Rectangle){ 0.0f, 0.0f, (float)meledak.width/8, (float)meledak.height };
   gameplay->isBackgroundLoaded = false;
-  gameplay->isPlaying = false;
+  // gameplay->isPlaying = false;
+}
+void _AllListInit(Gameplay* gameplay){
+  gameplay->padActiveTexturePathHead = NULL;
+  node_create(&gameplay->padActiveTexturePathHead);
+  node_init(&gameplay->padActiveTexturePathHead, "resources/texture/Pad_Active-01.png");
+  node_append(&gameplay->padActiveTexturePathHead, "resources/texture/Pad_Active-02.png");
+  node_append(&gameplay->padActiveTexturePathHead, "resources/texture/Pad_Active-03.png");
+  node_append(&gameplay->padActiveTexturePathHead, "resources/texture/Pad_Active-04.png");
+
+  gameplay->padPassiveTexturePathHead = NULL;
+  node_create(&gameplay->padPassiveTexturePathHead);
+  node_init(&gameplay->padPassiveTexturePathHead, "resources/texture/Pad-01.png");
+  node_append(&gameplay->padPassiveTexturePathHead, "resources/texture/Pad-02.png");
+  node_append(&gameplay->padPassiveTexturePathHead, "resources/texture/Pad-04.png");
+  node_append(&gameplay->padPassiveTexturePathHead, "resources/texture/Pad-03.png");
+
+  gameplay->textureToDrawHead = NULL;
+  gameplay->padActiveTextureToLoadHead = NULL;
+  gameplay->padPassiveTextureToLoadHead = NULL;
 }
 
 void _LoadNoteTexture(Gameplay*self){
-  for (int i = 0; i < LINE_COUNT; i++)
-  {
-    self->padPassiveTextureToLoad[i] = LoadTexture(self->padPassiveTexturePaths[i]);
-    self->padActiveTextureToLoad[i] = LoadTexture(self->padActiveTexturePaths[i]);
+  // Load pad passive texture
+  NodeAddress cur = self->padPassiveTexturePathHead;
+  while(cur != NULL){
+    Texture2D *texture = malloc(sizeof(Texture2D));
+    *texture = LoadTexture((char*)cur->info);
+    node_append(&self->padPassiveTextureToLoadHead, (void*)texture);
+    cur = cur->next;
   }
-  for (int i = 0; i < LINE_COUNT; i++)
-  {
-    self->textureToLoad[i] =  self->padPassiveTextureToLoad[i];
+  // Load pad active texture
+  cur = self->padActiveTexturePathHead;
+  while(cur != NULL){
+    Texture2D *texture = malloc(sizeof(Texture2D));
+    *texture = LoadTexture((char*)cur->info);
+    node_append(&self->padActiveTextureToLoadHead, (void*)texture);
+    cur = cur->next;
   }
-  
+  // Initialize texture to draw
+  cur = self->padPassiveTextureToLoadHead;
+  while(cur != NULL){
+    Texture2D *texture = (Texture2D*)cur->info;
+    node_append(&self->textureToDrawHead, (void*)texture);
+    cur = cur->next;
+  }
   
 }
 
@@ -189,32 +228,110 @@ void UpdateLife(Gameplay *self, Accuracy acc){
 
 void _padFeedbackHandler(Gameplay* self){
   // DOWN ARROW (MIDDLE LEFT)
-  if(IsKeyDown(KEY_J) || IsKeyDown(KEY_J)||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1)){
-    self->textureToLoad[2] = self->padActiveTextureToLoad[DOWN_INDEX];
-  }else{
-    self->textureToLoad[2] = self->padPassiveTextureToLoad[DOWN_INDEX]
-  }
-  
-  // LEFT ARROW (LEFT)
-  if(IsKeyDown(KEY_D) ||IsKeyDown(KEY_D)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_2)){
-    self->textureToLoad[0] = self->padActiveTextureToLoad[LEFT_INDEX];
-  }else{
-    self->textureToLoad[0] = self->padPassiveTextureToLoad[LEFT_INDEX];
-    
-  }
+if (IsKeyDown(KEY_J) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1)) {
+    NodeAddress activeNode = self->padActiveTextureToLoadHead;
+    NodeAddress textureNode = self->textureToDrawHead;
 
-  // UP ARROW (MIDDLE RIGHT)
-  if(IsKeyDown(KEY_F) ||IsKeyDown(KEY_F)|| IsGamepadButtonDown(0,GAMEPAD_BUTTON_LEFT_TRIGGER_1)){
-    self->textureToLoad[1] = self->padActiveTextureToLoad[UP_INDEX];
-  }else{
-    self->textureToLoad[1] = self->padPassiveTextureToLoad[UP_INDEX];
-    
-  }
-  
-  // RIGHT ARROW (RIGHT)
-  if(IsKeyDown(KEY_K) ||IsKeyDown(KEY_K) ||IsGamepadButtonDown(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_2)){
-    self->textureToLoad[3] = self->padActiveTextureToLoad[RIGHT_INDEX];
-  }else{
-    self->textureToLoad[3] = self->padPassiveTextureToLoad[RIGHT_INDEX];
-  }
+    for (int i = 0; i < DOWN_INDEX && activeNode != NULL && textureNode != NULL; i++) {
+        activeNode = activeNode->next;
+        textureNode = textureNode->next;
+    }
+
+    if (activeNode != NULL && textureNode != NULL) {
+        textureNode->info = activeNode->info;
+    }
+} else {
+    NodeAddress passiveNode = self->padPassiveTextureToLoadHead;
+    NodeAddress textureNode = self->textureToDrawHead;
+
+    for (int i = 0; i < DOWN_INDEX && passiveNode != NULL && textureNode != NULL; i++) {
+        passiveNode = passiveNode->next;
+        textureNode = textureNode->next;
+    }
+
+    if (passiveNode != NULL && textureNode != NULL) {
+        textureNode->info = passiveNode->info;
+    }
+}
+
+// LEFT ARROW (LEFT)
+if (IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2)) {
+    NodeAddress activeNode = self->padActiveTextureToLoadHead;
+    NodeAddress textureNode = self->textureToDrawHead;
+
+    for (int i = 0; i < LEFT_INDEX && activeNode != NULL && textureNode != NULL; i++) {
+        activeNode = activeNode->next;
+        textureNode = textureNode->next;
+    }
+
+    if (activeNode != NULL && textureNode != NULL) {
+        textureNode->info = activeNode->info;
+    }
+} else {
+    NodeAddress passiveNode = self->padPassiveTextureToLoadHead;
+    NodeAddress textureNode = self->textureToDrawHead;
+
+    for (int i = 0; i < LEFT_INDEX && passiveNode != NULL && textureNode != NULL; i++) {
+        passiveNode = passiveNode->next;
+        textureNode = textureNode->next;
+    }
+
+    if (passiveNode != NULL && textureNode != NULL) {
+        textureNode->info = passiveNode->info;
+    }
+}
+
+// UP ARROW (MIDDLE RIGHT)
+if (IsKeyDown(KEY_F) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_1)) {
+    NodeAddress activeNode = self->padActiveTextureToLoadHead;
+    NodeAddress textureNode = self->textureToDrawHead;
+
+    for (int i = 0; i < UP_INDEX && activeNode != NULL && textureNode != NULL; i++) {
+        activeNode = activeNode->next;
+        textureNode = textureNode->next;
+    }
+
+    if (activeNode != NULL && textureNode != NULL) {
+        textureNode->info = activeNode->info;
+    }
+} else {
+    NodeAddress passiveNode = self->padPassiveTextureToLoadHead;
+    NodeAddress textureNode = self->textureToDrawHead;
+
+    for (int i = 0; i < UP_INDEX && passiveNode != NULL && textureNode != NULL; i++) {
+        passiveNode = passiveNode->next;
+        textureNode = textureNode->next;
+    }
+
+    if (passiveNode != NULL && textureNode != NULL) {
+        textureNode->info = passiveNode->info;
+    }
+}
+
+// RIGHT ARROW (RIGHT)
+if (IsKeyDown(KEY_K) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2)) {
+    NodeAddress activeNode = self->padActiveTextureToLoadHead;
+    NodeAddress textureNode = self->textureToDrawHead;
+
+    for (int i = 0; i < RIGHT_INDEX && activeNode != NULL && textureNode != NULL; i++) {
+        activeNode = activeNode->next;
+        textureNode = textureNode->next;
+    }
+
+    if (activeNode != NULL && textureNode != NULL) {
+        textureNode->info = activeNode->info;
+    }
+} else {
+    NodeAddress passiveNode = self->padPassiveTextureToLoadHead;
+    NodeAddress textureNode = self->textureToDrawHead;
+
+    for (int i = 0; i < RIGHT_INDEX && passiveNode != NULL && textureNode != NULL; i++) {
+        passiveNode = passiveNode->next;
+        textureNode = textureNode->next;
+    }
+
+    if (passiveNode != NULL && textureNode != NULL) {
+        textureNode->info = passiveNode->info;
+    }
+}
 }

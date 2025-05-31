@@ -8,11 +8,12 @@
 #include "context.h"
 #include "timer.h"
 #include "progress_bar.h"
+#include "linked-list.h"
 
 #define LEFT_INDEX 0
 #define UP_INDEX 1
-#define RIGHT_INDEX 2
-#define DOWN_INDEX 3
+#define RIGHT_INDEX 3
+#define DOWN_INDEX 2
 
 typedef struct LifeBar{
   Rectangle outlineRec;
@@ -27,19 +28,17 @@ typedef struct Gameplay{
   // Lebar tampilan gameplay
   int width;
   // Texture untuk diload (load dari texturePath)
-  // Texture untuk diload sekarang
-  Texture2D textureToLoad[LINE_COUNT];
-  // Texture pad active
-  Texture2D padActiveTextureToLoad[LINE_COUNT];
-  Texture2D padPassiveTextureToLoad[LINE_COUNT];
+  // Linked List texture untuk didraw sekarang
+  NodeAddress textureToDrawHead;
+  // Linked list untuk texture pad active
+  NodeAddress padActiveTextureToLoadHead;
+  // Linked list untuk texture pad passive
+  NodeAddress padPassiveTextureToLoadHead;
   // Background
   Texture2D background[3];
-  // Path dari texture untuk diload
-  // Texture pad biasa
-  char *padPassiveTexturePaths [LINE_COUNT];
-  char *padActiveTexturePaths [LINE_COUNT];
-  // Opacity dari setiap pad (untuk mengaktifkan)
-  int padActiveOpacity[LINE_COUNT];
+  // Linked list untuk path texture
+  NodeAddress padPassiveTexturePathHead;
+  NodeAddress padActiveTexturePathHead; 
   // Posisi setiap pad
   Vector2 padPositions[LINE_COUNT];
   // Waktu permainan dimulai dalam milisecond
@@ -110,6 +109,9 @@ void _updateLifeBar(Gameplay* self);
 
 // modul untuk memberikan feedback pad active ketika input (D, F, J, K)
 void _padFeedbackHandler(Gameplay* self);
+
+// modul untuk inisialisasi linked list yang digunakan di gameplay
+void _AllListInit(Gameplay* gameplay);
 
 impl_scene(Gameplay*, Gameplay_ToScene,gp_draw,gp_update, gp_isShow);
 
