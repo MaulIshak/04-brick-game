@@ -23,6 +23,7 @@ int main() {
         "resources/LGR",
         "resources/ToyLand",
         "resources/Bad Apple",
+        "resources/Mortals"
     };
     
     InitAudioDevice();

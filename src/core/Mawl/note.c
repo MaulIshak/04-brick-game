@@ -27,47 +27,48 @@ void note_draw(NoteManager *self){
         cur = cur->next;
       }
     }
+
+    
+  }
+  void note_update(NoteManager *self){
     if(self->gp->life <= 0 && self->ctx->app_state == APP_PLAYING){
       self->ctx->app_state = END_OF_THE_GAME;
+      self->ctx->is_dead = true;
       StopSelectedTrack(self->ctx);
       _resetNoteManager(self);
       // DrawText("FAIL", GetScreenWidth()/2 - MeasureText("FAIL", 100)/2, GetScreenHeight()/2, 100, BLACK);
       self->gp->life = 100;
     }
-
-}
-void note_update(NoteManager *self){
-  // Mulai timer/countdown untuk memulai game (3 detik)
-  if(!self->timer.is_started) {
-    // self->gp->gameTime = 0;
-    timer_start(&self->timer, 3);
-  }
-  if(!self->musicTimer.is_started){
-    // self->gp->gameTime = 0;
-    timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
-  }
-  if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
+    // Mulai timer/countdown untuk memulai game (3 detik)
+    if(!self->timer.is_started) {
+      // self->gp->gameTime = 0;
+      timer_start(&self->timer, 3);
+      printf("Mulai timer di:%f\n", self->gp->gameTime);
+    }
+    
+    if(!self->musicTimer.is_started){
+      // self->gp->gameTime = 0;
+      timer_start(&self->musicTimer, 3 + ms_to_s(self->gp->gameTimeOffset));
+    }
+    // if(self->timer.is_started) printf("COUNTDOWN: %s\n", time_elapsed(&(self->timer)));
+    if(!self->isTrackPlayed && is_timer_end(&(self->musicTimer))){
       printf("Music start time: %f\n", self->gp->gameTime);
       PlaySelectedTrack(self->ctx);
       self->isTrackPlayed = true;
       self->gp->isPlaying = true;
     }
-  if(IsKeyPressed(KEY_ENTER)){
-      self->gp->isPlaying = !self->gp->isPlaying;
-  }
-  if(!self->gp->isPlaying){
-    return;
-  }
+
   if(self->isTrackPlayed){
-     if(IsSelectedMusicEnd(self->ctx) ){
-        self->ctx->app_state = END_OF_THE_GAME;
-        _resetNoteManager(self); // Ensure all note-related states are reset
-        return;
-      }
-    }  
-    // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
-    if(!self->isBeatmapLoaded && is_timer_end(&self->timer)){
-      printf("%.2f\n\n", self->gp->gameTime);
+    if(IsSelectedMusicEnd(self->ctx) ){
+      self->ctx->app_state = END_OF_THE_GAME;
+      _resetNoteManager(self); // Ensure all note-related states are reset
+      self->gp->life = 100;
+      return;
+    }
+  }  
+  // Inisialisasi posisi note jika beatmap sudah diload dan timer sudah selesai
+    if(!self->isBeatmapLoaded){
+      printf("Beatmap loaded at: %.2f\n\n", self->gp->gameTime);
       self->beatmap = GetSelectedMusicBeatmap(self->ctx);
       for (int i = 0; i < self->beatmap.len; i++)
       {
@@ -79,11 +80,8 @@ void note_update(NoteManager *self){
         self->isBeatmapLoaded = true;
         
     }
-    
-    if(is_timer_end(&self->timer)){
-      // printf("UPDATE SEKARANGGGGGGGGG!!!!\nwaktu: %f\n", self->gp->gameTime);
       _updateNotePosition(self);
-    }
+
 
 
 }
@@ -295,6 +293,7 @@ void _updateNotePosition(NoteManager* self){
         note->position.y = self->ctx->screen_height;
         note->isSpawned = true;
         note->isTrailVisible = true;
+        // printf("Note spawned at: %f\n", self->gp->gameTime);
       }
       float note_speed = ((self->ctx->screen_height - 45)/self->timeToHitPad) * dt ; 
       note->position.y -= note_speed;
@@ -392,6 +391,9 @@ void _noteHoldHitHandler(NoteManager* self, DrawableNote *note) {
         UpdateLife(self->gp, self->acc);
         note->isTrailVisible = false;
         self->gp->alpha = 255;
+        printf("Hold success duration: %f\n", startTime - endTime);
+        printf("Actual duration: %f\n", note->duration_in_ms);
+        printf("Current time: %f\n", currentTime);
       }
     }
     // Cek apakah sudah MISS karena lewat waktu dan belum holding
@@ -416,7 +418,7 @@ void _extractNoteFromBeatmap(NoteManager* self){
   {
     noteToInsert = (DrawableNote*)malloc(sizeof(DrawableNote));
     noteToInsert->direction = self->beatmap.items[i].direction; 
-    noteToInsert->hit_at_ms = self->beatmap.items[i].hit_at_ms + self->gp->gameTimeOffset; 
+    noteToInsert->hit_at_ms = self->beatmap.items[i].hit_at_ms + self->gp->gameTimeOffset - 500; // offset waktu untuk hit pad
     noteToInsert->position = self->beatmap.items[i].position; 
     noteToInsert->isHit = false;
     noteToInsert->isSpawned = false;
@@ -439,72 +441,100 @@ void _resetNoteManager(NoteManager *self) {
   self->acc = PERFECT;
   self->timer.is_started = false;
   self->musicTimer.is_started = false;
-  self->gp->gameTime = 0;
   self->gp->isPlaying = false;
+  // SeekMusicStream(GetSelectedTrack(self->ctx).music, 0.1f);
+  // self->gp->gameTimeOffset
   while(self->noteHead != NULL) {
     free(self->noteHead->info);
     node_remove_first(&(self->noteHead));
   }
-  
+  self->noteHead = NULL;
+
 }
 
-void _drawNoteTrail(NoteManager* self, DrawableNote note){
-  Vector2 position = note.position;
-  Color trailColor1;
-  Color trailColor2;
-  switch (note.direction)
-  {
-  case NOTE_LEFT:
-      position.x = self->gp->padPositions[0].x;
-      trailColor1 = (Color){
-        0xA6, 0x38, 0xEF, 0xFF
-      };
-      trailColor2 = (Color){
-        0x22, 0x72, 0xC7, 0xFF
-      };
-      break;
-  case NOTE_RIGHT:
-      position.x = self->gp->padPositions[3].x;
-      trailColor1 = (Color){
-        0xFD, 0xF1, 0x71, 0xFF
-      };
-      trailColor2 = (Color){
-        0xF9, 0x84, 0xB9, 0xFF
-      };
-      break;
-  case NOTE_UP:
-      position.x = self->gp->padPositions[1].x;
-      trailColor1 = (Color){
-        0xF8, 0x53, 0x51, 0xFF
-      };
-      trailColor2 = (Color){
-        0x63, 0x21, 0x79, 0xFF
-      };
-      break;
-  case NOTE_DOWN:
-      position.x = self->gp->padPositions[2].x;
-      trailColor1 = (Color){
-        0x4B, 0xF7, 0xFE, 0xFF
-      };
-      trailColor2 = (Color){
-        0xAE, 0xAD, 0x3B, 0xFF
-      };
-      break;
-  }
+void _drawNoteTrail(NoteManager* self, DrawableNote note) {
+    Vector2 position = note.position; // Ini adalah posisi Y kepala note saat ini
+    Color trailColor1;
+    Color trailColor2;
 
-  if (note.duration_in_ms > 0) {
-    float holdLength = (self->ctx->screen_height-(self->gp->padPositions[0].y + ((self->gp->padSize)/2))/(self->timeToHitPad)) * ms_to_s(note.duration_in_ms) *0.7;
+    // Tentukan X posisi dan warna berdasarkan arah note
+    // (Kode switch-case Anda untuk ini sudah benar)
+    switch (note.direction) {
+        case NOTE_LEFT:
+            position.x = self->gp->padPositions[0].x;
+            trailColor1 = (Color){0xA6, 0x38, 0xEF, 0xFF};
+            trailColor2 = (Color){0x22, 0x72, 0xC7, 0xFF};
+            break;
+        case NOTE_RIGHT:
+            position.x = self->gp->padPositions[3].x;
+            trailColor1 = (Color){0xFD, 0xF1, 0x71, 0xFF};
+            trailColor2 = (Color){0xF9, 0x84, 0xB9, 0xFF};
+            break;
+        case NOTE_UP:
+            position.x = self->gp->padPositions[1].x;
+            trailColor1 = (Color){0xF8, 0x53, 0x51, 0xFF};
+            trailColor2 = (Color){0x63, 0x21, 0x79, 0xFF};
+            break;
+        case NOTE_DOWN:
+            position.x = self->gp->padPositions[2].x;
+            trailColor1 = (Color){0x4B, 0xF7, 0xFE, 0xFF};
+            trailColor2 = (Color){0xAE, 0xAD, 0x3B, 0xFF};
+            break;
+    }
 
-    Rectangle holdBody = {
-        position.x + self->gp->padSize/2 -self->gp->padSize/4 ,
-        position.y + self->gp->padSize/2, // sedikit di bawah head
-        self->gp->padSize/2, // lebar body
-        holdLength // panjang body ke bawah
-    };
+    if (note.duration_in_ms > 0 && note.isTrailVisible) { // Tambahkan cek isTrailVisible jika perlu
+        // Tentukan Y-koordinat garis target/hit secara konsisten
+        // Ini harus sama dengan Y yang digunakan untuk menghitung kecepatan di _updateNotePosition
+        // Jika _updateNotePosition menggunakan '45.0f' sebagai hit line Y:
+        // float target_hit_line_y = 45.0f;
+        // Namun, lebih baik menggunakan posisi pad aktual:
+        float target_hit_line_y = self->gp->padPositions[0].y + (self->gp->padSize / 2);
+        // (Asumsi semua pad di Y yang sama untuk hit. Jika tidak, sesuaikan berdasarkan note.direction)
 
-    // DrawRectangleRec(holdBody, BLACK); // Warna abu2 transparan utk body
-    BeginScissorMode(holdBody.x, self->gp->padPositions[0].y + self->gp->padSize/2, holdBody.width, GetScreenHeight());
-    DrawRectangleGradientV(holdBody.x, holdBody.y, holdBody.width, holdBody.height, trailColor1, trailColor2);
-    EndScissorMode();
-  }
+        // Jarak total yang ditempuh note dari spawn (screen_height) ke target_hit_line_y
+        // Ini mengasumsikan note spawn di Y = screen_height dan bergerak ke atas menuju target_hit_line_y
+        float travel_distance = self->ctx->screen_height - target_hit_line_y;
+
+        // Kecepatan note dalam piksel per detik (konsisten dengan _updateNotePosition)
+        // self->timeToHitPad diinisialisasi sebagai 1.5f (detik)
+        float note_speed_pps = travel_distance / self->timeToHitPad;
+
+        // Panjang hold note yang dikoreksi: kecepatan * durasi hold (dalam detik)
+        float correctedHoldLength = note_speed_pps * ms_to_s(note.duration_in_ms);
+
+        // Hapus faktor * 0.7 karena perhitungan kecepatan sekarang seharusnya sudah benar
+        float holdLength = correctedHoldLength;
+
+        // Pastikan holdLength tidak negatif jika ada masalah kalkulasi (misal note.position.y sudah melewati target)
+        if (holdLength < 0) {
+            holdLength = 0;
+        }
+
+        // Posisi dan dimensi untuk Rectangle trail
+        // position.x sudah diset untuk lane yang benar
+        // Lebar trail (Anda menggunakan self->gp->padSize / 2)
+        float trailWidth = self->gp->padSize / 2;
+        // X untuk trail agar di tengah note/pad (sesuai kode Anda)
+        float trailX = position.x + self->gp->padSize / 2 - trailWidth / 2;
+
+        // Y untuk trail: Trail memanjang ke bawah dari kepala note
+        // (karena note bergerak ke atas, jadi Y trail lebih besar dari Y kepala note)
+        // Kepala note ada di note.position.y. Trail dimulai dari bawahnya.
+        float trailStartY = note.position.y + self->gp->padSize / 2; // Sesuai kode Anda
+
+        Rectangle holdBody = {
+            trailX,
+            trailStartY,
+            trailWidth,
+            holdLength
+        };
+
+        // Menggambar trail dengan ScissorMode untuk memotong jika trail melewati batas pad
+        // Y untuk ScissorMode adalah Y atas dari pad/receptor
+        float scissorY = self->gp->padPositions[0].y + (self->gp->padSize / 2);
+
+        BeginScissorMode((int)holdBody.x, (int)scissorY, (int)holdBody.width, (int)(self->ctx->screen_height - scissorY));
+        DrawRectangleGradientV(holdBody.x, holdBody.y, holdBody.width, holdBody.height, trailColor1, trailColor2);
+        EndScissorMode();
+    }
 }

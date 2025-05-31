@@ -62,7 +62,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
     if (acc == PERFECT)
     {
         PlayPerfectSfx();
-        score->value += perfect;
+        score->ctx->score.point += perfect;
         score->perfectCombo++;
         sumPerfect++;
         score->perfect++;
@@ -72,7 +72,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
     else if (acc == GOOD)
     {
         PlayGoodSfx();
-        score->value += good;
+        score->ctx->score.point += good;
         score->perfectCombo = 0;
         sumGood++;
         score->good++;
@@ -82,7 +82,7 @@ void AddScore(ScoreManager *score, Accuracy acc)
     else
     {
         PlayMissSfx();
-        score->value += miss;
+        score->ctx->score.point += miss;
         score->perfectCombo = 0;
         sumMiss++;
         score->miss++;
@@ -103,7 +103,7 @@ void DrawScore(ScoreManager *score)
     static float comboScale = 1.0f;
     static float comboTimer = 0.0f;
     int alpha = (int)(255 * (scoreTimer / 1.5f));
-    sprintf(scoreText, "%d", score->value);
+    sprintf(scoreText, "%d",  score->ctx->score.point);
     sprintf(accuracyText, "%.2f%%", score->ctx->score.accuracy);
     sprintf(comboText, "Combo!!\n %d", score->comboValue);
 
@@ -168,7 +168,6 @@ void UpdateScore(ScoreManager *score)
         score->isBeatmapLoaded = true;
     }
 
-    score->ctx->score.point = score->value;
     score->ctx->score.perfect = score->perfect;
     score->ctx->score.good = score->good;
     score->ctx->score.miss = score->miss;
@@ -185,7 +184,6 @@ void UpdateScore(ScoreManager *score)
         score->miss = 0;
         score->perfectCombo = 0;
 
-        score->ctx->score.point = 0;
         score->ctx->score.perfect = 0;
         score->ctx->score.good = 0;
         score->ctx->score.miss = 0;

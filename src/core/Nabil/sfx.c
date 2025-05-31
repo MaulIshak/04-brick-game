@@ -1,6 +1,7 @@
 #include "sfx.h"
 #include <stdio.h>
 
+// Deklarasi variabel
 Sound introSfx;
 Sound logoSfx;
 Sound arrowSfx1;
@@ -9,8 +10,15 @@ Sound enterSfx;
 Sound perfectSfx;
 Sound goodSfx;
 Sound missSfx;
+Sound countSfx;
 
+// Deklarasi array SfxList
 Sound SfxList[TOTAL_SOUND];
+
+// Deklarasi int untuk case
+int methodCase;
+
+// Assign file name atau path pada char array
 const char* soundFileNames[TOTAL_SOUND] = {
     "resources/sfx/1.coc-intro.wav",
     "resources/sfx/2.logo-sfx.wav",
@@ -20,18 +28,24 @@ const char* soundFileNames[TOTAL_SOUND] = {
     "resources/sfx/6.perfectNote.wav",
     "resources/sfx/7.sfx1.wav",
     "resources/sfx/8.sfx2.wav",
-};
-float sfxVolume[] = {
-    0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
-    1.0f, 0.5f, 1.0f
-};
-char *infoSfx[] = {
-    "intro", "logo", "enter", "good",
-    "miss", "perfect", "sfx1", "sfx2"
+    "resources/sfx/9.count.wav",
 };
 
+// Assign sound volume pada array
+float sfxVolume[] = {
+    0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
+    1.0f, 0.5f, 1.0f, 0.5f
+};
+
+// Assign sound name pada array
+char *infoSfx[] = {
+    "intro", "logo", "enter", "good",
+    "miss", "perfect", "sfx1", "sfx2",
+    "count"
+};
+
+// Set header SoundList null
 SoundList SfxLinkedList = { NULL };
-int methodCase;
 
 // HARD CODE
 void InitSfx(){
@@ -45,6 +59,7 @@ void InitSfx(){
     perfectSfx = LoadSound("resources/sfx/6.perfectNote.wav");
     arrowSfx1 = LoadSound("resources/sfx/7.sfx1.wav");
     arrowSfx2 = LoadSound("resources/sfx/8.sfx2.wav");
+    countSfx = LoadSound("resources/sfx/9.count.wav");
     
     SetSoundVolume(introSfx, 0.5f); 
     SetSoundVolume(logoSfx, 0.5f); 
@@ -54,6 +69,7 @@ void InitSfx(){
     SetSoundVolume(missSfx, 1.0f); 
     SetSoundVolume(perfectSfx, 0.5f); 
     SetSoundVolume(goodSfx, 1.0f); 
+    SetSoundVolume(countSfx, 0.5f); 
 }
 
 // ARRAY
@@ -96,6 +112,7 @@ void InitLinkedListSfx(){
         }
     }
     
+    // Unique Case: Set variable untuk play sound dengan kondisi
     temp = SfxLinkedList.head;
     do {
         if (strcmp(temp->info, "logo") == 0) {
@@ -106,6 +123,7 @@ void InitLinkedListSfx(){
     } while (temp != SfxLinkedList.head);
 }
 
+// Unique Case: Play sound dengan kondisi
 void LinkedListPlayHelper(char *info) {
     if (SfxLinkedList.head == NULL) return;
 
@@ -120,6 +138,7 @@ void LinkedListPlayHelper(char *info) {
     } while (node != SfxLinkedList.head);
 }
 
+// Unique Case: Stop sound dengan kondisi
 void LinkedListStopHelper(char *info) {
     SoundNode *node;
     node = SfxLinkedList.head;
@@ -296,6 +315,24 @@ void PlayArrowSfx(int key) {
     }
 }
 
+void PlayCountScoreSfx(){
+    switch (methodCase)
+    {
+    case 1:
+        PlaySound(perfectSfx);
+        break;
+    case 2:
+        PlaySound(SfxList[8]);
+        break;
+    case 3:
+        LinkedListPlayHelper("count");
+        break;
+    
+    default:
+        break;
+    }
+}
+
 void UnloadSfx() {
     switch (methodCase)
     {
@@ -312,7 +349,24 @@ void UnloadSfx() {
         {
             UnloadSound(SfxList[i]);
         }
-        
+    case 3:
+        if (SfxLinkedList.head != NULL) {
+            SoundNode *current = SfxLinkedList.head;
+            SoundNode *temp;
+
+            do {
+                temp = current;
+                current = current->next;
+
+                UnloadSound(temp->sound);
+                free(temp);
+
+            } while (current != SfxLinkedList.head);
+
+            SfxLinkedList.head = NULL;
+        }
+        break;
+
     default:
         break;
     }

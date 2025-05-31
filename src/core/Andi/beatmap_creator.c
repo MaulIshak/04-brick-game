@@ -158,6 +158,9 @@ void AppendNote(Beatmap *btm, Timer *timer, NoteDirection dir, Timer *duration_t
     double duration_ms = s_to_ms(time_elapsed(duration_timer));
     if(duration_ms < 300) {
         duration_ms = 0;
+    }else {
+        duration_ms = duration_ms;
+        ms = ms - duration_ms;
     }
     Note note = {
         .direction = dir,
