@@ -34,7 +34,7 @@ Recompile resource.rc harus menggunakan windres yang hanya tersedia di ekosistem
 
 # Arsitektur
 
-TODO:
+![Arch](docs/arch.png)
 
 # CREDITS:
 
