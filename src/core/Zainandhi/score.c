@@ -38,13 +38,6 @@ ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay)
     return score;
 }
 
-void LoadingLoadTexturesFire(ScoreManager *score)
-{
-    // fireFrames[0] = LoadTexture("resources/texture/fire1.png");
-    // fireFrames[1] = LoadTexture("resources/texture/fire2.png");
-    // fireFrames[2] = LoadTexture("resources/texture/fire3.png");
-}
-
 void AddScore(ScoreManager *score, Accuracy acc)
 {
     int perfect = 100;
@@ -193,15 +186,4 @@ bool IsShowScore(ScoreManager *score)
         return true;
     }
     return false;
-}
-
-void LoadingUnloadTexturesFire(ScoreManager *score)
-{
-    for (int i = 0; i < 3; i++)
-    {
-        if (score->fireFrames[i].id != 0)
-        {
-            UnloadTexture(score->fireFrames[i]);
-        }
-    }
 }

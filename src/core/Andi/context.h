@@ -110,6 +110,7 @@ typedef struct AppContext {
     bool is_music_playing;
     // Font yang kita gunakan
     Font font;
+    Font fontEmoji;
     // apakah pemain kehabisan nyawa
     bool is_dead;
 

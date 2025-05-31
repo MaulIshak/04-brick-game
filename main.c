@@ -42,6 +42,8 @@
 #include "accuracy.h"
 #include "score.h"
 
+#include "favorite.h"
+
 #include <stdlib.h>
 
 int _main()
@@ -62,6 +64,7 @@ int _main()
   // AppContext ctx = CreateForMigrate(screenWidth, screenHeight);
   #ifdef GAME_DEBUG
   // ctx.app_state = APP_BEATMAP_CREATOR;
+  ctx.app_state = APP_SELECT;
   // ctx.app_state = APP_LOADING;
   // ctx.app_state = END_OF_THE_GAME;
   #endif GAME_DEBUG
@@ -178,6 +181,7 @@ int _main()
   CloseWindow();
   UnloadImage(icon);
   AlbumCover_Destroy(&cover);
+  DestroyFavoriteList(&selection_menu.favoriteList);
 
   return 0;
 }
