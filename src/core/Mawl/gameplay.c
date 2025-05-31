@@ -11,7 +11,7 @@
 
 
 // Variable global untuk meyimpan texture background yang dirandom
-Texture2D bg;
+
 
 void gp_draw(Gameplay* self){
   // Variable lokal
@@ -29,7 +29,7 @@ void gp_draw(Gameplay* self){
     };
 
     // Draw background
-    DrawTexture(bg,0,0,WHITE);
+    DrawTexture(self->bg,0,0,WHITE);
 
     // Flash effect background
     DrawRectangleRec(rec, Fade(WHITE, self->alpha/255 - 0.7f));
@@ -60,9 +60,6 @@ void gp_draw(Gameplay* self){
 
     // Life Bar
     _drawLifeBar(self);
-    // DrawTexture(meledak, 0, 0, WHITE);
-    // DrawTextureRec(meledak, frameRec, position, WHITE);  // Draw part of the texture
-
     
   }
   void gp_update(Gameplay* self){
@@ -70,7 +67,7 @@ void gp_draw(Gameplay* self){
     _padFeedbackHandler(self);
 
     if(!self->isBackgroundLoaded){
-      bg = _getRandomBg(self);
+      self->bg = _getRandomBg(self);
       self->isBackgroundLoaded = true;
     }
     // Mulai waktu game

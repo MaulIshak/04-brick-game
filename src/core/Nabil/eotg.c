@@ -20,6 +20,7 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     (void)self;
     char buff[256] = {0};
     char* grade = "";
+    char* gradeLabel = "SUCCESS";
     Color gradeColor;
     
     // CREATE TAMPILAN
@@ -30,7 +31,7 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     DrawCircleGradient(self->ctx->screen_width / 2 + 300, self->ctx->screen_height / 2 - 700, self->ctx->screen_height, (Color){128, 69, 255, 220}, (Color){57, 43, 214, 220});
     DrawCircleGradient(self->ctx->screen_width / 2 + 400, self->ctx->screen_height / 2 - 800, self->ctx->screen_height, (Color){57, 43, 214, 220}, (Color){24, 29, 149, 220});
     DrawCircle(self->ctx->screen_width / 2 + 500, self->ctx->screen_height / 2 - 900, self->ctx->screen_height, (Color){24, 29, 149, 220});
-    DrawRectangle(50, (self->ctx->screen_height/2) / 2 - 50, self->ctx->screen_width - 100, self->ctx->screen_height/2 + 100, RAYWHITE);
+    DrawRectangle(50, (self->ctx->screen_height/2) / 2 - 20, self->ctx->screen_width - 100, self->ctx->screen_height/2 + 100, RAYWHITE);
     
     // DRAW GRADE
     float accuracy = self->anim_accuracy;
@@ -50,7 +51,13 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
         grade = "D";
         gradeColor = RED;
     }
-    DrawTextEx(self->gradeFont, grade, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, grade, 174, 0).x / 2, 160 }, 174, 0, gradeColor);
+    DrawTextEx(self->gradeFont, grade, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, grade, 174, 0).x / 2, 180 }, 174, 0, gradeColor);
+
+    // DRAW GRADE LABEL
+    if(self->ctx->is_dead){
+        gradeLabel =  "FAIL";
+    }
+    DrawTextEx(self->gradeFont, gradeLabel, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, gradeLabel, 110, 0).x / 2, 40 }, 110, 0, self->ctx->is_dead ? RED : GREEN);
     
     // DRAW ACCURACY PERCENTAGE
     sprintf(buff, "%ld", self->anim_point);
@@ -62,32 +69,33 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     float totalWidth = pointWidth + separatorWidth + accuracyWidth + 20; 
     
     sprintf(buff, "%ld", self->anim_point);
-    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2, 320 }, 70, 0, BLACK);
-    DrawTextEx(self->gradeFont, "|", (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2 + pointWidth + 10, 320 }, 70, 0, BLACK);
+    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2, 340 }, 70, 0, BLACK);
+    DrawTextEx(self->gradeFont, "|", (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2 + pointWidth + 10, 340 }, 70, 0, BLACK);
     sprintf(buff, "%.2f%%", self->anim_accuracy);
-    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2 + pointWidth + separatorWidth + 20, 320 }, 70, 0, BLACK);
+    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - totalWidth / 2 + pointWidth + separatorWidth + 20, 340 }, 70, 0, BLACK);
     
     // DRAW ACCURACY NOTE
-    DrawRectangle(50, (self->ctx->screen_height/2) / 2 + 220, self->ctx->screen_width - 100, self->ctx->screen_height/8 - 5, DARKGRAY);
+    printf("%d | %d | %d\n", self->ctx->score.perfect, self->ctx->score.good, self->ctx->score.miss);
+    DrawRectangle(50, (self->ctx->screen_height/2) / 2 + 240, self->ctx->screen_width - 100, self->ctx->screen_height/8 - 5, DARKGRAY);
     sprintf(buff, "%d", self->ctx->score.perfect);
-    DrawTextEx(self->gradeFont, "Perfect", (Vector2){ self->ctx->screen_width / 5, 465 }, 32, 0, YELLOW);
-    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 5 + MeasureTextEx(self->gradeFont, "Perfect", 32, 0).x / 2 - MeasureTextEx(self->gradeFont, buff, 32, 0).x / 2, 435 }, 32, 0, RAYWHITE);
+    DrawTextEx(self->gradeFont, "Perfect", (Vector2){ self->ctx->screen_width / 5, 485 }, 32, 0, YELLOW);
+    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 5 + MeasureTextEx(self->gradeFont, "Perfect", 32, 0).x / 2 - MeasureTextEx(self->gradeFont, buff, 32, 0).x / 2, 455 }, 32, 0, RAYWHITE);
     
     sprintf(buff, "%d", self->ctx->score.good);
-    DrawTextEx(self->gradeFont, "Good", (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, "Good", 32, 0).x / 2, 465 }, 32, 0, GREEN);
-    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, buff, 32, 0).x / 2, 435 }, 32, 0, RAYWHITE);
+    DrawTextEx(self->gradeFont, "Good", (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, "Good", 32, 0).x / 2, 485 }, 32, 0, GREEN);
+    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, buff, 32, 0).x / 2, 455 }, 32, 0, RAYWHITE);
     
     sprintf(buff, "%d", self->ctx->score.miss);
-    DrawTextEx(self->gradeFont, "Miss", (Vector2){ self->ctx->screen_width * 4.5 / 6.3 - MeasureTextEx(self->gradeFont, "Miss", 32, 0).x / 2, 465 }, 32, 0, (Color){229, 25, 45, 255});
-    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width * 4.5 / 6.3 - MeasureTextEx(self->gradeFont, buff, 32, 0).x / 2, 435 }, 32, 0, RAYWHITE);
+    DrawTextEx(self->gradeFont, "Miss", (Vector2){ self->ctx->screen_width * 4.5 / 6.3 - MeasureTextEx(self->gradeFont, "Miss", 32, 0).x / 2, 485 }, 32, 0, (Color){229, 25, 45, 255});
+    DrawTextEx(self->gradeFont, buff, (Vector2){ self->ctx->screen_width * 4.5 / 6.3 - MeasureTextEx(self->gradeFont, buff, 32, 0).x / 2, 455 }, 32, 0, RAYWHITE);
     
     // DRAW BUTTON Restart
-    DrawRectangle((self->ctx->screen_width/4) / 2, (self->ctx->screen_height/2) + 150, 200, 60, PRIMARY_COLOR);
-    DrawTextEx(self->gradeFont, "Restart [D]", (Vector2){ (self->ctx->screen_width/4) / 2 + 100 - MeasureTextEx(self->gradeFont, "Restart [D]", 28, 0).x / 2, (self->ctx->screen_height/2) + 165 }, 28, 0, WHITE);
+    DrawRectangle((self->ctx->screen_width/4) / 2, (self->ctx->screen_height/2) + 180, 200, 60, PRIMARY_COLOR);
+    DrawTextEx(self->gradeFont, "Restart [D]", (Vector2){ (self->ctx->screen_width/4) / 2 + 100 - MeasureTextEx(self->gradeFont, "Restart [D]", 28, 0).x / 2, (self->ctx->screen_height/2) + 195 }, 28, 0, WHITE);
 
     // DRAW BUTTON Continue
-    DrawRectangle(((self->ctx->screen_width/4) / 2 + 6) * 4, (self->ctx->screen_height/2) + 150, 200, 60, SECONDARY_COLOR);
-    DrawTextEx(self->gradeFont, "Continue [K]", (Vector2){ ((self->ctx->screen_width/4) / 2 + 6) * 4 + 100 - MeasureTextEx(self->gradeFont, "Continue [K]", 28, 0).x / 2, (self->ctx->screen_height/2) + 165 }, 28, 0, WHITE);
+    DrawRectangle(((self->ctx->screen_width/4) / 2 + 6) * 4, (self->ctx->screen_height/2) + 180, 200, 60, SECONDARY_COLOR);
+    DrawTextEx(self->gradeFont, "Continue [K]", (Vector2){ ((self->ctx->screen_width/4) / 2 + 6) * 4 + 100 - MeasureTextEx(self->gradeFont, "Continue [K]", 28, 0).x / 2, (self->ctx->screen_height/2) + 195 }, 28, 0, WHITE);
     
     EndBlendMode();
 }

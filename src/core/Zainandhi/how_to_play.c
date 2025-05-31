@@ -2,26 +2,23 @@
 #include "raylib.h"
 #include "how_to_play.h"
 
-static const char *imagePaths[] = {
-    "resources/texture/how_to_play(1).png",
-    "resources/texture/how_to_play(2).png",
-    "resources/texture/how_to_play(3).png",
-    "resources/texture/how_to_play(4).png",
-    "resources/texture/how_to_play(5).png",
-    "resources/texture/how_to_play(6).png",
-};
-
-#define NUM_PAGES (sizeof(imagePaths) / sizeof(imagePaths[0]))
-
 HowToPlayManager InitHowToPlay(AppContext *ctx)
 {
     HowToPlayManager how = {0};
     how.ctx = ctx;
+    // how.currentIndex = 0;
     how.isLoaded = false;
 
     ImageNode *prev = NULL;
     for (int i = 0; i < NUM_PAGES; i++)
     {
+        // how.pages[i] = LoadTexture(imagePaths[i]);
+        // if (how.pages[i].id == 0)
+        // {
+        //     TraceLog(LOG_ERROR, "HOW_TO_PLAY: Failed to load texture: %s", imagePaths[i]);
+        //     how.isLoaded = false;
+        //     break;
+        // }
         ImageNode *node = (ImageNode *)malloc(sizeof(ImageNode));
         if (!node)
         {
@@ -73,18 +70,24 @@ void UpdateHowToPlay(HowToPlayManager *how)
         return;
 
     float scale = 0.3f;
+    // Texture2D texture = how->pages[how->currentIndex];
 
     Vector2 position = {
+        // how->ctx->screen_width / 2 - (texture.width * scale) / 2,
+        // how->ctx->screen_height / 2 - (texture.height * scale) / 2 
         how->ctx->screen_width / 2 - (how->current->texture.width * scale) / 2,
-        how->ctx->screen_height / 2 - (how->current->texture.height * scale) / 2};
+        how->ctx->screen_height / 2 - (how->current->texture.height * scale) / 2
+    };
 
+    // DrawTextureEx(texture, position, 0.0f, scale, WHITE);
     DrawTextureEx(how->current->texture, position, 0.0f, scale, WHITE);
 
-    const char *titleText = "HOW TO PLAY";
+    const char *titleText = "TUTORIAL";
     DrawText(titleText, how->ctx->screen_width / 2 - MeasureText(titleText, 40) / 2, position.y - 60, 40, BLACK);
 
     const char *navText = "<- Left | Right ->";
     DrawText(navText, how->ctx->screen_width / 2 - MeasureText(navText, 20) / 2, how->ctx->screen_height - 80, 20, GRAY);
+
     DrawText("B to return", how->ctx->screen_width - 150, how->ctx->screen_height - 40, 20, GRAY);
 }
 
@@ -95,10 +98,12 @@ void DrawHowToPlay(HowToPlayManager *how)
 
     if (IsKeyPressed(KEY_RIGHT))
     {
+        // how->currentIndex = (how->currentIndex + 1) % NUM_PAGES;
         how->current = how->current->next;
     }
     if (IsKeyPressed(KEY_LEFT))
     {
+        // how->currentIndex = (how->currentIndex - 1 + NUM_PAGES) % NUM_PAGES;
         how->current = how->current->prev;
     }
     if (IsKeyPressed(KEY_B))
@@ -116,6 +121,11 @@ void UnloadHowToPlayImages(HowToPlayManager *how)
 {
     if (!how->isLoaded)
         return;
+
+    // for (int i = 0; i < NUM_PAGES; i++)
+    // {
+    //     UnloadTexture(how->pages[i]);
+    // }
 
     ImageNode *start = how->head;
     ImageNode *current = how->head;

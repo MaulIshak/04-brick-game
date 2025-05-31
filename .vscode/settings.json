@@ -50,9 +50,14 @@
     "sfx.h": "c",
     "selection_menu.h": "c",
     "press_to_play.h": "c",
+<<<<<<< HEAD
     "sfx.h": "c",
     "favorite.h": "c",
     "list": "c"
+=======
+    "__node_handle": "c",
+    "regex": "c"
+>>>>>>> 163c531cb9d7f3bff6022eaef65d84fa52311ce0
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

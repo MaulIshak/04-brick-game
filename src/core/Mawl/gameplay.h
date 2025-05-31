@@ -63,6 +63,8 @@ typedef struct Gameplay{
   float maxLife;
   // Life Bar
   LifeBar lifeBar;
+  // Background untuk di-random
+  Texture2D bg;
 }Gameplay;
 
 #include "score.h"
