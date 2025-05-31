@@ -30,10 +30,6 @@ typedef struct ScoreManager
 
 ScoreManager InitScore(AppContext *ctx, Gameplay *gameplay);
 
-void LoadingLoadTexturesFire(ScoreManager *score);
-
-void LoadingUnloadTexturesFire(ScoreManager *score);
-
 void AddScore(ScoreManager *score, Accuracy acc);
 
 void AddAcc(ScoreManager *score, Accuracy acc);
