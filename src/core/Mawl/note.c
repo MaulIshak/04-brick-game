@@ -55,7 +55,7 @@ void note_draw(NoteManager *self){
       printf("Music start time: %f\n", self->gp->gameTime);
       PlaySelectedTrack(self->ctx);
       self->isTrackPlayed = true;
-      self->gp->isPlaying = true;
+      // self->gp->isPlaying = true;
     }
 
   if(self->isTrackPlayed){
@@ -113,8 +113,6 @@ void InitNote(NoteManager *self, AppContext *ctx, Gameplay *gp, ScoreManager *sc
   self->acc = PERFECT;
   self->scoreManager = scoreManager;
   self->isBeatmapLoaded = false;
-  self->missCombo = 0;
-  // noteoffset = self->gp->gameTimeOffset;
   self->noteHead = NULL;
 }
 
@@ -162,7 +160,7 @@ bool _isNoteHit(NoteManager*self, DrawableNote note ){
   // Akurasi berdasarkan posisi
   bool isPerfectPos = notePos >= padY + 20 && notePos <= padY + self->gp->padSize - 20;
   bool isGoodPos = notePos >= padY  && notePos <= padY + self->gp->padSize;
-  bool isMissPos = notePos >= padY - 20 && notePos <= padY + self->gp->padSize + 20;
+  bool isMissPos = notePos >= padY - 20 && notePos <= padY + self->gp->padSize + 15;
   // DOWN ARROW (MIDDLE RIGHT)
   if((IsKeyPressed(KEY_J) ||IsKeyPressed(KEY_J)|| IsGamepadButtonPressed(0,GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ) && note.direction == NOTE_DOWN){
     
@@ -441,7 +439,7 @@ void _resetNoteManager(NoteManager *self) {
   self->acc = PERFECT;
   self->timer.is_started = false;
   self->musicTimer.is_started = false;
-  self->gp->isPlaying = false;
+  // self->gp->isPlaying = false;
   // SeekMusicStream(GetSelectedTrack(self->ctx).music, 0.1f);
   // self->gp->gameTimeOffset
   while(self->noteHead != NULL) {
