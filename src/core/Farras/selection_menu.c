@@ -210,8 +210,13 @@ void MusicItem_Draw(SelectionMenu *self, Track track, int index, bool isSelected
         gradeColor = RED;
     }
 
+    if (track.high_score <= 0) {
+        grade = '-';
+        gradeColor = GRAY;
+    }
+
     DrawTextEx(self->ctx->font, TextFormat("%c", grade),
-               (Vector2){x + 10, y - 65 * scale}, 100 * scale, 2, gradeColor);
+               (Vector2){x + 10, y - 60 * scale}, 100 * scale, 2, gradeColor);
 
     BeginScissorMode(x + 75, y - textSize.y + textPadding / 2, boxWidth - 65 - 50 - textPadding, textSize.y + textPadding);
 
