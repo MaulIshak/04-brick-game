@@ -1,84 +1,104 @@
 /*
- * Modul: Menu Pemilihan Musik
+ * Modul: Menu Pemilihan Lagu
  * 
- * Modul ini mengimplementasikan antarmuka pemilihan musik dalam permainan dimana pemain dapat:
- * - Menjelajahi lagu-lagu yang tersedia dalam tampilan roda berputar
- * - Mendengarkan preview lagu sebelum bermain
- * - Menambah/menghapus lagu ke/dari daftar favorit
- * - Beralih antara tampilan daftar normal dan daftar favorit
- * - Memulai permainan dengan lagu yang dipilih
+ * Modul ini mengimplementasikan antarmuka pemilihan lagu dalam permainan.
+ * Fitur utama:
+ * - Tampilan roda berputar untuk daftar lagu
+ * - Preview musik sebelum bermain
+ * - Manajemen lagu favorit
+ * - Animasi transisi halus
+ * - Efek visual latar belakang
  */
 
 #pragma once
-#include <raylib.h>
-#include "scene.h"
 #include "context.h"
+#include "favorite.h"
 #include "flying_object.h"
+#include "scene.h"
+#include <raylib.h>
 
 #ifndef SELECTION_MENU_H
 #define SELECTION_MENU_H
 
 /**
- * Jumlah maksimum lagu yang ditampilkan dalam tampilan roda berputar
+ * Jumlah maksimum lagu yang ditampilkan dalam roda musik
  */
 #define MAX_MUSIC_SHOWING 30
 
 /**
- * Struktur utama untuk menu pemilihan musik
+ * Struktur utama menu pemilihan lagu
  */
 typedef struct SelectionMenu {
-    AppContext *ctx;              // Konteks aplikasi dengan status permainan
-    float rotationOffset;         // Rotasi saat ini dari roda musik
-    float targetRotationOffset;   // Target rotasi untuk animasi halus
-    float selectionYOffset;       // Offset Y saat ini untuk seleksi
-    float targetYOffset;          // Target offset Y untuk animasi halus
-    bool isShow;                  // Apakah menu sedang ditampilkan
-    FlyingObjects flying_objects; // Efek visual latar belakang
-    Texture2D background;         // Tekstur latar belakang menu
+    AppContext *ctx;              // Konteks aplikasi
+    int indexMove;               // Offset indeks untuk pergerakan roda
+    float textOffsetX;           // Offset untuk scrolling teks panjang
+    float rotationOffset;        // Offset rotasi saat ini
+    float targetRotationOffset;  // Target rotasi untuk animasi
+    float selectionYOffset;      // Offset Y saat ini
+    float targetYOffset;         // Target offset Y untuk animasi
+    bool isShow;                 // Status tampilan menu
+    FlyingObjects flying_objects; // Objek latar belakang bergerak
+    FavoriteList favoriteList;   // Daftar lagu favorit
+    bool showFavoriteList;       // Status tampilan daftar favorit
+    Texture2D background;        // Tekstur latar belakang
 } SelectionMenu;
 
 /**
- * Menangani input keyboard untuk navigasi dan pemilihan menu
+ * Menangani input pengguna untuk navigasi menu utama
  */
 void PressToAction(SelectionMenu *self);
 
 /**
- * Mengelola fungsi preview musik saat menjelajahi lagu
+ * Menangani input pengguna khusus untuk daftar favorit
+ */
+void PressToActionFavorite(SelectionMenu *self);
+
+/**
+ * Mengelola preview musik yang sedang dipilih
  */
 void PreviewMusic(SelectionMenu *self);
 
 /**
- * Menggambar item menu individual dalam roda berputar
+ * Menggambar daftar lagu dalam mode normal
  */
-void SelectionMenuItem_Draw(SelectionMenu *self);
+void MusicList_Draw(SelectionMenu *self);
 
 /**
- * Menggambar elemen pembantu UI seperti petunjuk tombol
+ * Menggambar daftar lagu dalam mode favorit
+ */
+void FavoriteMusicList_Draw(SelectionMenu *self);
+
+/**
+ * Menggambar satu item lagu dengan efek visual
+ */
+void MusicItem_Draw(SelectionMenu *self, Track track, int index, bool isSelected);
+
+/**
+ * Menggambar panduan kontrol dan tombol
  */
 void SelectionMenuHelper_Draw(SelectionMenu *self);
 
 /**
- * Fungsi penggambaran utama untuk menu pemilihan
+ * Inisialisasi menu pemilihan lagu
+ */
+void InitSelectionMenu(SelectionMenu *selection_menu, AppContext *ctx);
+
+/**
+ * Fungsi render utama menu
  */
 void SelectionMenu_Draw(SelectionMenu *self);
 
 /**
- * Memperbarui status menu, animasi dan preview musik
+ * Update status dan animasi menu
  */
 void SelectionMenu_Update(SelectionMenu *self);
 
 /**
- * Memeriksa apakah menu pemilihan harus ditampilkan
- * @return true jika menu harus ditampilkan, false jika tidak
+ * Memeriksa apakah menu harus ditampilkan
  */
 bool SelectionMenu_IsShow(SelectionMenu *self);
 
-/**
- * Menginisialisasi instance menu pemilihan baru
- */
-void InitSelectionMenu(SelectionMenu *selection_menu, AppContext *ctx);
-
 // Implementasi scene untuk menu pemilihan
-impl_scene(SelectionMenu*, SelectionMenu_ToScene, SelectionMenu_Draw, SelectionMenu_Update, SelectionMenu_IsShow)
+impl_scene(SelectionMenu *, SelectionMenu_ToScene, SelectionMenu_Draw, SelectionMenu_Update, SelectionMenu_IsShow)
 
 #endif // SELECTION_MENU_H

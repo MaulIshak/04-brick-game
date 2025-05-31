@@ -1,7 +1,9 @@
 /*
- * Implementation of the Favorite Music Management module.
- * This file implements the persistence and management of favorite music tracks
- * using a singly linked list and file I/O operations.
+ * Modul: Manajemen Lagu Favorit
+ * 
+ * Implementasi dari modul pengelolaan daftar lagu favorit.
+ * Menggunakan linked list dan operasi file untuk menyimpan
+ * daftar lagu favorit secara permanen.
  */
 
 #include "favorite.h"
@@ -10,7 +12,7 @@
 #include <stdlib.h>
 
 /**
- * Initialize an empty favorite list structure.
+ * Membuat daftar favorit baru
  */
 void CreateFavoriteList(FavoriteList *list) {
     list->head = NULL;
@@ -18,9 +20,7 @@ void CreateFavoriteList(FavoriteList *list) {
 }
 
 /**
- * Load favorite tracks from the favorites.txt file.
- * If the file doesn't exist, creates a new empty file.
- * Each line in the file contains one music track ID.
+ * Memuat daftar favorit dari file
  */
 void initFavoriteList(FavoriteList *list) {
     FILE *file = fopen("favorites.txt", "r");
@@ -49,8 +49,7 @@ void initFavoriteList(FavoriteList *list) {
 }
 
 /**
- * Add a new music track to favorites if not already present.
- * Implements a prepend operation (O(1)) to the linked list.
+ * Menambah lagu ke favorit
  */
 void AddFavorite(FavoriteList *list, int id) {
     if (IsFavorite(list, id))
@@ -69,9 +68,7 @@ void AddFavorite(FavoriteList *list, int id) {
 }
 
 /**
- * Remove a music track from favorites if present.
- * Implements a linear search (O(n)) through the linked list.
- * Updates list structure and frees memory.
+ * Menghapus lagu dari favorit
  */
 void RemoveFavorite(FavoriteList *list, int id) {
     Favorite *current = list->head;
@@ -96,8 +93,7 @@ void RemoveFavorite(FavoriteList *list, int id) {
 }
 
 /**
- * Check if a music track is marked as favorite.
- * Implements a linear search (O(n)) through the linked list.
+ * Mengecek status favorit lagu
  */
 bool IsFavorite(FavoriteList *list, int id) {
     Favorite *current = list->head;
@@ -111,9 +107,7 @@ bool IsFavorite(FavoriteList *list, int id) {
 }
 
 /**
- * Clean up the favorites list and save current state to file.
- * Frees all allocated memory and writes IDs to favorites.txt.
- * Creates the file if it doesn't exist.
+ * Membersihkan daftar favorit
  */
 void DestroyFavoriteList(FavoriteList *list) {
     Favorite *current = list->head;
