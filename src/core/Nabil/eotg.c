@@ -22,6 +22,9 @@ void EndOfTheGame_Draw(EndOfTheGame *self){
     char* grade = "";
     Color gradeColor;
     
+    // printf("%d", )
+    DrawTextEx(self->gradeFont, self->ctx->is_dead, (Vector2){ self->ctx->screen_width / 2 - MeasureTextEx(self->gradeFont, grade, 174, 0).x / 2, 160 }, 174, 0, gradeColor);
+    
     // CREATE TAMPILAN
     ClearBackground(WHITE);
     DrawCircleGradient(self->ctx->screen_width / 2, self->ctx->screen_height / 2, self->ctx->screen_height, (Color){254, 250, 148, 220}, (Color){255, 147, 98, 220});
