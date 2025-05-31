@@ -16,8 +16,9 @@ void AlbumCover_Destroy(AlbumCover* self) {
  }
 
 void AlbumCover_Update(AlbumCover* self){
-    self->CDRotation += 0.2 ;
+    self->CDRotation += 0.2;
 }
+
 void AlbumCover_Draw(AlbumCover* self){
     const int WIDTH = 150;
     const int PADDING = 3;
