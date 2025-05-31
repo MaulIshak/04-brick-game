@@ -416,7 +416,7 @@ void _extractNoteFromBeatmap(NoteManager* self){
   {
     noteToInsert = (DrawableNote*)malloc(sizeof(DrawableNote));
     noteToInsert->direction = self->beatmap.items[i].direction; 
-    noteToInsert->hit_at_ms = self->beatmap.items[i].hit_at_ms + self->gp->gameTimeOffset - 500; // offset waktu untuk hit pad
+    noteToInsert->hit_at_ms = self->beatmap.items[i].hit_at_ms + self->gp->gameTimeOffset; // offset waktu untuk hit pad
     noteToInsert->position = self->beatmap.items[i].position; 
     noteToInsert->isHit = false;
     noteToInsert->isSpawned = false;
@@ -428,8 +428,9 @@ void _extractNoteFromBeatmap(NoteManager* self){
   }
 }
 
+  
+
 void _resetNoteManager(NoteManager *self) {
-  NodeAddress cur = self->noteHead;
   self->gp->timer.is_started = false;
   self->gp->gameTime = 0;
   self->gp->isBackgroundLoaded = false;
@@ -442,6 +443,7 @@ void _resetNoteManager(NoteManager *self) {
   // self->gp->isPlaying = false;
   // SeekMusicStream(GetSelectedTrack(self->ctx).music, 0.1f);
   // self->gp->gameTimeOffset
+  NodeAddress cur = self->noteHead;
   while(self->noteHead != NULL) {
     free(self->noteHead->info);
     node_remove_first(&(self->noteHead));
