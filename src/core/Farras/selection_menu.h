@@ -41,6 +41,7 @@ typedef struct SelectionMenu {
     FavoriteList favoriteList;   // Daftar lagu favorit
     bool showFavoriteList;       // Status tampilan daftar favorit
     Texture2D background;        // Tekstur latar belakang
+    int seletedFavoriteTrack;      // Indeks lagu favorit yang dipilih
 } SelectionMenu;
 
 /**

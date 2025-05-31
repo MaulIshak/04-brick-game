@@ -1,6 +1,6 @@
 /*
  * Modul: Manajemen Lagu Favorit
- * 
+ *
  * Implementasi dari modul pengelolaan daftar lagu favorit.
  * Menggunakan linked list dan operasi file untuk menyimpan
  * daftar lagu favorit secara permanen.
@@ -17,6 +17,9 @@
 void CreateFavoriteList(FavoriteList *list) {
     list->head = NULL;
     list->count = 0;
+    list->selectedIndex = 0;
+    list->favoriteIcon = LoadTexture("resources/texture/Heart.png");
+    list->notFavoriteIcon = LoadTexture("resources/texture/Heart_Gray.png");
 }
 
 /**
@@ -74,6 +77,7 @@ void RemoveFavorite(FavoriteList *list, int id) {
     Favorite *current = list->head;
     Favorite *previous = NULL;
 
+    int count = 0;
     while (current != NULL) {
         if (current->id == id) {
             if (previous == NULL) {
@@ -86,7 +90,7 @@ void RemoveFavorite(FavoriteList *list, int id) {
             list->count--;
             break;
         }
-
+        count++;
         previous = current;
         current = current->next;
     }
@@ -104,6 +108,21 @@ bool IsFavorite(FavoriteList *list, int id) {
         current = current->next;
     }
     return false;
+}
+
+Favorite getFavoriteByFavoriteIndex(FavoriteList *list, int index) {
+    if (index < 0 || index >= list->count) {
+        fprintf(stderr, "Index out of bounds for favorite list.\n");
+        return (Favorite){0};
+    }
+
+    Favorite *current = list->head;
+    int i;
+    for (i = 0; i < index && current != NULL; i++) {
+        current = current->next;
+    }
+
+    return *current;
 }
 
 /**

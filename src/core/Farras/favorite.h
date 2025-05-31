@@ -13,15 +13,16 @@
 #define FAVORITE_H
 
 #include <stdbool.h>
-
+#include "raylib.h"
 /**
  * Struktur untuk menyimpan satu lagu favorit
  */
 typedef struct Favorite Favorite;
 typedef struct Favorite {
     int id;          // ID lagu favorit
-    Favorite *next;  // Pointer ke lagu berikutnya
+    Favorite *next;
 } Favorite;
+
 
 /**
  * Struktur untuk mengelola daftar favorit
@@ -29,6 +30,9 @@ typedef struct Favorite {
 typedef struct FavoriteList {
     Favorite *head;  // Pointer ke lagu pertama
     int count;       // Jumlah lagu favorit
+    int selectedIndex; // Indeks lagu favorit yang dipilih
+    Texture2D favoriteIcon; // Ikon favorit untuk ditampilkan
+    Texture2D notFavoriteIcon; // Ikon tidak favorit untuk ditampilkan
 } FavoriteList;
 
 /**
@@ -55,6 +59,11 @@ void RemoveFavorite(FavoriteList *list, int id);
  * Mengecek status favorit lagu
  */
 bool IsFavorite(FavoriteList *list, int id);
+
+/**
+ * Mengambil lagu favorit berdasarkan indeks
+ */
+Favorite getFavoriteByFavoriteIndex(FavoriteList *list, int index);
 
 /**
  * Membersihkan daftar favorit

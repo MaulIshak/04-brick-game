@@ -122,6 +122,8 @@ void DestroyContext(AppContext *ctx) {
     free(ctx->_beatmap_name);
 }
 const char* font_path = "resources/font/Jersey15-Regular.ttf";
+const char* fontEmoji_path = "resources/font/Symbola-12.ttf";
+
 
 AppContext CreateForMigrate(int screen_width , int screen_height ){
     Tracks tracks = InitTracks();
@@ -142,6 +144,9 @@ AppContext CreateForMigrate(int screen_width , int screen_height ){
     memset(ctx._beatmap_name, 0, 400);
     Font font = LoadFontEx(font_path, 30, NULL, 0);
     ctx.font = font;
+
+    Font fontEmoji = LoadFont(fontEmoji_path);
+    ctx.fontEmoji = fontEmoji;
     printf("Context created...\n");
     return ctx;
 }
